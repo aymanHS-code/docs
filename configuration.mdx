@@ -1,0 +1,373 @@
+---
+title: "Configuration"
+description: "Configure the Roomi SDK for your environment and requirements"
+---
+
+## Overview
+
+The Roomi SDK can be configured with various options to suit your specific needs. This guide covers all available configuration options and best practices for different environments.
+
+## Basic Configuration
+
+### JavaScript/TypeScript
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+const roomi = new RoomiSDK({
+  // Required configuration
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: 'unit-12345',
+  userId: 'user-67890',
+  
+  // Optional configuration
+  baseUrl: 'https://auth-prod-ae.roomi-services.com',
+  timeout: 30000,
+  retries: 3,
+  debug: false
+});
+```
+
+### Python
+
+```python
+from roomi_sdk import RoomiSDK
+import os
+
+roomi = RoomiSDK(
+    # Required configuration
+    region='me-central-1',
+    access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    unit_id='unit-12345',
+    user_id='user-67890',
+    
+    # Optional configuration
+    base_url='https://auth-prod-ae.roomi-services.com',
+    timeout=30,
+    retries=3,
+    debug=False
+)
+```
+
+## Configuration Options
+
+### Required Parameters
+
+| Parameter | Type | Description | Example |
+|-----------|------|-------------|---------|
+| `region` | string | AWS region for Roomi services | `'me-central-1'` |
+| `accessKeyId` | string | AWS access key ID | `'AKIAIOSFODNN7EXAMPLE'` |
+| `secretAccessKey` | string | AWS secret access key | `'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'` |
+| `unitId` | string | Your Roomi unit identifier | `'unit-12345'` |
+| `userId` | string | Your Roomi user identifier | `'user-67890'` |
+
+### Optional Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `baseUrl` | string | Environment-specific | Base URL for API endpoints |
+| `timeout` | number | `30000` | Request timeout in milliseconds |
+| `retries` | number | `3` | Number of retry attempts |
+| `debug` | boolean | `false` | Enable debug logging |
+| `logLevel` | string | `'info'` | Logging level (`debug`, `info`, `warn`, `error`) |
+
+## Environment-Specific Configuration
+
+### Production Environment
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://auth-prod-ae.roomi-services.com',
+  timeout: 30000,
+  retries: 3,
+  debug: false,
+  logLevel: 'info'
+});
+```
+
+### Staging Environment
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://auth-staging-ae.roomi-services.com',
+  timeout: 30000,
+  retries: 3,
+  debug: true,
+  logLevel: 'debug'
+});
+```
+
+### Development Environment
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'http://localhost:3000',
+  timeout: 60000,
+  retries: 5,
+  debug: true,
+  logLevel: 'debug'
+});
+```
+
+## Service-Specific Configuration
+
+### Authentication Service
+
+```javascript
+const authConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://auth-prod-ae.roomi-services.com'
+};
+
+const authService = new RoomiSDK(authConfig);
+```
+
+### AI Service
+
+```javascript
+const aiConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://ai-prod-ae.roomi-services.com'
+};
+
+const aiService = new RoomiSDK(aiConfig);
+```
+
+### Devices Service
+
+```javascript
+const devicesConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://devices-prod-ae.roomi-services.com'
+};
+
+const devicesService = new RoomiSDK(devicesConfig);
+```
+
+### Services Platform
+
+```javascript
+const servicesConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'https://services-prod-ae.roomi-services.com'
+};
+
+const servicesPlatform = new RoomiSDK(servicesConfig);
+```
+
+## Advanced Configuration
+
+### Custom HTTP Client
+
+```javascript
+import axios from 'axios';
+
+const customHttpClient = axios.create({
+  timeout: 45000,
+  headers: {
+    'User-Agent': 'RoomiSDK/1.0.0'
+  }
+});
+
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  httpClient: customHttpClient
+});
+```
+
+### Retry Configuration
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  retries: 5,
+  retryDelay: 1000,
+  retryBackoff: 2
+});
+```
+
+### Logging Configuration
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  debug: true,
+  logLevel: 'debug',
+  logger: {
+    debug: (message) => console.debug(`[DEBUG] ${message}`),
+    info: (message) => console.info(`[INFO] ${message}`),
+    warn: (message) => console.warn(`[WARN] ${message}`),
+    error: (message) => console.error(`[ERROR] ${message}`)
+  }
+});
+```
+
+## Environment Variables
+
+### Recommended Environment Variables
+
+```bash
+# AWS Configuration
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+AWS_DEFAULT_REGION=me-central-1
+
+# Roomi Configuration
+ROOMI_UNIT_ID=unit-12345
+ROOMI_USER_ID=user-67890
+ROOMI_ENVIRONMENT=production
+
+# Service URLs
+ROOMI_AUTH_URL=https://auth-prod-ae.roomi-services.com
+ROOMI_AI_URL=https://ai-prod-ae.roomi-services.com
+ROOMI_DEVICES_URL=https://devices-prod-ae.roomi-services.com
+ROOMI_SERVICES_URL=https://services-prod-ae.roomi-services.com
+
+# SDK Configuration
+ROOMI_TIMEOUT=30000
+ROOMI_RETRIES=3
+ROOMI_DEBUG=false
+ROOMI_LOG_LEVEL=info
+```
+
+### Environment-Specific Configuration
+
+```javascript
+const getConfig = () => {
+  const environment = process.env.ROOMI_ENVIRONMENT || 'production';
+  
+  const baseConfig = {
+    region: process.env.AWS_DEFAULT_REGION || 'me-central-1',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    unitId: process.env.ROOMI_UNIT_ID,
+    userId: process.env.ROOMI_USER_ID,
+    timeout: parseInt(process.env.ROOMI_TIMEOUT) || 30000,
+    retries: parseInt(process.env.ROOMI_RETRIES) || 3,
+    debug: process.env.ROOMI_DEBUG === 'true',
+    logLevel: process.env.ROOMI_LOG_LEVEL || 'info'
+  };
+
+  switch (environment) {
+    case 'development':
+      return {
+        ...baseConfig,
+        baseUrl: 'http://localhost:3000',
+        debug: true,
+        logLevel: 'debug'
+      };
+    case 'staging':
+      return {
+        ...baseConfig,
+        baseUrl: process.env.ROOMI_AUTH_URL || 'https://auth-staging-ae.roomi-services.com',
+        debug: true
+      };
+    case 'production':
+    default:
+      return {
+        ...baseConfig,
+        baseUrl: process.env.ROOMI_AUTH_URL || 'https://auth-prod-ae.roomi-services.com',
+        debug: false
+      };
+  }
+};
+
+const roomi = new RoomiSDK(getConfig());
+```
+
+## Configuration Validation
+
+### TypeScript Configuration Interface
+
+```typescript
+interface RoomiConfig {
+  region: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  unitId: string;
+  userId: string;
+  baseUrl?: string;
+  timeout?: number;
+  retries?: number;
+  debug?: boolean;
+  logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  httpClient?: any;
+  logger?: {
+    debug: (message: string) => void;
+    info: (message: string) => void;
+    warn: (message: string) => void;
+    error: (message: string) => void;
+  };
+}
+
+const config: RoomiConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  unitId: process.env.ROOMI_UNIT_ID!,
+  userId: process.env.ROOMI_USER_ID!
+};
+
+const roomi = new RoomiSDK(config);
+```
+
+## Best Practices
+
+1. **Environment Variables**: Use environment variables for sensitive configuration
+2. **Type Safety**: Use TypeScript for better type safety and IDE support
+3. **Validation**: Validate configuration before initializing the SDK
+4. **Logging**: Configure appropriate logging levels for different environments
+5. **Retry Logic**: Implement proper retry logic for production environments
+6. **Security**: Never commit sensitive credentials to version control
+
+## Next Steps
+
+- [Authentication](/authentication) - Set up authentication
+- [Quick Start Guide](/quickstart) - Build your first integration
+- [API Reference](/api-reference/auth/introduction) - Explore the API documentation 

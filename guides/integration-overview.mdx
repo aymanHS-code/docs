@@ -1,0 +1,718 @@
+---
+title: "Integration Overview"
+description: "Understand the overall integration architecture and flow for Roomi SDK"
+---
+
+## Overview
+
+The Roomi SDK provides a comprehensive solution for integrating AI-powered smart home functionality into your applications. This guide explains the overall architecture, integration patterns, and best practices for building robust smart home applications.
+
+## Architecture Overview
+
+The Roomi SDK consists of four main service modules that work together to provide a complete smart home solution:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Authentication │    │   AI Assistant  │    │ Device Management│    │ Services Platform│
+│      Service     │    │     Service     │    │     Service     │    │     Service     │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │                       │
+         │                       │                       │                       │
+         ▼                       ▼                       ▼                       ▼
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    Roomi SDK                                            │
+│                                                                                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
+│  │    Auth     │  │     AI      │  │   Devices   │  │   Services  │  │   Common    │  │
+│  │   Module    │  │   Module    │  │   Module    │  │   Module    │  │   Utils     │  │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+## Service Modules
+
+### 1. Authentication Service
+
+**Purpose**: User authentication, authorization, and session management
+
+**Key Features**:
+- OTP-based phone verification
+- UAE Pass integration
+- User registration and management
+- JWT token generation
+- LiveKit token generation for video calls
+
+**Base URL**: `https://auth-{env}-ae.roomi-services.com`
+
+### 2. AI Assistant Service
+
+**Purpose**: Natural language processing and intelligent automation
+
+**Key Features**:
+- Natural language command processing
+- Context-aware conversations
+- Background task management
+- Voice synthesis integration
+- Query type classification
+
+**Base URL**: `https://ai-{env}-ae.roomi-services.com`
+
+### 3. Device Management Service
+
+**Purpose**: Smart home device control and organization
+
+**Key Features**:
+- Device discovery and status monitoring
+- Device control and automation
+- Room and floor management
+- Device grouping and organization
+- Real-time device messaging
+
+**Base URL**: `https://devices-{env}-ae.roomi-services.com`
+
+### 4. Services Platform
+
+**Purpose**: Community and facility management services
+
+**Key Features**:
+- Event management
+- Complaint and maintenance tickets
+- Payment processing
+- Facility booking
+- Routine management
+- Email services
+
+**Base URL**: `https://services-{env}-ae.roomi-services.com`
+
+## Integration Patterns
+
+### Pattern 1: Basic Integration
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+// Initialize SDK with basic configuration
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID
+});
+
+// Use services directly
+const devices = await roomi.devices.getAllDevices();
+const aiResponse = await roomi.ai.processMessage({ /* ... */ });
+```
+
+### Pattern 2: Service-Specific Configuration
+
+```javascript
+// Configure different services with specific settings
+const authService = new RoomiSDK({
+  ...baseConfig,
+  baseUrl: 'https://auth-prod-ae.roomi-services.com',
+  timeout: 30000
+});
+
+const aiService = new RoomiSDK({
+  ...baseConfig,
+  baseUrl: 'https://ai-prod-ae.roomi-services.com',
+  timeout: 60000 // Longer timeout for AI processing
+});
+
+const devicesService = new RoomiSDK({
+  ...baseConfig,
+  baseUrl: 'https://devices-prod-ae.roomi-services.com',
+  retries: 5 // More retries for device operations
+});
+```
+
+### Pattern 3: Modular Integration
+
+```javascript
+class SmartHomeManager {
+  constructor(config) {
+    this.auth = new RoomiSDK({ ...config, service: 'auth' });
+    this.ai = new RoomiSDK({ ...config, service: 'ai' });
+    this.devices = new RoomiSDK({ ...config, service: 'devices' });
+    this.services = new RoomiSDK({ ...config, service: 'services' });
+  }
+
+  async authenticateUser(phone) {
+    return await this.auth.sendOTP({ phone });
+  }
+
+  async processCommand(command) {
+    return await this.ai.processMessage({ transcript: command });
+  }
+
+  async controlDevice(deviceId, action) {
+    return await this.devices.controlDevices({
+      devices: [{ deviceId, ...action }]
+    });
+  }
+}
+```
+
+## Authentication Flow
+
+### 1. Initial Setup
+
+```javascript
+// Configure AWS credentials and Roomi identifiers
+const config = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: 'unit-12345',
+  userId: 'user-67890'
+};
+```
+
+### 2. User Authentication
+
+```javascript
+// Step 1: Send OTP
+const otpResponse = await roomi.auth.sendOTP({
+  phone: '+971501234567',
+  unit_id: 'unit-123'
+});
+
+// Step 2: Validate OTP
+const authResponse = await roomi.auth.validateOTP({
+  phone: '+971501234567',
+  otp: '123456',
+  pin: otpResponse.pinId
+});
+
+// Step 3: Use JWT token for subsequent requests
+const userToken = authResponse.token;
+```
+
+### 3. Session Management
+
+```javascript
+// Store token securely
+localStorage.setItem('roomi_token', userToken);
+
+// Use token for authenticated requests
+const user = await roomi.auth.getCurrentUser({
+  headers: { Authorization: `Bearer ${userToken}` }
+});
+```
+
+## Device Control Flow
+
+### 1. Device Discovery
+
+```javascript
+// Get all devices in the unit
+const devices = await roomi.devices.getAllDevices();
+
+// Get devices by room
+const rooms = await roomi.devices.getAllRooms();
+```
+
+### 2. Device Control
+
+```javascript
+// Control single device
+await roomi.devices.controlDevices({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  data: {
+    devices: [
+      {
+        deviceId: 'device-456',
+        targetValue: '100',
+        actionType: 'set_brightness',
+        actionId: 1
+      }
+    ]
+  }
+});
+
+// Bulk device control
+await roomi.devices.controlDevices({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  data: {
+    devices: [
+      { deviceId: 'light-1', targetValue: 'true', actionType: 'turn_on' },
+      { deviceId: 'light-2', targetValue: 'true', actionType: 'turn_on' },
+      { deviceId: 'thermostat-1', targetValue: '22', actionType: 'set_temperature' }
+    ]
+  }
+});
+```
+
+### 3. Room Management
+
+```javascript
+// Create a new room
+const newRoom = await roomi.devices.createRoom({
+  roomName: 'Home Office',
+  roomFloor: 'First Floor',
+  deviceMes: ['device-789', 'device-101']
+});
+
+// Move devices between rooms
+await roomi.devices.moveDevicesToRoom({
+  deviceIds: ['device-123', 'device-456'],
+  roomId: 'LIVINGROOM'
+});
+```
+
+## AI Assistant Integration
+
+### 1. Natural Language Processing
+
+```javascript
+// Process voice or text commands
+const response = await roomi.ai.processMessage({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  unit_name: 'Apartment 101',
+  transcript: 'Turn on the living room lights and set temperature to 22 degrees'
+});
+
+console.log('AI Response:', response.response);
+console.log('Query Types:', response.query_types);
+```
+
+### 2. Context Management
+
+```javascript
+// Maintain conversation context
+const threadId = 'e0f5308e-0bd9-4dc9-b55d-5c74798283bf';
+
+const response1 = await roomi.ai.processMessage({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  unit_name: 'Apartment 101',
+  transcript: 'What devices are in the living room?',
+  thread_id: threadId
+});
+
+const response2 = await roomi.ai.processMessage({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  unit_name: 'Apartment 101',
+  transcript: 'Turn them all on',
+  thread_id: threadId // Same thread for context
+});
+```
+
+### 3. Background Task Monitoring
+
+```javascript
+// Monitor long-running tasks
+const taskId = 'task-123';
+
+const checkTaskStatus = async () => {
+  const status = await roomi.ai.getTaskStatus(taskId);
+  
+  switch (status.status) {
+    case 'completed':
+      console.log('Task completed:', status.message);
+      break;
+    case 'running':
+      console.log('Task still running...');
+      setTimeout(checkTaskStatus, 5000); // Check again in 5 seconds
+      break;
+    case 'failed':
+      console.error('Task failed:', status.error);
+      break;
+  }
+};
+
+checkTaskStatus();
+```
+
+## Services Platform Integration
+
+### 1. Facility Booking
+
+```javascript
+// Get available facilities
+const facilities = await roomi.services.facilities.getAllFacilities();
+
+// Book a facility
+const booking = await roomi.services.facilities.book({
+  facilityId: 'facility-123',
+  slotId: 'slot-456',
+  unitId: 'unit-789'
+});
+
+// Get user's bookings
+const userBookings = await roomi.services.facilities.getBookingsByUnit();
+```
+
+### 2. Payment Processing
+
+```javascript
+// Get available payment services
+const services = await roomi.services.payments.getServices();
+
+// Add payment card
+const card = await roomi.services.payments.addCard({
+  cardNumber: '4111111111111111',
+  expiryDate: '12/25',
+  cvv: '123',
+  cardHolderName: 'John Doe'
+});
+
+// Process bill payment
+const payment = await roomi.services.payments.checkoutBill({
+  billId: 'bill-123',
+  cardId: 'card-456',
+  amount: 150.50
+});
+```
+
+### 3. Complaint Management
+
+```javascript
+// Get complaint categories
+const lookups = await roomi.services.complaints.getLookups();
+
+// Create complaint
+const complaint = await roomi.services.complaints.create({
+  typeId: 'type-1',
+  comments: 'Water leak in bathroom'
+});
+
+// Update complaint
+await roomi.services.complaints.update({
+  caseNumber: 'CASE-123456',
+  comments: 'Issue has been resolved',
+  attachmentBase64: 'base64encodedimage...'
+});
+```
+
+## Error Handling Strategy
+
+### 1. Global Error Handler
+
+```javascript
+class RoomiErrorHandler {
+  static async handle(apiCall, ...args) {
+    try {
+      return await apiCall(...args);
+    } catch (error) {
+      this.logError(error);
+      this.handleSpecificError(error);
+      throw error;
+    }
+  }
+
+  static logError(error) {
+    console.error('Roomi API Error:', {
+      message: error.message,
+      status: error.status,
+      endpoint: error.config?.url,
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  static handleSpecificError(error) {
+    switch (error.status) {
+      case 401:
+        this.handleAuthenticationError(error);
+        break;
+      case 429:
+        this.handleRateLimitError(error);
+        break;
+      case 500:
+        this.handleServerError(error);
+        break;
+      default:
+        this.handleGenericError(error);
+    }
+  }
+
+  static handleAuthenticationError(error) {
+    // Redirect to login or refresh token
+    console.error('Authentication failed - redirecting to login');
+  }
+
+  static handleRateLimitError(error) {
+    // Implement exponential backoff
+    console.error('Rate limit exceeded - implementing backoff');
+  }
+
+  static handleServerError(error) {
+    // Retry with exponential backoff
+    console.error('Server error - retrying with backoff');
+  }
+}
+```
+
+### 2. Retry Logic
+
+```javascript
+const retryWithBackoff = async (apiCall, maxRetries = 3) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await apiCall();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      
+      if (error.status === 429 || error.status >= 500) {
+        const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      
+      throw error; // Don't retry for client errors
+    }
+  }
+};
+```
+
+## Performance Optimization
+
+### 1. Connection Pooling
+
+```javascript
+class RoomiConnectionPool {
+  constructor() {
+    this.connections = new Map();
+  }
+
+  getConnection(service) {
+    if (!this.connections.has(service)) {
+      this.connections.set(service, new RoomiSDK({
+        region: 'me-central-1',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        unitId: process.env.ROOMI_UNIT_ID,
+        userId: process.env.ROOMI_USER_ID,
+        baseUrl: this.getServiceUrl(service)
+      }));
+    }
+    return this.connections.get(service);
+  }
+
+  getServiceUrl(service) {
+    const urls = {
+      auth: 'https://auth-prod-ae.roomi-services.com',
+      ai: 'https://ai-prod-ae.roomi-services.com',
+      devices: 'https://devices-prod-ae.roomi-services.com',
+      services: 'https://services-prod-ae.roomi-services.com'
+    };
+    return urls[service];
+  }
+}
+```
+
+### 2. Caching Strategy
+
+```javascript
+class RoomiCache {
+  constructor() {
+    this.cache = new Map();
+    this.ttl = new Map();
+  }
+
+  set(key, value, ttlMs = 300000) { // 5 minutes default
+    this.cache.set(key, value);
+    this.ttl.set(key, Date.now() + ttlMs);
+  }
+
+  get(key) {
+    if (!this.cache.has(key)) return null;
+    
+    if (Date.now() > this.ttl.get(key)) {
+      this.cache.delete(key);
+      this.ttl.delete(key);
+      return null;
+    }
+    
+    return this.cache.get(key);
+  }
+
+  async getOrSet(key, fetchFunction, ttlMs = 300000) {
+    const cached = this.get(key);
+    if (cached) return cached;
+    
+    const fresh = await fetchFunction();
+    this.set(key, fresh, ttlMs);
+    return fresh;
+  }
+}
+```
+
+## Security Best Practices
+
+### 1. Credential Management
+
+```javascript
+// Use environment variables for sensitive data
+const config = {
+  region: process.env.ROOMI_REGION || 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID
+};
+
+// Validate configuration
+if (!config.accessKeyId || !config.secretAccessKey) {
+  throw new Error('AWS credentials are required');
+}
+```
+
+### 2. Input Validation
+
+```javascript
+const validatePhoneNumber = (phone) => {
+  const phoneRegex = /^\+[1-9]\d{1,14}$/;
+  if (!phoneRegex.test(phone)) {
+    throw new Error('Invalid phone number format');
+  }
+  return phone;
+};
+
+const validateDeviceId = (deviceId) => {
+  if (!deviceId || typeof deviceId !== 'string') {
+    throw new Error('Valid device ID is required');
+  }
+  return deviceId;
+};
+```
+
+## Testing Strategy
+
+### 1. Unit Testing
+
+```javascript
+import { jest } from '@jest/globals';
+import { RoomiSDK } from '@roomi/sdk';
+
+describe('RoomiSDK', () => {
+  let roomi;
+
+  beforeEach(() => {
+    roomi = new RoomiSDK({
+      region: 'me-central-1',
+      accessKeyId: 'test-key',
+      secretAccessKey: 'test-secret',
+      unitId: 'test-unit',
+      userId: 'test-user'
+    });
+  });
+
+  test('should initialize with correct configuration', () => {
+    expect(roomi.config.region).toBe('me-central-1');
+    expect(roomi.config.unitId).toBe('test-unit');
+  });
+
+  test('should handle authentication errors', async () => {
+    // Mock failed authentication
+    jest.spyOn(roomi.auth, 'sendOTP').mockRejectedValue({
+      status: 401,
+      message: 'Unauthorized'
+    });
+
+    await expect(roomi.auth.sendOTP({ phone: '+1234567890' }))
+      .rejects.toThrow('Unauthorized');
+  });
+});
+```
+
+### 2. Integration Testing
+
+```javascript
+describe('RoomiSDK Integration', () => {
+  test('should complete full user flow', async () => {
+    const roomi = new RoomiSDK(testConfig);
+    
+    // Test authentication
+    const otpResponse = await roomi.auth.sendOTP({
+      phone: testPhone,
+      unit_id: testUnitId
+    });
+    expect(otpResponse.pinId).toBeDefined();
+    
+    // Test device discovery
+    const devices = await roomi.devices.getAllDevices();
+    expect(Array.isArray(devices)).toBe(true);
+    
+    // Test AI processing
+    const aiResponse = await roomi.ai.processMessage({
+      user_id: testUserId,
+      unit_id: testUnitId,
+      unit_name: 'Test Unit',
+      transcript: 'Hello'
+    });
+    expect(aiResponse.response).toBeDefined();
+  });
+});
+```
+
+## Deployment Considerations
+
+### 1. Environment Configuration
+
+```javascript
+const getEnvironmentConfig = () => {
+  const env = process.env.NODE_ENV || 'development';
+  
+  const configs = {
+    development: {
+      baseUrl: 'http://localhost:3000',
+      debug: true,
+      timeout: 60000
+    },
+    staging: {
+      baseUrl: 'https://auth-staging-ae.roomi-services.com',
+      debug: true,
+      timeout: 30000
+    },
+    production: {
+      baseUrl: 'https://auth-prod-ae.roomi-services.com',
+      debug: false,
+      timeout: 30000
+    }
+  };
+  
+  return configs[env];
+};
+```
+
+### 2. Monitoring and Logging
+
+```javascript
+class RoomiLogger {
+  static log(level, message, data = {}) {
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      level,
+      message,
+      service: 'roomi-sdk',
+      ...data
+    };
+    
+    if (process.env.NODE_ENV === 'production') {
+      // Send to monitoring service
+      this.sendToMonitoring(logEntry);
+    } else {
+      console.log(JSON.stringify(logEntry, null, 2));
+    }
+  }
+  
+  static sendToMonitoring(logEntry) {
+    // Implementation for production monitoring
+  }
+}
+```
+
+## Next Steps
+
+- [Authentication Setup](/guides/authentication-setup) - Detailed authentication configuration
+- [Device Integration](/guides/device-integration) - Smart home device integration
+- [AI Assistant Setup](/guides/ai-assistant-setup) - AI assistant configuration
+- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies
+- [Security](/guides/security) - Security best practices and implementation 

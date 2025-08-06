@@ -1,0 +1,297 @@
+---
+title: "Device Management API"
+description: "Complete API reference for Roomi Device Management and Room Organization"
+---
+
+## Overview
+
+The Roomi Device Management API provides comprehensive control over smart home devices, room organization, and device automation. This API enables device discovery, control, room management, and device status monitoring.
+
+## Base URL
+
+```
+https://devices-{env}-ae.roomi-services.com
+```
+
+## Authentication
+
+All API endpoints require AWS Signature Version 4 (SigV4) authentication with the following headers:
+
+```http
+Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
+X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
+X-Amz-Date: 20240115T120000Z
+x-unit-id: unit-12345
+x-user-id: user-67890
+```
+
+## API Endpoints
+
+### Health Check
+
+<Endpoint method="GET" path="/api/health" />
+
+Check if the device management API server is running and responsive.
+
+### Device Management
+
+<Endpoint method="GET" path="/api/devices" />
+
+Get all devices for a specific unit with their status and details.
+
+<Endpoint method="POST" path="/api/devices" />
+
+Update device settings and control states for multiple devices.
+
+<Endpoint method="GET" path="/api/devices/{me}" />
+
+Get a specific device by its ME identifier.
+
+<Endpoint method="GET" path="/api/devices/messages/unit" />
+
+Get device messages and notifications for a specific unit.
+
+### Room Management
+
+<Endpoint method="GET" path="/api/rooms" />
+
+Get all rooms with their associated device information.
+
+<Endpoint method="POST" path="/api/rooms" />
+
+Create a new room with specified name, floor, and device assignments.
+
+<Endpoint method="GET" path="/api/rooms/{roomId}" />
+
+Get a specific room with detailed device information.
+
+<Endpoint method="PUT" path="/api/rooms/{roomId}" />
+
+Update room information including name, floor, and device assignments.
+
+<Endpoint method="DELETE" path="/api/rooms/{roomId}" />
+
+Delete a room and move all its devices to 'Unassigned Devices'.
+
+<Endpoint method="PATCH" path="/api/rooms/{roomId}/floor" />
+
+Update the floor assignment for a specific room.
+
+<Endpoint method="POST" path="/api/rooms/move" />
+
+Move multiple devices to a specific room.
+
+### Floor Management
+
+<Endpoint method="GET" path="/api/floors" />
+
+Get all unique floor names from all rooms in the unit.
+
+<Endpoint method="PUT" path="/api/floors/{floorName}" />
+
+Update floor name across all rooms that have the specified floor name.
+
+## Device Types
+
+The API supports various smart home device types:
+
+| Device Type | Description | Supported Actions |
+|-------------|-------------|-------------------|
+| `light` | Smart lighting devices | Turn on/off, dim, color change |
+| `switch` | Smart switches and outlets | Turn on/off |
+| `thermostat` | Temperature control devices | Set temperature, mode, fan |
+| `sensor` | Environmental sensors | Read temperature, humidity, motion |
+| `camera` | Security cameras | View feed, record, motion detection |
+| `lock` | Smart locks | Lock/unlock, status check |
+| `fan` | Smart fans | Speed control, oscillation |
+| `blinds` | Smart blinds and curtains | Open/close, position control |
+
+## Device Status
+
+Devices can have the following status values:
+
+| Status | Description |
+|--------|-------------|
+| `online` | Device is connected and responsive |
+| `offline` | Device is disconnected or unreachable |
+| `error` | Device has encountered an error |
+| `updating` | Device is currently updating |
+| `pairing` | Device is in pairing mode |
+
+## Room Organization
+
+### Room Structure
+
+```json
+{
+  "roomId": "LIVINGROOM",
+  "roomName": "Living Room",
+  "roomFloor": "Ground Floor",
+  "deviceMes": ["device-123", "device-456"],
+  "devices": [
+    {
+      "me": "device-123",
+      "name": "Living Room Light"
+    },
+    {
+      "me": "device-456",
+      "name": "Living Room Fan"
+    }
+  ]
+}
+```
+
+### Floor Management
+
+Floors are automatically managed based on room assignments:
+
+- **Automatic Detection**: Floors are detected from room assignments
+- **Bulk Updates**: Update floor names across multiple rooms
+- **Validation**: Ensure floor names are consistent
+
+## Device Control
+
+### Control Actions
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "deviceId": "device-456",
+        "targetValue": "100",
+        "actionType": "set_brightness",
+        "actionId": 1
+      }
+    ]
+  }
+}
+```
+
+### Supported Action Types
+
+| Action Type | Description | Target Value Format |
+|-------------|-------------|-------------------|
+| `turn_on` | Turn device on | `"true"` or `"false"` |
+| `turn_off` | Turn device off | `"true"` or `"false"` |
+| `set_brightness` | Set brightness level | `"0-100"` |
+| `set_temperature` | Set temperature | `"18-30"` |
+| `set_color` | Set color | `"#RRGGBB"` |
+| `set_speed` | Set fan speed | `"1-5"` |
+
+## SDK Integration
+
+### JavaScript/TypeScript
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: 'unit-12345',
+  userId: 'user-67890'
+});
+
+// Get all devices
+const devices = await roomi.devices.getAllDevices();
+
+// Control devices
+await roomi.devices.controlDevices({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  data: {
+    devices: [
+      {
+        deviceId: 'device-456',
+        targetValue: '100',
+        actionType: 'set_brightness',
+        actionId: 1
+      }
+    ]
+  }
+});
+
+// Get rooms
+const rooms = await roomi.devices.getAllRooms();
+```
+
+### Python
+
+```python
+from roomi_sdk import RoomiSDK
+
+roomi = RoomiSDK(
+    region='me-central-1',
+    access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    unit_id='unit-12345',
+    user_id='user-67890'
+)
+
+# Get all devices
+devices = await roomi.devices.get_all_devices()
+
+# Control devices
+await roomi.devices.control_devices(
+    user_id='user-123',
+    unit_id='unit-456',
+    data={
+        'devices': [
+            {
+                'deviceId': 'device-456',
+                'targetValue': '100',
+                'actionType': 'set_brightness',
+                'actionId': 1
+            }
+        ]
+    }
+)
+
+# Get rooms
+rooms = await roomi.devices.get_all_rooms()
+```
+
+## Error Handling
+
+### Common Error Responses
+
+| Error Code | Description | Solution |
+|------------|-------------|----------|
+| `400` | Bad Request | Check request format and required headers |
+| `401` | Unauthorized | Verify AWS credentials and signature |
+| `404` | Device/Room Not Found | Verify device/room identifiers |
+| `500` | Internal Server Error | Contact support if persistent |
+
+### Error Response Format
+
+```json
+{
+  "error": "Error message describing what went wrong"
+}
+```
+
+## Rate Limiting
+
+The device management API implements rate limiting:
+
+- **Device Operations**: 100 operations per minute per unit
+- **Room Operations**: 50 operations per minute per unit
+- **Status Checks**: 1000 requests per minute per unit
+
+## Best Practices
+
+1. **Device Discovery**: Regularly refresh device lists to detect new devices
+2. **Status Monitoring**: Monitor device status for offline/unresponsive devices
+3. **Room Organization**: Use consistent room naming conventions
+4. **Bulk Operations**: Use bulk device control for multiple devices
+5. **Error Handling**: Implement proper error handling for device failures
+
+## Next Steps
+
+- [Device Management](/api-reference/devices/device-management) - Detailed device control API documentation
+- [Room Management](/api-reference/devices/room-management) - Room organization and management
+- [Integration Guide](/guides/device-integration) - Set up device integration 

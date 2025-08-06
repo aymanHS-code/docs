@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Roomi SDK Documentation",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -11,58 +11,96 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Getting Started",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Introduction",
             "pages": [
               "index",
               "quickstart",
+              "authentication"
+            ]
+          },
+          {
+            "group": "SDK Setup",
+            "pages": [
+              "installation",
+              "configuration",
               "development"
-            ]
-          },
-          {
-            "group": "Customization",
-            "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Authentication & Users",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/auth/introduction",
+              "api-reference/auth/authentication",
+              "api-reference/auth/user-management",
+              "api-reference/auth/onboarding"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "AI Assistant",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/ai/introduction",
+              "api-reference/ai/assistant",
+              "api-reference/ai/tasks"
+            ]
+          },
+          {
+            "group": "Device Management",
+            "pages": [
+              "api-reference/devices/introduction",
+              "api-reference/devices/device-management",
+              "api-reference/devices/room-management"
+            ]
+          },
+          {
+            "group": "Services",
+            "pages": [
+              "api-reference/services/introduction",
+              "api-reference/services/events",
+              "api-reference/services/complaints",
+              "api-reference/services/payments",
+              "api-reference/services/facilities",
+              "api-reference/services/routines",
+              "api-reference/services/email"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Guides",
+        "groups": [
+          {
+            "group": "Integration",
+            "pages": [
+              "guides/integration-overview",
+              "guides/authentication-setup",
+              "guides/device-integration",
+              "guides/ai-assistant-setup"
+            ]
+          },
+          {
+            "group": "Best Practices",
+            "pages": [
+              "guides/error-handling",
+              "guides/rate-limiting",
+              "guides/security",
+              "guides/testing"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "guides/examples/authentication",
+              "guides/examples/device-control",
+              "guides/examples/ai-assistant",
+              "guides/examples/payment-processing"
             ]
           }
         ]
@@ -72,17 +110,17 @@
       "anchors": [
         {
           "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "href": "https://docs.roomi.ai",
           "icon": "book-open-cover"
         },
         {
           "anchor": "Community",
-          "href": "https://mintlify.com/community",
+          "href": "https://community.roomi.ai",
           "icon": "slack"
         },
         {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://blog.roomi.ai",
           "icon": "newspaper"
         }
       ]

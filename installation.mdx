@@ -1,0 +1,307 @@
+---
+title: "Installation"
+description: "Install and set up the Roomi SDK in your project"
+---
+
+## Overview
+
+The Roomi SDK is available for multiple platforms and can be installed using various package managers. This guide will help you install the SDK and get started with your first integration.
+
+## Prerequisites
+
+Before installing the Roomi SDK, ensure you have:
+
+- **Node.js** (v16 or higher) for JavaScript/TypeScript projects
+- **Python** (v3.8 or higher) for Python projects
+- **AWS Credentials** configured for authentication
+- **Roomi Account** with API access
+
+## JavaScript/TypeScript Installation
+
+### Using npm
+
+```bash
+npm install @roomi/sdk
+```
+
+### Using yarn
+
+```bash
+yarn add @roomi/sdk
+```
+
+### Using pnpm
+
+```bash
+pnpm add @roomi/sdk
+```
+
+### Basic Setup
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: 'unit-12345',
+  userId: 'user-67890'
+});
+```
+
+## Python Installation
+
+### Using pip
+
+```bash
+pip install roomi-sdk
+```
+
+### Using uv (Recommended)
+
+```bash
+uv add roomi-sdk
+```
+
+### Basic Setup
+
+```python
+from roomi_sdk import RoomiSDK
+import os
+
+roomi = RoomiSDK(
+    region='me-central-1',
+    access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    unit_id='unit-12345',
+    user_id='user-67890'
+)
+```
+
+## React Native Installation
+
+### Using npm
+
+```bash
+npm install @roomi/sdk-react-native
+```
+
+### Using yarn
+
+```bash
+yarn add @roomi/sdk-react-native
+```
+
+### Basic Setup
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk-react-native';
+
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: 'unit-12345',
+  userId: 'user-67890'
+});
+```
+
+## Flutter Installation
+
+### Add to pubspec.yaml
+
+```yaml
+dependencies:
+  roomi_sdk: ^1.0.0
+```
+
+### Install dependencies
+
+```bash
+flutter pub get
+```
+
+### Basic Setup
+
+```dart
+import 'package:roomi_sdk/roomi_sdk.dart';
+
+final roomi = RoomiSDK(
+  region: 'me-central-1',
+  accessKeyId: 'YOUR_ACCESS_KEY',
+  secretAccessKey: 'YOUR_SECRET_KEY',
+  unitId: 'unit-12345',
+  userId: 'user-67890',
+);
+```
+
+## Environment Configuration
+
+### Environment Variables
+
+Set up your environment variables for secure credential management:
+
+```bash
+# .env file
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+ROOMI_UNIT_ID=unit-12345
+ROOMI_USER_ID=user-67890
+ROOMI_REGION=me-central-1
+```
+
+### AWS Credentials
+
+Configure AWS credentials using one of these methods:
+
+#### AWS CLI Configuration
+
+```bash
+aws configure
+```
+
+#### Environment Variables
+
+```bash
+export AWS_ACCESS_KEY_ID=your_access_key_here
+export AWS_SECRET_ACCESS_KEY=your_secret_key_here
+export AWS_DEFAULT_REGION=me-central-1
+```
+
+#### IAM Role (for AWS services)
+
+If running on AWS infrastructure, use IAM roles for automatic credential management.
+
+## Quick Start Example
+
+### JavaScript/TypeScript
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+// Initialize the SDK
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID
+});
+
+// Test the connection
+async function testConnection() {
+  try {
+    const health = await roomi.auth.health();
+    console.log('Connection successful:', health);
+  } catch (error) {
+    console.error('Connection failed:', error);
+  }
+}
+
+testConnection();
+```
+
+### Python
+
+```python
+from roomi_sdk import RoomiSDK
+import os
+
+# Initialize the SDK
+roomi = RoomiSDK(
+    region='me-central-1',
+    access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    unit_id=os.getenv('ROOMI_UNIT_ID'),
+    user_id=os.getenv('ROOMI_USER_ID')
+)
+
+# Test the connection
+async def test_connection():
+    try:
+        health = await roomi.auth.health()
+        print('Connection successful:', health)
+    except Exception as error:
+        print('Connection failed:', error)
+
+# Run the test
+import asyncio
+asyncio.run(test_connection())
+```
+
+## Development Setup
+
+### Local Development
+
+For local development, you can use the local development server:
+
+```javascript
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID,
+  baseUrl: 'http://localhost:3000' // Local development server
+});
+```
+
+### TypeScript Support
+
+The SDK includes full TypeScript support with type definitions:
+
+```typescript
+import { RoomiSDK, RoomiConfig, User } from '@roomi/sdk';
+
+const config: RoomiConfig = {
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  unitId: process.env.ROOMI_UNIT_ID!,
+  userId: process.env.ROOMI_USER_ID!
+};
+
+const roomi = new RoomiSDK(config);
+```
+
+## Verification
+
+After installation, verify that everything is working correctly:
+
+1. **Check Installation**: Ensure the package is installed correctly
+2. **Test Connection**: Run the health check to verify API connectivity
+3. **Verify Credentials**: Confirm AWS credentials are working properly
+
+### Health Check
+
+```javascript
+// Test API connectivity
+const health = await roomi.auth.health();
+console.log('API Status:', health.status);
+```
+
+## Troubleshooting
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| **Module not found** | Check package installation and import path |
+| **Authentication failed** | Verify AWS credentials and region |
+| **Network errors** | Check internet connection and firewall settings |
+| **TypeScript errors** | Ensure TypeScript version is compatible |
+
+### Getting Help
+
+If you encounter issues during installation:
+
+1. Check the [Troubleshooting Guide](/guides/troubleshooting)
+2. Review [Common Issues](/guides/common-issues)
+3. Contact [Support](mailto:admin@roomi.ai)
+
+## Next Steps
+
+- [Configuration](/configuration) - Configure your SDK settings
+- [Authentication](/authentication) - Set up authentication
+- [Quick Start Guide](/quickstart) - Build your first integration 

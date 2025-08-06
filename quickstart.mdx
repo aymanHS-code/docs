@@ -1,80 +1,375 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: "Quick Start Guide"
+description: "Get up and running with Roomi SDK in minutes"
 ---
 
-## Get started in three steps
+## Overview
 
-Get your documentation site running locally and make your first customization.
+This quick start guide will help you integrate the Roomi SDK into your application in just a few steps. You'll learn how to install the SDK, configure authentication, and make your first API calls.
 
-### Step 1: Set up your local environment
+## Prerequisites
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+Before you begin, ensure you have:
+
+- **Roomi Account**: Access to Roomi services with API credentials
+- **AWS Credentials**: Access key ID and secret access key for authentication
+- **Development Environment**: Node.js (v16+) or Python (v3.8+)
+
+## Step 1: Installation
+
+### JavaScript/TypeScript
+
+```bash
+npm install @roomi/sdk
+```
+
+### Python
+
+```bash
+pip install roomi-sdk
+```
+
+## Step 2: Configuration
+
+Set up your environment variables:
+
+```bash
+# .env file
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+ROOMI_UNIT_ID=unit-12345
+ROOMI_USER_ID=user-67890
+ROOMI_REGION=me-central-1
+```
+
+## Step 3: Initialize the SDK
+
+### JavaScript/TypeScript
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+const roomi = new RoomiSDK({
+  region: 'me-central-1',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  unitId: process.env.ROOMI_UNIT_ID,
+  userId: process.env.ROOMI_USER_ID
+});
+```
+
+### Python
+
+```python
+from roomi_sdk import RoomiSDK
+import os
+
+roomi = RoomiSDK(
+    region='me-central-1',
+    access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    unit_id=os.getenv('ROOMI_UNIT_ID'),
+    user_id=os.getenv('ROOMI_USER_ID')
+)
+```
+
+## Step 4: Test the Connection
+
+Verify that your SDK is properly configured:
+
+```javascript
+// Test authentication service
+async function testConnection() {
+  try {
+    const health = await roomi.auth.health();
+    console.log('✅ Authentication service connected:', health);
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    const devices = await roomi.devices.getAllDevices();
+    console.log('✅ Device service connected:', devices.length, 'devices found');
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    const aiHealth = await roomi.ai.health();
+    console.log('✅ AI service connected:', aiHealth);
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+    const servicesHealth = await roomi.services.health();
+    console.log('✅ Services platform connected:', servicesHealth);
+    
+  } catch (error) {
+    console.error('❌ Connection failed:', error.message);
+  }
+}
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+testConnection();
+```
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
+## Step 5: Your First Integration
 
-### Step 3: Go live
+### Example 1: User Authentication
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+```javascript
+// Send OTP to user's phone
+const otpResponse = await roomi.auth.sendOTP({
+  phone: '+971501234567',
+  unit_id: 'unit-123'
+});
 
-## Next steps
+console.log('OTP sent:', otpResponse.pinId);
 
-Now that you have your docs running, explore these key features:
+// Validate OTP and get user token
+const authResponse = await roomi.auth.validateOTP({
+  phone: '+971501234567',
+  otp: '123456',
+  pin: otpResponse.pinId
+});
 
-<CardGroup cols={2}>
+console.log('User authenticated:', authResponse.user);
+```
 
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
+### Example 2: Device Control
 
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
+```javascript
+// Get all devices in the unit
+const devices = await roomi.devices.getAllDevices();
+console.log('Available devices:', devices);
 
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
+// Control a specific device
+await roomi.devices.controlDevices({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  data: {
+    devices: [
+      {
+        deviceId: 'device-456',
+        targetValue: '100',
+        actionType: 'set_brightness',
+        actionId: 1
+      }
+    ]
+  }
+});
 
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
+console.log('Device controlled successfully');
+```
 
-</CardGroup>
+### Example 3: AI Assistant
 
-<Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
-</Note>
+```javascript
+// Process a natural language command
+const aiResponse = await roomi.ai.processMessage({
+  user_id: 'user-123',
+  unit_id: 'unit-456',
+  unit_name: 'Apartment 101',
+  transcript: 'Turn on the living room lights'
+});
+
+console.log('AI Response:', aiResponse.response);
+console.log('Query Type:', aiResponse.query_type);
+```
+
+### Example 4: Facility Booking
+
+```javascript
+// Get available facilities
+const facilities = await roomi.services.facilities.getAllFacilities();
+console.log('Available facilities:', facilities);
+
+// Book a facility slot
+const booking = await roomi.services.facilities.book({
+  facilityId: 'facility-123',
+  slotId: 'slot-456',
+  unitId: 'unit-789'
+});
+
+console.log('Facility booked:', booking);
+```
+
+## Step 6: Error Handling
+
+Implement proper error handling for production use:
+
+```javascript
+async function safeApiCall(apiFunction, ...args) {
+  try {
+    const result = await apiFunction(...args);
+    return { success: true, data: result };
+  } catch (error) {
+    console.error('API Error:', error.message);
+    
+    // Handle specific error types
+    if (error.status === 401) {
+      console.error('Authentication failed - check credentials');
+    } else if (error.status === 429) {
+      console.error('Rate limit exceeded - implement backoff');
+    } else if (error.status >= 500) {
+      console.error('Server error - retry later');
+    }
+    
+    return { success: false, error: error.message };
+  }
+}
+
+// Usage
+const result = await safeApiCall(roomi.devices.getAllDevices);
+if (result.success) {
+  console.log('Devices:', result.data);
+} else {
+  console.log('Error:', result.error);
+}
+```
+
+## Step 7: Complete Example
+
+Here's a complete example that demonstrates multiple SDK features:
+
+```javascript
+import { RoomiSDK } from '@roomi/sdk';
+
+class RoomiSmartHome {
+  constructor() {
+    this.roomi = new RoomiSDK({
+      region: 'me-central-1',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      unitId: process.env.ROOMI_UNIT_ID,
+      userId: process.env.ROOMI_USER_ID
+    });
+  }
+
+  async initialize() {
+    try {
+      // Test all services
+      await this.roomi.auth.health();
+      await this.roomi.devices.getAllDevices();
+      await this.roomi.ai.health();
+      await this.roomi.services.health();
+      
+      console.log('✅ All services connected successfully');
+      return true;
+    } catch (error) {
+      console.error('❌ Initialization failed:', error.message);
+      return false;
+    }
+  }
+
+  async authenticateUser(phone) {
+    try {
+      // Send OTP
+      const otpResponse = await this.roomi.auth.sendOTP({
+        phone,
+        unit_id: process.env.ROOMI_UNIT_ID
+      });
+
+      // In a real app, you'd prompt the user for OTP
+      const userOTP = '123456'; // This would come from user input
+
+      // Validate OTP
+      const authResponse = await this.roomi.auth.validateOTP({
+        phone,
+        otp: userOTP,
+        pin: otpResponse.pinId
+      });
+
+      console.log('User authenticated:', authResponse.user);
+      return authResponse;
+    } catch (error) {
+      console.error('Authentication failed:', error.message);
+      throw error;
+    }
+  }
+
+  async controlDevices(deviceCommands) {
+    try {
+      await this.roomi.devices.controlDevices({
+        user_id: process.env.ROOMI_USER_ID,
+        unit_id: process.env.ROOMI_UNIT_ID,
+        data: { devices: deviceCommands }
+      });
+
+      console.log('Devices controlled successfully');
+    } catch (error) {
+      console.error('Device control failed:', error.message);
+      throw error;
+    }
+  }
+
+  async processVoiceCommand(transcript) {
+    try {
+      const response = await this.roomi.ai.processMessage({
+        user_id: process.env.ROOMI_USER_ID,
+        unit_id: process.env.ROOMI_UNIT_ID,
+        unit_name: 'Smart Home',
+        transcript
+      });
+
+      console.log('AI Response:', response.response);
+      return response;
+    } catch (error) {
+      console.error('AI processing failed:', error.message);
+      throw error;
+    }
+  }
+
+  async getFacilities() {
+    try {
+      const facilities = await this.roomi.services.facilities.getAllFacilities();
+      console.log('Available facilities:', facilities);
+      return facilities;
+    } catch (error) {
+      console.error('Failed to get facilities:', error.message);
+      throw error;
+    }
+  }
+}
+
+// Usage
+async function main() {
+  const smartHome = new RoomiSmartHome();
+  
+  // Initialize
+  const initialized = await smartHome.initialize();
+  if (!initialized) {
+    console.error('Failed to initialize Roomi SDK');
+    return;
+  }
+
+  // Authenticate user
+  await smartHome.authenticateUser('+971501234567');
+
+  // Control devices
+  await smartHome.controlDevices([
+    {
+      deviceId: 'device-456',
+      targetValue: '100',
+      actionType: 'set_brightness',
+      actionId: 1
+    }
+  ]);
+
+  // Process voice command
+  await smartHome.processVoiceCommand('Turn on the living room lights');
+
+  // Get facilities
+  await smartHome.getFacilities();
+}
+
+main().catch(console.error);
+```
+
+## Next Steps
+
+Now that you have the basics working, explore these advanced topics:
+
+- [Authentication Guide](/authentication) - Learn about different authentication methods
+- [Configuration](/configuration) - Advanced SDK configuration options
+- [API Reference](/api-reference/auth/introduction) - Complete API documentation
+- [Integration Guides](/guides/integration-overview) - Detailed integration tutorials
+- [Best Practices](/guides/error-handling) - Production-ready implementation tips
+
+## Support
+
+If you encounter any issues:
+
+1. Check the [Troubleshooting Guide](/guides/troubleshooting)
+2. Review [Common Issues](/guides/common-issues)
+3. Contact [Support](mailto:admin@roomi.ai)
+
+Welcome to the Roomi SDK! 🚀
