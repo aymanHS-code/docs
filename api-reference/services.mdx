@@ -1,0 +1,944 @@
+---
+title: "Services Platform API"
+description: "Complete API reference for Roomi's Services Platform - third-party integrations and external APIs"
+---
+
+## Overview
+
+The Services Platform handles all third-party integrations and external API communications for the Roomi ecosystem. It provides a unified interface for property developer and user-specific services, including events, complaints, payments, facilities booking, routines, and email services. The platform abstracts away the complexity of different third-party APIs and provides consistent data models.
+
+## Base URL
+
+```
+https://services-{environment}-{region}.roomi-services.com/v1/
+```
+
+## Authentication
+
+All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
+
+```http
+Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
+X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
+X-Amz-Date: 20240115T120000Z
+x-unit-id: unit-12345
+x-user-id: user-67890
+```
+
+## Core Capabilities
+
+### Third-Party Integration
+- **API Abstraction**: Unified interface for multiple third-party services
+- **Data Transformation**: Consistent data models across different providers
+- **Error Handling**: Graceful handling of provider-specific errors
+- **Rate Limiting**: Provider-aware rate limiting and throttling
+
+### Service Categories
+- **Events**: Community events and social activities
+- **Complaints**: Maintenance requests and issue reporting
+- **Payments**: Billing, payments, and financial services
+- **Facilities**: Amenity booking and facility management
+- **Routines**: Automation and scheduled tasks
+- **Email**: Communication and notification services
+
+### Property Developer APIs
+- **Custom Integrations**: Property-specific service integrations
+- **Data Synchronization**: Real-time data sync with property systems
+- **Configuration Management**: Property-specific settings and preferences
+- **Multi-Property Support**: Support for multiple property developments
+
+## API Endpoints
+
+### Health Check
+
+<Endpoint method="GET" path="/health" />
+
+Check the health status of the Services Platform and connected third-party services.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "Services platform is operational",
+  "connected_services": {
+    "events": "connected",
+    "complaints": "connected",
+    "payments": "connected",
+    "facilities": "connected",
+    "routines": "connected",
+    "email": "connected"
+  },
+  "third_party_providers": {
+    "payment_gateway": "stripe",
+    "email_service": "sendgrid",
+    "facility_management": "custom",
+    "event_platform": "custom"
+  },
+  "performance": {
+    "average_response_time": "120ms",
+    "success_rate": "99.8%",
+    "active_integrations": 15
+  },
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+## Events Service
+
+### Get Events
+
+<Endpoint method="GET" path="/events" />
+
+Retrieve community events and activities.
+
+**Query Parameters:**
+- `category`: Filter by event category
+- `start_date`: Filter by start date
+- `end_date`: Filter by end date
+- `location`: Filter by event location
+- `limit`: Number of events to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "events": [
+    {
+      "event_id": "event-123",
+      "title": "Community Pool Party",
+      "description": "Join us for a fun pool party with music and refreshments",
+      "category": "social",
+      "location": "Swimming Pool",
+      "start_date": "2024-01-20T16:00:00Z",
+      "end_date": "2024-01-20T20:00:00Z",
+      "organizer": "Community Manager",
+      "max_participants": 50,
+      "current_participants": 25,
+      "status": "upcoming",
+      "image_url": "https://example.com/pool-party.jpg",
+      "tags": ["pool", "social", "community"]
+    }
+  ],
+  "total_count": 15,
+  "has_more": true
+}
+```
+
+### Create Event
+
+<Endpoint method="POST" path="/events" />
+
+Create a new community event.
+
+**Request Body:**
+```json
+{
+  "title": "Yoga Class",
+  "description": "Morning yoga session for residents",
+  "category": "fitness",
+  "location": "Gym",
+  "start_date": "2024-01-22T07:00:00Z",
+  "end_date": "2024-01-22T08:00:00Z",
+  "max_participants": 20,
+  "organizer": "user-123",
+  "tags": ["yoga", "fitness", "morning"]
+}
+```
+
+### RSVP to Event
+
+<Endpoint method="POST" path="/events/{event_id}/rsvp" />
+
+RSVP to a community event.
+
+**Request Body:**
+```json
+{
+  "user_id": "user-123",
+  "response": "attending",
+  "guests": 2
+}
+```
+
+## Complaints Service
+
+### Get Complaints
+
+<Endpoint method="GET" path="/complaints" />
+
+Retrieve maintenance requests and complaints.
+
+**Query Parameters:**
+- `status`: Filter by complaint status
+- `priority`: Filter by priority level
+- `category`: Filter by complaint category
+- `start_date`: Filter by creation date
+- `limit`: Number of complaints to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "complaints": [
+    {
+      "complaint_id": "complaint-123",
+      "title": "Leaking Faucet",
+      "description": "Kitchen faucet is leaking water",
+      "category": "plumbing",
+      "priority": "medium",
+      "status": "in_progress",
+      "reported_by": "user-123",
+      "unit_id": "unit-456",
+      "location": "Kitchen",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-01-15T14:30:00Z",
+      "assigned_to": "maintenance-team",
+      "estimated_completion": "2024-01-17T10:00:00Z"
+    }
+  ],
+  "total_count": 25,
+  "has_more": false
+}
+```
+
+### Create Complaint
+
+<Endpoint method="POST" path="/complaints" />
+
+Submit a new maintenance request or complaint.
+
+**Request Body:**
+```json
+{
+  "title": "Broken Light Switch",
+  "description": "Light switch in living room is not working",
+  "category": "electrical",
+  "priority": "high",
+  "location": "Living Room",
+  "unit_id": "unit-456",
+  "reported_by": "user-123",
+  "contact_preference": "email"
+}
+```
+
+### Update Complaint Status
+
+<Endpoint method="PUT" path="/complaints/{complaint_id}/status" />
+
+Update the status of a complaint.
+
+**Request Body:**
+```json
+{
+  "status": "completed",
+  "notes": "Light switch replaced successfully",
+  "completed_by": "maintenance-team",
+  "completion_date": "2024-01-16T10:00:00Z"
+}
+```
+
+## Payments Service
+
+### Get Bills
+
+<Endpoint method="GET" path="/payments/bills" />
+
+Retrieve billing information and invoices.
+
+**Query Parameters:**
+- `status`: Filter by bill status (paid, unpaid, overdue)
+- `start_date`: Filter by bill date
+- `end_date`: Filter by bill date
+- `limit`: Number of bills to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "bills": [
+    {
+      "bill_id": "bill-123",
+      "bill_number": "INV-2024-001",
+      "type": "rent",
+      "amount": 5000.00,
+      "currency": "AED",
+      "due_date": "2024-01-31T23:59:59Z",
+      "status": "unpaid",
+      "unit_id": "unit-456",
+      "user_id": "user-123",
+      "issued_date": "2024-01-01T00:00:00Z",
+      "description": "Monthly rent for January 2024",
+      "breakdown": {
+        "rent": 4500.00,
+        "utilities": 300.00,
+        "maintenance": 200.00
+      }
+    }
+  ],
+  "total_count": 12,
+  "has_more": false
+}
+```
+
+### Process Payment
+
+<Endpoint method="POST" path="/payments/process" />
+
+Process a payment for a bill.
+
+**Request Body:**
+```json
+{
+  "bill_id": "bill-123",
+  "amount": 5000.00,
+  "payment_method": "credit_card",
+  "payment_details": {
+    "card_token": "tok_visa",
+    "save_card": true
+  },
+  "user_id": "user-123"
+}
+```
+
+**Response:**
+```json
+{
+  "payment_id": "payment-123",
+  "status": "completed",
+  "transaction_id": "txn_123456789",
+  "amount": 5000.00,
+  "currency": "AED",
+  "payment_method": "credit_card",
+  "processed_at": "2024-01-15T10:00:00Z",
+  "receipt_url": "https://example.com/receipt/payment-123"
+}
+```
+
+### Get Payment History
+
+<Endpoint method="GET" path="/payments/history" />
+
+Retrieve payment history for a user.
+
+**Response:**
+```json
+{
+  "payments": [
+    {
+      "payment_id": "payment-123",
+      "bill_id": "bill-123",
+      "amount": 5000.00,
+      "currency": "AED",
+      "status": "completed",
+      "payment_method": "credit_card",
+      "processed_at": "2024-01-15T10:00:00Z",
+      "transaction_id": "txn_123456789"
+    }
+  ],
+  "total_count": 25,
+  "has_more": false
+}
+```
+
+## Facilities Service
+
+### Get Facilities
+
+<Endpoint method="GET" path="/facilities" />
+
+Retrieve available facilities and amenities.
+
+**Response:**
+```json
+{
+  "facilities": [
+    {
+      "facility_id": "facility-123",
+      "name": "Swimming Pool",
+      "description": "Olympic-sized swimming pool with heating",
+      "category": "recreation",
+      "location": "Ground Floor",
+      "capacity": 50,
+      "operating_hours": {
+        "monday": "06:00-22:00",
+        "tuesday": "06:00-22:00",
+        "wednesday": "06:00-22:00",
+        "thursday": "06:00-22:00",
+        "friday": "06:00-22:00",
+        "saturday": "08:00-20:00",
+        "sunday": "08:00-20:00"
+      },
+      "status": "available",
+      "image_url": "https://example.com/pool.jpg",
+      "amenities": ["towels", "changing_rooms", "shower"]
+    }
+  ],
+  "total_count": 8
+}
+```
+
+### Get Facility Availability
+
+<Endpoint method="GET" path="/facilities/{facility_id}/availability" />
+
+Check availability for a specific facility.
+
+**Query Parameters:**
+- `date`: Date to check availability
+- `time_slot`: Specific time slot (optional)
+
+**Response:**
+```json
+{
+  "facility_id": "facility-123",
+  "facility_name": "Swimming Pool",
+  "date": "2024-01-20",
+  "available_slots": [
+    {
+      "slot_id": "slot-456",
+      "start_time": "09:00",
+      "end_time": "10:00",
+      "is_available": true,
+      "max_capacity": 20,
+      "current_bookings": 5
+    },
+    {
+      "slot_id": "slot-457",
+      "start_time": "10:00",
+      "end_time": "11:00",
+      "is_available": false,
+      "max_capacity": 20,
+      "current_bookings": 20
+    }
+  ]
+}
+```
+
+### Book Facility
+
+<Endpoint method="POST" path="/facilities/{facility_id}/book" />
+
+Book a facility slot.
+
+**Request Body:**
+```json
+{
+  "slot_id": "slot-456",
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "guests": 2,
+  "purpose": "Swimming",
+  "special_requests": "Pool noodles if available"
+}
+```
+
+**Response:**
+```json
+{
+  "booking_id": "booking-123",
+  "facility_id": "facility-123",
+  "facility_name": "Swimming Pool",
+  "slot_id": "slot-456",
+  "start_time": "09:00",
+  "end_time": "10:00",
+  "date": "2024-01-20",
+  "user_id": "user-123",
+  "guests": 2,
+  "status": "confirmed",
+  "booking_code": "POOL-2024-001",
+  "created_at": "2024-01-15T10:00:00Z"
+}
+```
+
+## Routines Service
+
+### Get Routines
+
+<Endpoint method="GET" path="/routines" />
+
+Retrieve automation routines and scheduled tasks.
+
+**Query Parameters:**
+- `status`: Filter by routine status (active, inactive)
+- `category`: Filter by routine category
+- `user_id`: Filter by user ID
+- `limit`: Number of routines to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "routines": [
+    {
+      "routine_id": "routine-123",
+      "name": "Good Morning",
+      "description": "Start the day with optimal settings",
+      "category": "daily",
+      "status": "active",
+      "user_id": "user-123",
+      "unit_id": "unit-456",
+      "schedule": {
+        "type": "daily",
+        "time": "07:00",
+        "days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+      },
+      "actions": [
+        {
+          "action_id": "action-1",
+          "type": "device_control",
+          "target": "living_room_lights",
+          "action": "turn_on",
+          "parameters": {
+            "brightness": 50
+          }
+        },
+        {
+          "action_id": "action-2",
+          "type": "device_control",
+          "target": "thermostat",
+          "action": "set_temperature",
+          "parameters": {
+            "temperature": 22
+          }
+        }
+      ],
+      "created_at": "2024-01-01T00:00:00Z",
+      "last_executed": "2024-01-15T07:00:00Z"
+    }
+  ],
+  "total_count": 10,
+  "has_more": false
+}
+```
+
+### Create Routine
+
+<Endpoint method="POST" path="/routines" />
+
+Create a new automation routine.
+
+**Request Body:**
+```json
+{
+  "name": "Good Night",
+  "description": "Prepare home for sleep",
+  "category": "daily",
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "schedule": {
+    "type": "daily",
+    "time": "22:00",
+    "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+  },
+  "actions": [
+    {
+      "type": "device_control",
+      "target": "all_lights",
+      "action": "turn_off"
+    },
+    {
+      "type": "device_control",
+      "target": "thermostat",
+      "action": "set_temperature",
+      "parameters": {
+        "temperature": 20
+      }
+    }
+  ]
+}
+```
+
+### Execute Routine
+
+<Endpoint method="POST" path="/routines/{routine_id}/execute" />
+
+Manually execute a routine.
+
+**Request Body:**
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "override_schedule": true
+}
+```
+
+## Email Service
+
+### Send Email
+
+<Endpoint method="POST" path="/email/send" />
+
+Send an email notification.
+
+**Request Body:**
+```json
+{
+  "to": "user@example.com",
+  "subject": "Welcome to Roomi",
+  "template": "welcome_email",
+  "template_data": {
+    "user_name": "John Doe",
+    "unit_number": "101",
+    "welcome_message": "Welcome to your new smart home!"
+  },
+  "priority": "normal",
+  "user_id": "user-123"
+}
+```
+
+### Get Email Templates
+
+<Endpoint method="GET" path="/email/templates" />
+
+Retrieve available email templates.
+
+**Response:**
+```json
+{
+  "templates": [
+    {
+      "template_id": "welcome_email",
+      "name": "Welcome Email",
+      "subject": "Welcome to Roomi",
+      "description": "Welcome email for new users",
+      "variables": ["user_name", "unit_number", "welcome_message"],
+      "category": "onboarding"
+    },
+    {
+      "template_id": "maintenance_update",
+      "name": "Maintenance Update",
+      "subject": "Maintenance Request Update",
+      "description": "Update on maintenance request status",
+      "variables": ["complaint_title", "status", "estimated_completion"],
+      "category": "maintenance"
+    }
+  ]
+}
+```
+
+### Get Email History
+
+<Endpoint method="GET" path="/email/history" />
+
+Retrieve email sending history.
+
+**Query Parameters:**
+- `user_id`: Filter by user ID
+- `template`: Filter by email template
+- `status`: Filter by email status
+- `start_date`: Filter by send date
+- `limit`: Number of emails to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "emails": [
+    {
+      "email_id": "email-123",
+      "to": "user@example.com",
+      "subject": "Welcome to Roomi",
+      "template": "welcome_email",
+      "status": "delivered",
+      "sent_at": "2024-01-15T10:00:00Z",
+      "delivered_at": "2024-01-15T10:00:05Z",
+      "user_id": "user-123"
+    }
+  ],
+  "total_count": 150,
+  "has_more": true
+}
+```
+
+## Third-Party Integration
+
+### Get Integration Status
+
+<Endpoint method="GET" path="/integrations/status" />
+
+Check the status of third-party integrations.
+
+**Response:**
+```json
+{
+  "integrations": [
+    {
+      "provider": "stripe",
+      "service": "payments",
+      "status": "connected",
+      "last_sync": "2024-01-15T10:00:00Z",
+      "config": {
+        "webhook_url": "https://services-prod-ae.roomi-services.com/v1/webhooks/stripe",
+        "api_version": "2023-10-16"
+      }
+    },
+    {
+      "provider": "sendgrid",
+      "service": "email",
+      "status": "connected",
+      "last_sync": "2024-01-15T10:00:00Z",
+      "config": {
+        "api_key": "configured",
+        "from_email": "noreply@roomi.ai"
+      }
+    }
+  ]
+}
+```
+
+### Configure Integration
+
+<Endpoint method="POST" path="/integrations/configure" />
+
+Configure a third-party integration.
+
+**Request Body:**
+```json
+{
+  "provider": "stripe",
+  "service": "payments",
+  "config": {
+    "api_key": "sk_test_...",
+    "webhook_secret": "whsec_...",
+    "environment": "test"
+  }
+}
+```
+
+## Error Handling
+
+### Common Error Responses
+
+| Status Code | Description | Solution |
+|-------------|-------------|----------|
+| `400` | Bad Request | Check request format and required fields |
+| `401` | Unauthorized | Verify AWS credentials and signature |
+| `404` | Not Found | Verify resource ID and permissions |
+| `409` | Conflict | Resource already exists or is in use |
+| `422` | Validation Error | Check data format and requirements |
+| `429` | Rate Limited | Implement exponential backoff |
+| `500` | Internal Server Error | Contact support if persistent |
+| `503` | Service Unavailable | Third-party service temporarily unavailable |
+
+### Error Response Format
+
+```json
+{
+  "error": "Payment processing failed",
+  "error_code": "PAYMENT_ERROR",
+  "details": {
+    "provider": "stripe",
+    "provider_error": "card_declined",
+    "provider_error_code": "card_declined"
+  },
+  "suggested_action": "Please check your payment method and try again",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+## Rate Limiting
+
+The Services Platform implements provider-aware rate limiting:
+
+- **General API Calls**: 1000 requests per minute per unit
+- **Payment Processing**: 100 payments per minute per unit
+- **Email Sending**: 50 emails per minute per unit
+- **Facility Bookings**: 20 bookings per minute per unit
+- **Third-Party Calls**: 500 calls per minute per provider
+
+## Best Practices
+
+### 1. Payment Processing
+```javascript
+// Process payment with error handling
+const processPayment = async (billId, amount, paymentMethod) => {
+  try {
+    const response = await fetch('/v1/payments/process', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'AWS4-HMAC-SHA256 ...',
+        'x-unit-id': 'unit-456',
+        'x-user-id': 'user-123'
+      },
+      body: JSON.stringify({
+        bill_id: billId,
+        amount: amount,
+        payment_method: paymentMethod,
+        payment_details: {
+          card_token: 'tok_visa'
+        },
+        user_id: 'user-123'
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.status === 'completed') {
+      console.log('Payment successful:', result.transaction_id);
+      return result;
+    } else {
+      throw new Error(result.error);
+    }
+  } catch (error) {
+    console.error('Payment failed:', error.message);
+    throw error;
+  }
+};
+```
+
+### 2. Facility Booking
+```javascript
+// Book facility with availability check
+const bookFacility = async (facilityId, date, timeSlot) => {
+  // First check availability
+  const availabilityResponse = await fetch(`/v1/facilities/${facilityId}/availability?date=${date}`);
+  const availability = await availabilityResponse.json();
+  
+  const slot = availability.available_slots.find(s => 
+    s.start_time === timeSlot && s.is_available
+  );
+  
+  if (!slot) {
+    throw new Error('Time slot not available');
+  }
+  
+  // Book the facility
+  const bookingResponse = await fetch(`/v1/facilities/${facilityId}/book`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...',
+      'x-unit-id': 'unit-456',
+      'x-user-id': 'user-123'
+    },
+    body: JSON.stringify({
+      slot_id: slot.slot_id,
+      user_id: 'user-123',
+      unit_id: 'unit-456',
+      guests: 2,
+      purpose: 'Swimming'
+    })
+  });
+  
+  return await bookingResponse.json();
+};
+```
+
+### 3. Email Notifications
+```javascript
+// Send templated email
+const sendWelcomeEmail = async (userEmail, userName, unitNumber) => {
+  const response = await fetch('/v1/email/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...',
+      'x-unit-id': 'unit-456',
+      'x-user-id': 'user-123'
+    },
+    body: JSON.stringify({
+      to: userEmail,
+      subject: 'Welcome to Roomi',
+      template: 'welcome_email',
+      template_data: {
+        user_name: userName,
+        unit_number: unitNumber,
+        welcome_message: 'Welcome to your new smart home!'
+      },
+      priority: 'high',
+      user_id: 'user-123'
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+## Integration Examples
+
+### Complete Payment Flow
+```javascript
+const completePaymentFlow = async (billId, amount) => {
+  // Get bill details
+  const billResponse = await fetch(`/v1/payments/bills/${billId}`);
+  const bill = await billResponse.json();
+  
+  // Process payment
+  const payment = await processPayment(billId, amount, 'credit_card');
+  
+  // Send confirmation email
+  await sendWelcomeEmail(
+    'user@example.com',
+    'John Doe',
+    '101',
+    'Payment Confirmation',
+    'payment_confirmation',
+    {
+      amount: amount,
+      bill_number: bill.bill_number,
+      transaction_id: payment.transaction_id
+    }
+  );
+  
+  return payment;
+};
+```
+
+### Facility Booking System
+```javascript
+const facilityBookingSystem = {
+  // Get all available facilities
+  getFacilities: async () => {
+    const response = await fetch('https://services-prod-ae.roomi-services.com/v1/facilities', {
+      headers: {
+        'Authorization': 'AWS4-HMAC-SHA256 ...',
+        'x-unit-id': 'unit-456',
+        'x-user-id': 'user-123'
+      }
+    });
+    return await response.json();
+  },
+  
+  // Check availability for a facility
+  checkAvailability: async (facilityId, date) => {
+    const response = await fetch(`/v1/facilities/${facilityId}/availability?date=${date}`, {
+      headers: {
+        'Authorization': 'AWS4-HMAC-SHA256 ...',
+        'x-unit-id': 'unit-456',
+        'x-user-id': 'user-123'
+      }
+    });
+    return await response.json();
+  },
+  
+  // Book a facility
+  bookFacility: async (facilityId, slotId, guests) => {
+    const response = await fetch(`/v1/facilities/${facilityId}/book`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'AWS4-HMAC-SHA256 ...',
+        'x-unit-id': 'unit-456',
+        'x-user-id': 'user-123'
+      },
+      body: JSON.stringify({
+        slot_id: slotId,
+        user_id: 'user-123',
+        unit_id: 'unit-456',
+        guests: guests,
+        purpose: 'Recreation'
+      })
+    });
+    return await response.json();
+  }
+};
+```
+
+## Next Steps
+
+- [AI Service API](/api-reference/ai) - Intelligent orchestration
+- [Devices Service API](/api-reference/devices) - Device control interface
+- [Handler Service API](/api-reference/handler) - Database and communication operations
+- [Service Integration Guide](/guides/service-integration) - Third-party integration strategies 

@@ -1,0 +1,823 @@
+---
+title: "Auth Service API"
+description: "Complete API reference for Roomi's Auth service - invite-only authentication system"
+---
+
+## Overview
+
+The Auth service provides a private, invite-only authentication system for the Roomi platform. It handles user registration, authentication, and session management with support for OTP verification and UAE Pass integration. The service is designed for exclusive access, requiring invitations for user registration.
+
+## Base URL
+
+```
+https://auth-{environment}-{region}.roomi-services.com/v1/
+```
+
+## Authentication
+
+All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
+
+```http
+Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
+X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
+X-Amz-Date: 20240115T120000Z
+x-unit-id: unit-12345
+x-user-id: user-67890
+```
+
+## Core Capabilities
+
+### Invite-Only Registration
+- **Invitation System**: Users can only register with valid invitations
+- **Invitation Management**: Create, track, and revoke invitations
+- **Access Control**: Granular permission management
+- **Audit Trail**: Complete registration and access logs
+
+### Multi-Factor Authentication
+- **OTP Verification**: Phone number-based one-time password
+- **UAE Pass Integration**: Government-issued digital identity
+- **Session Management**: Secure token-based sessions
+- **Device Registration**: Multi-device authentication support
+
+### User Management
+- **User Profiles**: Comprehensive user information management
+- **Permission System**: Role-based access control
+- **Account Status**: Active, suspended, and deactivated states
+- **Profile Updates**: Secure profile modification
+
+## API Endpoints
+
+### Health Check
+
+<Endpoint method="GET" path="/health" />
+
+Check the health status of the Auth service.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "Auth service is operational",
+  "invitations_pending": 15,
+  "active_users": 1250,
+  "sessions_active": 890,
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+### Invitation Management
+
+#### Create Invitation
+
+<Endpoint method="POST" path="/invitations" />
+
+Create a new invitation for user registration.
+
+**Request Body:**
+```json
+{
+  "invited_by": "user-123",
+  "invitee_email": "john.doe@example.com",
+  "invitee_phone": "+971501234567",
+  "unit_id": "unit-456",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "expires_at": "2024-02-15T23:59:59Z",
+  "max_uses": 1,
+  "notes": "Welcome to Roomi smart home platform"
+}
+```
+
+**Response:**
+```json
+{
+  "invitation_id": "inv-789",
+  "invitation_code": "ROOMI-ABC123-DEF456",
+  "status": "pending",
+  "invited_by": "user-123",
+  "invitee_email": "john.doe@example.com",
+  "invitee_phone": "+971501234567",
+  "unit_id": "unit-456",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "expires_at": "2024-02-15T23:59:59Z",
+  "created_at": "2024-01-15T10:00:00Z",
+  "invitation_url": "https://roomi.ai/invite/ROOMI-ABC123-DEF456"
+}
+```
+
+#### Get Invitation
+
+<Endpoint method="GET" path="/invitations/{invitation_id}" />
+
+Get invitation details by ID.
+
+**Response:**
+```json
+{
+  "invitation_id": "inv-789",
+  "invitation_code": "ROOMI-ABC123-DEF456",
+  "status": "pending",
+  "invited_by": "user-123",
+  "invitee_email": "john.doe@example.com",
+  "invitee_phone": "+971501234567",
+  "unit_id": "unit-456",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "expires_at": "2024-02-15T23:59:59Z",
+  "created_at": "2024-01-15T10:00:00Z",
+  "used_at": null,
+  "used_by": null
+}
+```
+
+#### List Invitations
+
+<Endpoint method="GET" path="/invitations" />
+
+Get all invitations for a unit.
+
+**Query Parameters:**
+- `status`: Filter by status (pending, used, expired, revoked)
+- `invited_by`: Filter by inviter
+- `limit`: Number of records to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "invitations": [
+    {
+      "invitation_id": "inv-789",
+      "invitation_code": "ROOMI-ABC123-DEF456",
+      "status": "pending",
+      "invitee_email": "john.doe@example.com",
+      "invitee_phone": "+971501234567",
+      "expires_at": "2024-02-15T23:59:59Z",
+      "created_at": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "total_count": 25,
+  "has_more": true
+}
+```
+
+#### Revoke Invitation
+
+<Endpoint method="DELETE" path="/invitations/{invitation_id}" />
+
+Revoke an invitation before it's used.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Invitation revoked successfully",
+  "invitation_id": "inv-789"
+}
+```
+
+### User Registration
+
+#### Register with Invitation
+
+<Endpoint method="POST" path="/register" />
+
+Register a new user using an invitation code.
+
+**Request Body:**
+```json
+{
+  "invitation_code": "ROOMI-ABC123-DEF456",
+  "user_data": {
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+971501234567",
+    "password": "SecurePassword123!",
+    "preferences": {
+      "language": "en",
+      "timezone": "Asia/Dubai",
+      "notifications": {
+        "email": true,
+        "sms": true,
+        "push": true
+      }
+    }
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "user_id": "user-789",
+  "message": "User registered successfully",
+  "user": {
+    "user_id": "user-789",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+971501234567",
+    "unit_id": "unit-456",
+    "permissions": [
+      "device_control",
+      "view_analytics",
+      "manage_routines"
+    ],
+    "status": "active",
+    "created_at": "2024-01-15T10:00:00Z"
+  }
+}
+```
+
+### Authentication
+
+#### Send OTP
+
+<Endpoint method="POST" path="/auth/send-otp" />
+
+Send a one-time password to the user's phone number.
+
+**Request Body:**
+```json
+{
+  "phone": "+971501234567",
+  "unit_id": "unit-456",
+  "purpose": "login"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "OTP sent successfully",
+  "phone": "+971501234567",
+  "pin_id": "pin-123",
+  "expires_at": "2024-01-15T10:05:00Z"
+}
+```
+
+#### Validate OTP
+
+<Endpoint method="POST" path="/auth/validate-otp" />
+
+Validate the OTP and authenticate the user.
+
+**Request Body:**
+```json
+{
+  "phone": "+971501234567",
+  "otp": "123456",
+  "pin": "pin-123"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Authentication successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "refresh_token_here",
+  "expires_at": "2024-01-15T18:00:00Z",
+  "user": {
+    "user_id": "user-789",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+971501234567",
+    "unit_id": "unit-456",
+    "permissions": [
+      "device_control",
+      "view_analytics",
+      "manage_routines"
+    ],
+    "status": "active"
+  }
+}
+```
+
+#### UAE Pass Login
+
+<Endpoint method="POST" path="/auth/uaepass" />
+
+Authenticate user using UAE Pass digital identity.
+
+**Request Body:**
+```json
+{
+  "code": "auth_code_from_uaepass",
+  "state": "state_parameter",
+  "redirect_uri": "https://roomi.ai/auth/callback"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "UAE Pass authentication successful",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "refresh_token_here",
+  "expires_at": "2024-01-15T18:00:00Z",
+  "user": {
+    "user_id": "user-789",
+    "first_name": "John",
+    "last_name": "Doe",
+    "email": "john.doe@example.com",
+    "phone": "+971501234567",
+    "unit_id": "unit-456",
+    "permissions": [
+      "device_control",
+      "view_analytics",
+      "manage_routines"
+    ],
+    "status": "active"
+  }
+}
+```
+
+#### Refresh Token
+
+<Endpoint method="POST" path="/auth/refresh" />
+
+Refresh an expired access token.
+
+**Request Body:**
+```json
+{
+  "refresh_token": "refresh_token_here"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "new_refresh_token_here",
+  "expires_at": "2024-01-15T18:00:00Z"
+}
+```
+
+### User Management
+
+#### Get Current User
+
+<Endpoint method="GET" path="/user/me" />
+
+Get information about the currently authenticated user.
+
+**Response:**
+```json
+{
+  "user_id": "user-789",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+971501234567",
+  "unit_id": "unit-456",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "status": "active",
+  "preferences": {
+    "language": "en",
+    "timezone": "Asia/Dubai",
+    "notifications": {
+      "email": true,
+      "sms": true,
+      "push": true
+    }
+  },
+  "created_at": "2024-01-15T10:00:00Z",
+  "last_login": "2024-01-15T10:00:00Z"
+}
+```
+
+#### Update User Profile
+
+<Endpoint method="PUT" path="/user/profile" />
+
+Update user profile information.
+
+**Request Body:**
+```json
+{
+  "first_name": "John",
+  "last_name": "Smith",
+  "preferences": {
+    "language": "ar",
+    "timezone": "Asia/Dubai",
+    "notifications": {
+      "email": true,
+      "sms": false,
+      "push": true
+    }
+  }
+}
+```
+
+#### Get User by ID
+
+<Endpoint method="GET" path="/user/{user_id}" />
+
+Get information about a specific user (requires appropriate permissions).
+
+**Response:**
+```json
+{
+  "user_id": "user-789",
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com",
+  "phone": "+971501234567",
+  "unit_id": "unit-456",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "status": "active",
+  "created_at": "2024-01-15T10:00:00Z",
+  "last_login": "2024-01-15T10:00:00Z"
+}
+```
+
+#### List Users in Unit
+
+<Endpoint method="GET" path="/users" />
+
+Get all users in a specific unit.
+
+**Query Parameters:**
+- `status`: Filter by status (active, suspended, deactivated)
+- `limit`: Number of records to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "users": [
+    {
+      "user_id": "user-789",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "+971501234567",
+      "permissions": [
+        "device_control",
+        "view_analytics",
+        "manage_routines"
+      ],
+      "status": "active",
+      "last_login": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "total_count": 5,
+  "has_more": false
+}
+```
+
+### Session Management
+
+#### Get Active Sessions
+
+<Endpoint method="GET" path="/sessions" />
+
+Get all active sessions for the current user.
+
+**Response:**
+```json
+{
+  "sessions": [
+    {
+      "session_id": "session-123",
+      "device_type": "mobile",
+      "device_name": "iPhone 15",
+      "ip_address": "192.168.1.100",
+      "location": "Dubai, UAE",
+      "created_at": "2024-01-15T10:00:00Z",
+      "last_activity": "2024-01-15T10:30:00Z",
+      "is_current": true
+    }
+  ],
+  "total_count": 3
+}
+```
+
+#### Revoke Session
+
+<Endpoint method="DELETE" path="/sessions/{session_id}" />
+
+Revoke a specific session.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Session revoked successfully",
+  "session_id": "session-123"
+}
+```
+
+#### Revoke All Sessions
+
+<Endpoint method="DELETE" path="/sessions" />
+
+Revoke all sessions except the current one.
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "All sessions revoked successfully",
+  "revoked_count": 2
+}
+```
+
+### Permission Management
+
+#### Get User Permissions
+
+<Endpoint method="GET" path="/user/{user_id}/permissions" />
+
+Get permissions for a specific user.
+
+**Response:**
+```json
+{
+  "user_id": "user-789",
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines"
+  ],
+  "roles": [
+    "resident"
+  ],
+  "granted_by": "user-123",
+  "granted_at": "2024-01-15T10:00:00Z"
+}
+```
+
+#### Update User Permissions
+
+<Endpoint method="PUT" path="/user/{user_id}/permissions" />
+
+Update permissions for a specific user (requires admin privileges).
+
+**Request Body:**
+```json
+{
+  "permissions": [
+    "device_control",
+    "view_analytics",
+    "manage_routines",
+    "admin_users"
+  ],
+  "reason": "Promoted to admin role"
+}
+```
+
+## Permission Types
+
+| Permission | Description | Scope |
+|------------|-------------|-------|
+| `device_control` | Control smart home devices | Unit |
+| `view_analytics` | View usage analytics and reports | Unit |
+| `manage_routines` | Create and manage automation routines | Unit |
+| `admin_users` | Manage user accounts and permissions | Unit |
+| `admin_system` | System administration and configuration | Global |
+| `view_logs` | View system logs and audit trails | Unit |
+| `manage_invitations` | Create and manage invitations | Unit |
+
+## Error Handling
+
+### Common Error Responses
+
+| Status Code | Description | Solution |
+|-------------|-------------|----------|
+| `400` | Bad Request | Check request format and required fields |
+| `401` | Unauthorized | Verify credentials and token validity |
+| `403` | Forbidden | Check user permissions |
+| `404` | Not Found | Verify invitation or user ID |
+| `409` | Conflict | Invitation already used or expired |
+| `422` | Validation Error | Check data format and requirements |
+| `429` | Rate Limited | Implement exponential backoff |
+| `500` | Internal Server Error | Contact support if persistent |
+
+### Error Response Format
+
+```json
+{
+  "error": "Invitation expired",
+  "error_code": "INVITATION_EXPIRED",
+  "details": {
+    "invitation_id": "inv-789",
+    "expired_at": "2024-01-15T23:59:59Z"
+  },
+  "suggested_action": "Create a new invitation",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+## Rate Limiting
+
+The Auth service implements security-focused rate limiting:
+
+- **OTP Requests**: 5 requests per phone number per hour
+- **Login Attempts**: 10 attempts per user per hour
+- **Invitation Creation**: 20 invitations per admin per day
+- **Token Refresh**: 100 refreshes per user per hour
+- **API Calls**: 1000 requests per minute per unit
+
+## Security Features
+
+### Token Security
+- **JWT Tokens**: Secure JSON Web Tokens with short expiration
+- **Refresh Tokens**: Long-lived refresh tokens for session management
+- **Token Rotation**: Automatic refresh token rotation
+- **Token Revocation**: Immediate token invalidation on logout
+
+### Session Security
+- **Device Tracking**: Monitor and track active sessions
+- **Location Awareness**: Track login locations for security
+- **Session Limits**: Maximum concurrent sessions per user
+- **Automatic Logout**: Inactive session timeout
+
+### Invitation Security
+- **Single Use**: Invitations can only be used once
+- **Expiration**: Automatic expiration after specified time
+- **Audit Trail**: Complete invitation usage tracking
+- **Revocation**: Ability to revoke unused invitations
+
+## Best Practices
+
+### 1. Invitation Management
+```javascript
+// Create invitation with proper permissions
+const createInvitation = async (inviteeData) => {
+  const response = await fetch('/v1/invitations', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({
+      invited_by: 'user-123',
+      invitee_email: inviteeData.email,
+      invitee_phone: inviteeData.phone,
+      unit_id: 'unit-456',
+      permissions: ['device_control', 'view_analytics'],
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      max_uses: 1
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### 2. OTP Authentication
+```javascript
+// Send OTP and handle validation
+const authenticateWithOTP = async (phone) => {
+  // Send OTP
+  const otpResponse = await fetch('/v1/auth/send-otp', {
+    method: 'POST',
+    body: JSON.stringify({
+      phone: phone,
+      unit_id: 'unit-456'
+    })
+  });
+  
+  const { pin_id } = await otpResponse.json();
+  
+  // In real app, prompt user for OTP
+  const userOTP = '123456'; // This would come from user input
+  
+  // Validate OTP
+  const authResponse = await fetch('/v1/auth/validate-otp', {
+    method: 'POST',
+    body: JSON.stringify({
+      phone: phone,
+      otp: userOTP,
+      pin: pin_id
+    })
+  });
+  
+  return await authResponse.json();
+};
+```
+
+### 3. Session Management
+```javascript
+// Monitor and manage user sessions
+const getActiveSessions = async () => {
+  const response = await fetch('/v1/sessions', {
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  });
+  
+  const sessions = await response.json();
+  
+  // Revoke suspicious sessions
+  sessions.sessions.forEach(session => {
+    if (session.location !== 'Dubai, UAE') {
+      fetch(`/v1/sessions/${session.session_id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      });
+    }
+  });
+  
+  return sessions;
+};
+```
+
+## Integration Examples
+
+### Basic Authentication Flow
+```javascript
+const authenticateUser = async (phone, otp) => {
+  const response = await fetch('https://auth-prod-ae.roomi-services.com/v1/auth/validate-otp', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      phone: phone,
+      otp: otp,
+      pin: pin_id
+    })
+  });
+  
+  const result = await response.json();
+  
+  if (result.success) {
+    // Store tokens securely
+    localStorage.setItem('access_token', result.token);
+    localStorage.setItem('refresh_token', result.refresh_token);
+    
+    return result.user;
+  }
+  
+  throw new Error(result.error);
+};
+```
+
+### Invitation System
+```javascript
+// Complete invitation flow
+const inviteUser = async (email, phone, permissions) => {
+  // Create invitation
+  const invitation = await createInvitation({
+    invitee_email: email,
+    invitee_phone: phone,
+    permissions: permissions
+  });
+  
+  // Send invitation email/SMS
+  await sendInvitationNotification(invitation);
+  
+  return invitation;
+};
+
+const registerWithInvitation = async (invitationCode, userData) => {
+  const response = await fetch('/v1/register', {
+    method: 'POST',
+    body: JSON.stringify({
+      invitation_code: invitationCode,
+      user_data: userData
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+## Next Steps
+
+- [AI Service API](/api-reference/ai) - Intelligent orchestration
+- [Devices Service API](/api-reference/devices) - Device control interface
+- [Handler Service API](/api-reference/handler) - Database and communication operations
+- [Authentication Setup Guide](/guides/authentication-setup) - Detailed authentication configuration 

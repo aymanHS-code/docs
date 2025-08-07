@@ -22,11 +22,10 @@
             ]
           },
           {
-            "group": "SDK Setup",
+            "group": "Architecture",
             "pages": [
-              "installation",
-              "configuration",
-              "development"
+              "architecture-overview",
+              "service-communication"
             ]
           }
         ]
@@ -35,40 +34,19 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "Authentication & Users",
+            "group": "Core Services",
             "pages": [
-              "api-reference/auth/introduction",
-              "api-reference/auth/authentication",
-              "api-reference/auth/user-management",
-              "api-reference/auth/onboarding"
+              "api-reference/ai",
+              "api-reference/devices",
+              "api-reference/handler"
             ]
           },
           {
-            "group": "AI Assistant",
+            "group": "Support Services",
             "pages": [
-              "api-reference/ai/introduction",
-              "api-reference/ai/assistant",
-              "api-reference/ai/tasks"
-            ]
-          },
-          {
-            "group": "Device Management",
-            "pages": [
-              "api-reference/devices/introduction",
-              "api-reference/devices/device-management",
-              "api-reference/devices/room-management"
-            ]
-          },
-          {
-            "group": "Services",
-            "pages": [
-              "api-reference/services/introduction",
-              "api-reference/services/events",
-              "api-reference/services/complaints",
-              "api-reference/services/payments",
-              "api-reference/services/facilities",
-              "api-reference/services/routines",
-              "api-reference/services/email"
+              "api-reference/auth",
+              "api-reference/logger",
+              "api-reference/services"
             ]
           }
         ]
@@ -79,10 +57,10 @@
           {
             "group": "Integration",
             "pages": [
-              "guides/integration-overview",
               "guides/authentication-setup",
+              "guides/ai-integration",
               "guides/device-integration",
-              "guides/ai-assistant-setup"
+              "guides/handler-setup"
             ]
           },
           {
@@ -91,16 +69,15 @@
               "guides/error-handling",
               "guides/rate-limiting",
               "guides/security",
-              "guides/testing"
+              "guides/logging"
             ]
           },
           {
             "group": "Examples",
             "pages": [
-              "guides/examples/authentication",
+              "guides/examples/ai-workflow",
               "guides/examples/device-control",
-              "guides/examples/ai-assistant",
-              "guides/examples/payment-processing"
+              "guides/examples/service-integration"
             ]
           }
         ]

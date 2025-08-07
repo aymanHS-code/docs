@@ -1,0 +1,623 @@
+---
+title: "Devices Service API"
+description: "Complete API reference for Roomi's Devices service - universal interface for controlling any smart home device"
+---
+
+## Overview
+
+The Devices service provides a unified interface for controlling any smart home device, regardless of the underlying provider or manufacturer. It abstracts away the complexity of different smart home protocols (Zigbee, Z-Wave, Wi-Fi, Bluetooth) and provides a consistent API for device discovery, control, and management.
+
+## Base URL
+
+```
+https://devices-{environment}-{region}.roomi-services.com/v1/
+```
+
+## Authentication
+
+All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
+
+```http
+Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
+X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
+X-Amz-Date: 20240115T120000Z
+x-unit-id: unit-12345
+x-user-id: user-67890
+```
+
+## Supported Device Providers
+
+The Devices service supports multiple smart home ecosystems:
+
+| Provider | Protocol | Supported Devices |
+|----------|----------|-------------------|
+| **Philips Hue** | Zigbee | Lights, switches, sensors |
+| **SmartThings** | Z-Wave/Zigbee | Lights, switches, thermostats, sensors |
+| **Tuya/Smart Life** | Wi-Fi | Lights, switches, cameras, sensors |
+| **IKEA Tradfri** | Zigbee | Lights, switches, blinds |
+| **Xiaomi/Aqara** | Zigbee | Sensors, switches, locks |
+| **Ring** | Z-Wave | Security devices, cameras |
+| **Nest** | Wi-Fi | Thermostats, cameras, doorbells |
+| **Echo/Alexa** | Wi-Fi | Smart speakers, displays |
+
+## Core Capabilities
+
+### Universal Device Control
+- **Standardized Commands**: Common actions like turn on/off, dim, set color
+- **Provider Abstraction**: Same API regardless of underlying provider
+- **Protocol Translation**: Automatic conversion between different protocols
+- **Error Handling**: Graceful handling of provider-specific errors
+
+### Device Discovery and Management
+- **Auto-Discovery**: Automatic detection of new devices
+- **Device Registration**: Manual device addition and configuration
+- **Status Monitoring**: Real-time device status updates
+- **Room Organization**: Logical grouping of devices by room
+
+### Multi-Provider Support
+- **Provider Management**: Add and configure multiple providers
+- **Device Migration**: Move devices between providers
+- **Failover Support**: Automatic fallback to alternative providers
+- **Provider-Specific Features**: Access to provider-specific capabilities
+
+## API Endpoints
+
+### Health Check
+
+<Endpoint method="GET" path="/health" />
+
+Check the health status of the Devices service.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "Devices service is operational",
+  "providers": {
+    "philips_hue": "connected",
+    "smartthings": "connected",
+    "tuya": "connected"
+  },
+  "devices_count": 45,
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+### Get All Devices
+
+<Endpoint method="GET" path="/devices" />
+
+Retrieve all devices for a specific unit with their status and capabilities.
+
+**Response:**
+```json
+[
+  {
+    "device_id": "device-123",
+    "name": "Living Room Light",
+    "type": "light",
+    "provider": "philips_hue",
+    "room": "Living Room",
+    "floor": "Ground Floor",
+    "status": "online",
+    "capabilities": [
+      "turn_on",
+      "turn_off",
+      "set_brightness",
+      "set_color",
+      "set_color_temperature"
+    ],
+    "current_state": {
+      "power": "on",
+      "brightness": 75,
+      "color": "#FF5733",
+      "color_temperature": 2700
+    },
+    "last_seen": "2024-01-15T10:00:00Z"
+  },
+  {
+    "device_id": "device-456",
+    "name": "Bedroom Thermostat",
+    "type": "thermostat",
+    "provider": "nest",
+    "room": "Bedroom",
+    "floor": "First Floor",
+    "status": "online",
+    "capabilities": [
+      "set_temperature",
+      "set_mode",
+      "set_fan_speed"
+    ],
+    "current_state": {
+      "temperature": 22,
+      "mode": "cool",
+      "fan_speed": "auto"
+    },
+    "last_seen": "2024-01-15T10:00:00Z"
+  }
+]
+```
+
+### Control Devices
+
+<Endpoint method="POST" path="/devices/control" />
+
+Control multiple devices with a single request.
+
+**Request Body:**
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "commands": [
+    {
+      "device_id": "device-123",
+      "action": "turn_on",
+      "parameters": {}
+    },
+    {
+      "device_id": "device-456",
+      "action": "set_temperature",
+      "parameters": {
+        "temperature": 22
+      }
+    },
+    {
+      "device_id": "device-789",
+      "action": "set_brightness",
+      "parameters": {
+        "brightness": 100
+      }
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "device_id": "device-123",
+      "action": "turn_on",
+      "status": "success",
+      "provider_response": {
+        "hue_response": "light turned on successfully"
+      }
+    },
+    {
+      "device_id": "device-456",
+      "action": "set_temperature",
+      "status": "success",
+      "provider_response": {
+        "nest_response": "temperature set to 22°C"
+      }
+    },
+    {
+      "device_id": "device-789",
+      "action": "set_brightness",
+      "status": "success",
+      "provider_response": {
+        "tuya_response": "brightness set to 100%"
+      }
+    }
+  ],
+  "execution_time": "1.2s"
+}
+```
+
+### Get Device Details
+
+<Endpoint method="GET" path="/devices/{device_id}" />
+
+Get detailed information about a specific device.
+
+**Response:**
+```json
+{
+  "device_id": "device-123",
+  "name": "Living Room Light",
+  "type": "light",
+  "provider": "philips_hue",
+  "provider_device_id": "hue_light_001",
+  "room": "Living Room",
+  "floor": "Ground Floor",
+  "status": "online",
+  "capabilities": [
+    "turn_on",
+    "turn_off",
+    "set_brightness",
+    "set_color",
+    "set_color_temperature"
+  ],
+  "current_state": {
+    "power": "on",
+    "brightness": 75,
+    "color": "#FF5733",
+    "color_temperature": 2700
+  },
+  "provider_specific": {
+    "hue_bridge_id": "bridge-001",
+    "hue_light_number": 1,
+    "hue_model": "LCT015"
+  },
+  "last_seen": "2024-01-15T10:00:00Z",
+  "created_at": "2024-01-01T00:00:00Z",
+  "updated_at": "2024-01-15T10:00:00Z"
+}
+```
+
+### Discover Devices
+
+<Endpoint method="POST" path="/devices/discover" />
+
+Discover new devices from configured providers.
+
+**Request Body:**
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "providers": ["philips_hue", "smartthings"],
+  "timeout": 30
+}
+```
+
+**Response:**
+```json
+{
+  "discovery_id": "discovery-789",
+  "status": "completed",
+  "new_devices": [
+    {
+      "device_id": "device-999",
+      "name": "Kitchen Light",
+      "type": "light",
+      "provider": "philips_hue",
+      "capabilities": ["turn_on", "turn_off", "set_brightness"]
+    }
+  ],
+  "existing_devices": 45,
+  "discovery_time": "15.3s"
+}
+```
+
+### Get Device Messages
+
+<Endpoint method="GET" path="/devices/messages" />
+
+Get device-related messages and notifications for a unit.
+
+**Response:**
+```json
+[
+  {
+    "message_id": "msg-123",
+    "device_id": "device-456",
+    "type": "status_change",
+    "message": "Bedroom Light turned on",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "severity": "info"
+  },
+  {
+    "message_id": "msg-124",
+    "device_id": "device-789",
+    "type": "error",
+    "message": "Thermostat connection lost",
+    "timestamp": "2024-01-15T10:25:00Z",
+    "severity": "warning"
+  }
+]
+```
+
+## Device Types and Capabilities
+
+### Light Devices
+**Supported Actions:**
+- `turn_on` / `turn_off`
+- `set_brightness` (0-100)
+- `set_color` (hex color)
+- `set_color_temperature` (kelvin)
+- `set_scene` (provider-specific)
+
+### Switch/Outlet Devices
+**Supported Actions:**
+- `turn_on` / `turn_off`
+- `set_power` (on/off)
+
+### Thermostat Devices
+**Supported Actions:**
+- `set_temperature` (celsius)
+- `set_mode` (heat/cool/auto/off)
+- `set_fan_speed` (auto/low/medium/high)
+
+### Sensor Devices
+**Supported Actions:**
+- `get_temperature`
+- `get_humidity`
+- `get_motion`
+- `get_contact` (open/closed)
+
+### Camera Devices
+**Supported Actions:**
+- `start_recording`
+- `stop_recording`
+- `take_snapshot`
+- `set_motion_detection`
+
+### Lock Devices
+**Supported Actions:**
+- `lock` / `unlock`
+- `get_lock_status`
+
+## Room Management
+
+### Get All Rooms
+
+<Endpoint method="GET" path="/rooms" />
+
+Get all rooms with their associated devices.
+
+**Response:**
+```json
+[
+  {
+    "room_id": "living-room",
+    "name": "Living Room",
+    "floor": "Ground Floor",
+    "devices": [
+      {
+        "device_id": "device-123",
+        "name": "Living Room Light",
+        "type": "light"
+      },
+      {
+        "device_id": "device-456",
+        "name": "Living Room Fan",
+        "type": "fan"
+      }
+    ],
+    "device_count": 2
+  }
+]
+```
+
+### Create Room
+
+<Endpoint method="POST" path="/rooms" />
+
+Create a new room and assign devices to it.
+
+**Request Body:**
+```json
+{
+  "name": "Home Office",
+  "floor": "First Floor",
+  "device_ids": ["device-789", "device-101"]
+}
+```
+
+### Move Devices to Room
+
+<Endpoint method="POST" path="/rooms/{room_id}/devices" />
+
+Move devices to a specific room.
+
+**Request Body:**
+```json
+{
+  "device_ids": ["device-123", "device-456"]
+}
+```
+
+## Provider Management
+
+### Get Providers
+
+<Endpoint method="GET" path="/providers" />
+
+Get all configured device providers.
+
+**Response:**
+```json
+[
+  {
+    "provider_id": "philips_hue",
+    "name": "Philips Hue",
+    "status": "connected",
+    "device_count": 15,
+    "capabilities": ["lights", "switches", "sensors"],
+    "last_sync": "2024-01-15T10:00:00Z"
+  },
+  {
+    "provider_id": "smartthings",
+    "name": "SmartThings",
+    "status": "connected",
+    "device_count": 30,
+    "capabilities": ["lights", "switches", "thermostats", "sensors"],
+    "last_sync": "2024-01-15T10:00:00Z"
+  }
+]
+```
+
+### Add Provider
+
+<Endpoint method="POST" path="/providers" />
+
+Add a new device provider.
+
+**Request Body:**
+```json
+{
+  "provider_id": "tuya",
+  "name": "Tuya/Smart Life",
+  "credentials": {
+    "client_id": "your_client_id",
+    "client_secret": "your_client_secret",
+    "username": "your_username",
+    "password": "your_password"
+  }
+}
+```
+
+## Error Handling
+
+### Common Error Responses
+
+| Status Code | Description | Solution |
+|-------------|-------------|----------|
+| `400` | Bad Request | Check request format and required headers |
+| `401` | Unauthorized | Verify AWS credentials and signature |
+| `404` | Device Not Found | Verify device ID and permissions |
+| `422` | Provider Error | Check provider-specific error details |
+| `500` | Internal Server Error | Contact support if persistent |
+
+### Provider-Specific Errors
+
+```json
+{
+  "error": "Provider connection failed",
+  "error_code": "PROVIDER_ERROR",
+  "provider": "philips_hue",
+  "details": {
+    "hue_error": "Bridge not found",
+    "hue_error_code": "BRIDGE_OFFLINE"
+  },
+  "suggested_action": "Check Hue bridge connection and try again"
+}
+```
+
+## Rate Limiting
+
+The Devices service implements provider-aware rate limiting:
+
+- **General Operations**: 100 requests per minute per unit
+- **Device Control**: 50 control operations per minute per device
+- **Discovery**: 10 discovery operations per minute per unit
+- **Provider Sync**: 5 sync operations per minute per provider
+
+## Best Practices
+
+### 1. Bulk Device Control
+```javascript
+// Control multiple devices efficiently
+const response = await fetch('/v1/devices/control', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'AWS4-HMAC-SHA256 ...',
+    'x-unit-id': 'unit-123',
+    'x-user-id': 'user-456'
+  },
+  body: JSON.stringify({
+    user_id: 'user-456',
+    unit_id: 'unit-123',
+    commands: [
+      { device_id: 'light-1', action: 'turn_on' },
+      { device_id: 'light-2', action: 'turn_on' },
+      { device_id: 'thermostat-1', action: 'set_temperature', parameters: { temperature: 22 } }
+    ]
+  })
+});
+```
+
+### 2. Device Status Monitoring
+```javascript
+// Monitor device status changes
+const checkDeviceStatus = async (deviceId) => {
+  const response = await fetch(`/v1/devices/${deviceId}`);
+  const device = await response.json();
+  
+  if (device.status === 'offline') {
+    console.warn(`Device ${device.name} is offline`);
+    // Implement retry logic or alert user
+  }
+  
+  return device;
+};
+```
+
+### 3. Provider Error Handling
+```javascript
+const controlDevice = async (deviceId, action, parameters = {}) => {
+  try {
+    const response = await fetch('/v1/devices/control', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: 'user-123',
+        unit_id: 'unit-456',
+        commands: [{ device_id: deviceId, action, parameters }]
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (!result.success) {
+      const failedCommand = result.results.find(r => r.status === 'failed');
+      if (failedCommand) {
+        throw new Error(`Provider error: ${failedCommand.provider_response}`);
+      }
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Device control failed:', error.message);
+    throw error;
+  }
+};
+```
+
+## Integration Examples
+
+### Basic Device Control
+```javascript
+const turnOnLight = async (deviceId) => {
+  const response = await fetch('https://devices-prod-ae.roomi-services.com/v1/devices/control', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...',
+      'x-unit-id': 'unit-123',
+      'x-user-id': 'user-456'
+    },
+    body: JSON.stringify({
+      user_id: 'user-456',
+      unit_id: 'unit-123',
+      commands: [
+        { device_id: deviceId, action: 'turn_on' }
+      ]
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### Multi-Provider Setup
+```javascript
+// Get all devices from multiple providers
+const getAllDevices = async () => {
+  const response = await fetch('/v1/devices');
+  const devices = await response.json();
+  
+  // Group devices by provider
+  const devicesByProvider = devices.reduce((acc, device) => {
+    if (!acc[device.provider]) {
+      acc[device.provider] = [];
+    }
+    acc[device.provider].push(device);
+    return acc;
+  }, {});
+  
+  console.log('Devices by provider:', devicesByProvider);
+  return devices;
+};
+```
+
+## Next Steps
+
+- [AI Service API](/api-reference/ai) - Intelligent device orchestration
+- [Handler Service API](/api-reference/handler) - Database and communication operations
+- [Device Integration Guide](/guides/device-integration) - Detailed device integration
+- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies 

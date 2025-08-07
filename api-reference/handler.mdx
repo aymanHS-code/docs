@@ -1,0 +1,677 @@
+---
+title: "Handler Service API"
+description: "Complete API reference for Roomi's Handler service - database operations and inter-service communication hub"
+---
+
+## Overview
+
+The Handler service is the central nervous system of the Roomi platform. It manages all database operations, handles inter-service communication, and coordinates data flow between different services. The Handler acts as a communication hub, ensuring data consistency and providing a unified interface for all system operations.
+
+## Base URL
+
+```
+https://handler-{environment}-{region}.roomi-services.com/v1/
+```
+
+## Authentication
+
+All API endpoints require AWS Signature Version 4 (SigV4) authentication:
+
+```http
+Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
+X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
+X-Amz-Date: 20240115T120000Z
+```
+
+## Core Capabilities
+
+### Database Operations
+- **Data Persistence**: CRUD operations for all system entities
+- **Data Synchronization**: Real-time sync between services
+- **Transaction Management**: ACID-compliant database transactions
+- **Data Validation**: Schema validation and data integrity checks
+
+### Inter-Service Communication
+- **Message Routing**: Route messages between services
+- **Event Handling**: Process and distribute system events
+- **Service Discovery**: Locate and connect to other services
+- **Load Balancing**: Distribute requests across service instances
+
+### System State Management
+- **State Tracking**: Monitor system and device states
+- **Configuration Management**: Centralized system configuration
+- **Audit Logging**: Track all system operations
+- **Health Monitoring**: Monitor service health and performance
+
+## API Endpoints
+
+### Health Check
+
+<Endpoint method="GET" path="/health" />
+
+Check the health status of the Handler service and connected services.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "message": "Handler service is operational",
+  "connected_services": {
+    "ai": "connected",
+    "devices": "connected",
+    "auth": "connected",
+    "logger": "connected",
+    "services": "connected"
+  },
+  "database": {
+    "status": "connected",
+    "latency": "2ms",
+    "connections": 15
+  },
+  "message_queue": {
+    "status": "operational",
+    "pending_messages": 5,
+    "processed_today": 1250
+  },
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+### Database Operations
+
+#### Create Record
+
+<Endpoint method="POST" path="/database/{table}" />
+
+Create a new record in the specified database table.
+
+**Request Body:**
+```json
+{
+  "operation": "create",
+  "data": {
+    "user_id": "user-123",
+    "device_id": "device-456",
+    "action": "turn_on",
+    "timestamp": "2024-01-15T10:00:00Z",
+    "status": "completed"
+  },
+  "options": {
+    "validate_schema": true,
+    "return_created": true
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "record_id": "record-789",
+  "created_at": "2024-01-15T10:00:00Z",
+  "data": {
+    "id": "record-789",
+    "user_id": "user-123",
+    "device_id": "device-456",
+    "action": "turn_on",
+    "timestamp": "2024-01-15T10:00:00Z",
+    "status": "completed"
+  }
+}
+```
+
+#### Query Records
+
+<Endpoint method="POST" path="/database/{table}/query" />
+
+Query records from the specified database table.
+
+**Request Body:**
+```json
+{
+  "operation": "query",
+  "filters": {
+    "user_id": "user-123",
+    "timestamp": {
+      "gte": "2024-01-01T00:00:00Z",
+      "lte": "2024-01-15T23:59:59Z"
+    }
+  },
+  "sort": {
+    "field": "timestamp",
+    "order": "desc"
+  },
+  "limit": 50,
+  "offset": 0
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "records": [
+    {
+      "id": "record-789",
+      "user_id": "user-123",
+      "device_id": "device-456",
+      "action": "turn_on",
+      "timestamp": "2024-01-15T10:00:00Z",
+      "status": "completed"
+    }
+  ],
+  "total_count": 125,
+  "has_more": true
+}
+```
+
+#### Update Record
+
+<Endpoint method="PUT" path="/database/{table}/{record_id}" />
+
+Update an existing record in the database.
+
+**Request Body:**
+```json
+{
+  "operation": "update",
+  "data": {
+    "status": "failed",
+    "error_message": "Device not found"
+  },
+  "options": {
+    "validate_schema": true,
+    "return_updated": true
+  }
+}
+```
+
+#### Delete Record
+
+<Endpoint method="DELETE" path="/database/{table}/{record_id}" />
+
+Delete a record from the database.
+
+**Response:**
+```json
+{
+  "success": true,
+  "deleted_count": 1,
+  "message": "Record deleted successfully"
+}
+```
+
+### Message Routing
+
+#### Send Message
+
+<Endpoint method="POST" path="/messages/send" />
+
+Send a message to another service through the Handler.
+
+**Request Body:**
+```json
+{
+  "source_service": "ai",
+  "target_service": "devices",
+  "message_type": "device_control",
+  "payload": {
+    "user_id": "user-123",
+    "unit_id": "unit-456",
+    "commands": [
+      {
+        "device_id": "device-789",
+        "action": "turn_on"
+      }
+    ]
+  },
+  "priority": "high",
+  "timeout": 30
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message_id": "msg-123",
+  "status": "sent",
+  "target_service": "devices",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+#### Get Message Status
+
+<Endpoint method="GET" path="/messages/{message_id}/status" />
+
+Check the status of a sent message.
+
+**Response:**
+```json
+{
+  "message_id": "msg-123",
+  "status": "delivered",
+  "source_service": "ai",
+  "target_service": "devices",
+  "sent_at": "2024-01-15T10:00:00Z",
+  "delivered_at": "2024-01-15T10:00:01Z",
+  "response": {
+    "success": true,
+    "devices_controlled": 1
+  }
+}
+```
+
+### Event Handling
+
+#### Publish Event
+
+<Endpoint method="POST" path="/events/publish" />
+
+Publish an event to the event system.
+
+**Request Body:**
+```json
+{
+  "event_type": "device_status_changed",
+  "source_service": "devices",
+  "payload": {
+    "device_id": "device-456",
+    "old_status": "offline",
+    "new_status": "online",
+    "timestamp": "2024-01-15T10:00:00Z"
+  },
+  "subscribers": ["ai", "logger"]
+}
+```
+
+#### Subscribe to Events
+
+<Endpoint method="POST" path="/events/subscribe" />
+
+Subscribe to specific event types.
+
+**Request Body:**
+```json
+{
+  "service_name": "ai",
+  "event_types": [
+    "device_status_changed",
+    "user_action_completed",
+    "system_alert"
+  ],
+  "webhook_url": "https://ai-service.com/webhook",
+  "options": {
+    "retry_on_failure": true,
+    "max_retries": 3
+  }
+}
+```
+
+### Service Discovery
+
+#### Get Service Information
+
+<Endpoint method="GET" path="/services/{service_name}" />
+
+Get information about a specific service.
+
+**Response:**
+```json
+{
+  "service_name": "devices",
+  "status": "healthy",
+  "endpoints": [
+    {
+      "name": "control_devices",
+      "url": "https://devices-prod-ae.roomi-services.com/v1/devices/control",
+      "method": "POST",
+      "rate_limit": "100/minute"
+    }
+  ],
+  "health_check": {
+    "last_check": "2024-01-15T10:00:00Z",
+    "response_time": "45ms",
+    "status": "healthy"
+  },
+  "load_balancer": {
+    "active_instances": 3,
+    "total_requests": 1250,
+    "average_response_time": "120ms"
+  }
+}
+```
+
+#### List All Services
+
+<Endpoint method="GET" path="/services" />
+
+Get a list of all available services.
+
+**Response:**
+```json
+{
+  "services": [
+    {
+      "name": "ai",
+      "status": "healthy",
+      "endpoint": "https://ai-prod-ae.roomi-services.com/v1/",
+      "last_seen": "2024-01-15T10:00:00Z"
+    },
+    {
+      "name": "devices",
+      "status": "healthy",
+      "endpoint": "https://devices-prod-ae.roomi-services.com/v1/",
+      "last_seen": "2024-01-15T10:00:00Z"
+    },
+    {
+      "name": "auth",
+      "status": "healthy",
+      "endpoint": "https://auth-prod-ae.roomi-services.com/v1/",
+      "last_seen": "2024-01-15T10:00:00Z"
+    }
+  ],
+  "total_services": 6,
+  "healthy_services": 6
+}
+```
+
+### Configuration Management
+
+#### Get Configuration
+
+<Endpoint method="GET" path="/config/{config_key}" />
+
+Get system configuration for a specific key.
+
+**Response:**
+```json
+{
+  "config_key": "database_settings",
+  "value": {
+    "connection_pool_size": 20,
+    "max_connections": 100,
+    "timeout": 30,
+    "retry_attempts": 3
+  },
+  "last_updated": "2024-01-15T10:00:00Z",
+  "version": "1.2.0"
+}
+```
+
+#### Update Configuration
+
+<Endpoint method="PUT" path="/config/{config_key}" />
+
+Update system configuration.
+
+**Request Body:**
+```json
+{
+  "value": {
+    "connection_pool_size": 25,
+    "max_connections": 120,
+    "timeout": 35,
+    "retry_attempts": 5
+  },
+  "reason": "Performance optimization",
+  "notify_services": true
+}
+```
+
+### Audit Logging
+
+#### Get Audit Logs
+
+<Endpoint method="GET" path="/audit/logs" />
+
+Retrieve audit logs for system operations.
+
+**Query Parameters:**
+- `service`: Filter by service name
+- `operation`: Filter by operation type
+- `user_id`: Filter by user ID
+- `start_date`: Start date for filtering
+- `end_date`: End date for filtering
+- `limit`: Number of records to return
+- `offset`: Offset for pagination
+
+**Response:**
+```json
+{
+  "logs": [
+    {
+      "log_id": "log-123",
+      "timestamp": "2024-01-15T10:00:00Z",
+      "service": "ai",
+      "operation": "process_message",
+      "user_id": "user-123",
+      "unit_id": "unit-456",
+      "details": {
+        "message_length": 45,
+        "processing_time": "1.2s",
+        "actions_taken": 2
+      },
+      "ip_address": "192.168.1.100",
+      "user_agent": "RoomiApp/1.0.0"
+    }
+  ],
+  "total_count": 1250,
+  "has_more": true
+}
+```
+
+## Database Schema
+
+### Common Tables
+
+| Table Name | Description | Key Fields |
+|------------|-------------|------------|
+| `users` | User information and preferences | `user_id`, `email`, `phone` |
+| `devices` | Device information and states | `device_id`, `provider`, `type` |
+| `actions` | User actions and commands | `action_id`, `user_id`, `device_id` |
+| `events` | System events and notifications | `event_id`, `event_type`, `timestamp` |
+| `messages` | Inter-service messages | `message_id`, `source`, `target` |
+| `audit_logs` | System audit trail | `log_id`, `service`, `operation` |
+
+### Schema Validation
+
+The Handler service validates all data against predefined schemas:
+
+```json
+{
+  "device_action": {
+    "required": ["user_id", "device_id", "action"],
+    "properties": {
+      "user_id": {"type": "string", "pattern": "^user-\\d+$"},
+      "device_id": {"type": "string", "pattern": "^device-\\d+$"},
+      "action": {"type": "string", "enum": ["turn_on", "turn_off", "set_brightness"]},
+      "parameters": {"type": "object", "optional": true}
+    }
+  }
+}
+```
+
+## Error Handling
+
+### Common Error Responses
+
+| Status Code | Description | Solution |
+|-------------|-------------|----------|
+| `400` | Bad Request | Check request format and required fields |
+| `401` | Unauthorized | Verify AWS credentials and signature |
+| `404` | Service/Record Not Found | Verify service name or record ID |
+| `422` | Validation Error | Check data against schema requirements |
+| `500` | Internal Server Error | Contact support if persistent |
+| `503` | Service Unavailable | Service temporarily unavailable |
+
+### Error Response Format
+
+```json
+{
+  "error": "Database connection failed",
+  "error_code": "DB_CONNECTION_ERROR",
+  "details": {
+    "service": "handler",
+    "operation": "create_record",
+    "table": "actions"
+  },
+  "suggested_action": "Retry the operation after a few seconds",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```
+
+## Rate Limiting
+
+The Handler service implements intelligent rate limiting:
+
+- **Database Operations**: 1000 operations per minute per service
+- **Message Routing**: 500 messages per minute per service
+- **Event Publishing**: 200 events per minute per service
+- **Configuration Updates**: 10 updates per minute per service
+
+## Best Practices
+
+### 1. Database Operations
+```javascript
+// Create a record with validation
+const createRecord = async (table, data) => {
+  const response = await fetch(`/v1/database/${table}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      operation: 'create',
+      data,
+      options: {
+        validate_schema: true,
+        return_created: true
+      }
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### 2. Message Routing
+```javascript
+// Send a message to another service
+const sendMessage = async (targetService, messageType, payload) => {
+  const response = await fetch('/v1/messages/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      source_service: 'ai',
+      target_service: targetService,
+      message_type: messageType,
+      payload,
+      priority: 'normal',
+      timeout: 30
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### 3. Event Handling
+```javascript
+// Publish an event
+const publishEvent = async (eventType, payload) => {
+  const response = await fetch('/v1/events/publish', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      event_type: eventType,
+      source_service: 'ai',
+      payload,
+      subscribers: ['devices', 'logger']
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+## Integration Examples
+
+### Basic Database Operation
+```javascript
+const logUserAction = async (userId, deviceId, action) => {
+  const response = await fetch('https://handler-prod-ae.roomi-services.com/v1/database/actions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      operation: 'create',
+      data: {
+        user_id: userId,
+        device_id: deviceId,
+        action: action,
+        timestamp: new Date().toISOString(),
+        status: 'completed'
+      }
+    })
+  });
+  
+  return await response.json();
+};
+```
+
+### Service Communication
+```javascript
+// Send device control command through Handler
+const controlDevice = async (deviceId, action) => {
+  const response = await fetch('/v1/messages/send', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'AWS4-HMAC-SHA256 ...'
+    },
+    body: JSON.stringify({
+      source_service: 'ai',
+      target_service: 'devices',
+      message_type: 'device_control',
+      payload: {
+        user_id: 'user-123',
+        unit_id: 'unit-456',
+        commands: [
+          {
+            device_id: deviceId,
+            action: action
+          }
+        ]
+      }
+    })
+  });
+  
+  const result = await response.json();
+  
+  // Check message status
+  if (result.success) {
+    const status = await fetch(`/v1/messages/${result.message_id}/status`);
+    return await status.json();
+  }
+  
+  return result;
+};
+```
+
+## Next Steps
+
+- [AI Service API](/api-reference/ai) - Intelligent orchestration
+- [Devices Service API](/api-reference/devices) - Device control interface
+- [Handler Setup Guide](/guides/handler-setup) - Database and communication setup
+- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies 
