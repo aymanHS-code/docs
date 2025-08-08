@@ -3,11 +3,10 @@ title: "Roomi API Documentation"
 description: "Complete API documentation for Roomi's intelligent smart home platform"
 ---
 
-<Note>
-  Roomi is an intelligent smart home platform that provides a comprehensive suite of APIs for building next-generation smart home experiences.
-</Note>
+Roomi is an intelligent smart home platform that provides a comprehensive suite of APIs for building next-generation smart home experiences.
 
-## Welcome to Roomi API
+## \
+Welcome to Roomi API
 
 Roomi's platform is built on a microservices architecture with specialized services for different aspects of smart home management. Our platform consists of specialized services that work together to create a seamless, AI-powered smart home ecosystem.
 
@@ -18,32 +17,16 @@ Roomi's platform is built on a microservices architecture with specialized servi
 ## Platform Architecture
 
 <CardGroup cols={2}>
-  <Card
-    title="AI Service"
-    href="/api-reference/ai"
-    icon="brain"
-  >
+  <Card title="AI Service" icon="brain" href="/api-reference/ai">
     Central intelligence that orchestrates all other services
   </Card>
-  <Card
-    title="Devices Service"
-    href="/api-reference/devices"
-    icon="smartphone"
-  >
+  <Card title="Devices Service" icon="lightbulb-cfl" href="/api-reference/devices">
     Universal interface for controlling any smart device
   </Card>
-  <Card
-    title="Handler Service"
-    href="/api-reference/handler"
-    icon="database"
-  >
+  <Card title="Handler Service" icon="database" href="/api-reference/handler">
     Database operations and inter-service communication
   </Card>
-  <Card
-    title="Auth Service"
-    href="/api-reference/auth"
-    icon="shield"
-  >
+  <Card title="Auth Service" icon="shield" href="/api-reference/auth">
     Invite-only authentication and user management
   </Card>
 </CardGroup>
@@ -55,10 +38,10 @@ Roomi's platform is built on a microservices architecture with specialized servi
 The AI service is the central intelligence that orchestrates all other services. It processes natural language commands, makes intelligent decisions, and coordinates actions across the entire platform.
 
 <CardGroup cols={2}>
-  <Card title="Natural Language Processing" icon="message-circle">
+  <Card title="Natural Language Processing" icon="message-captions">
     Process and understand user commands in multiple languages
   </Card>
-  <Card title="Service Orchestration" icon="network">
+  <Card title="Service Orchestration" icon="chart-network">
     Coordinate actions across all platform services
   </Card>
   <Card title="Context Management" icon="brain">
@@ -69,46 +52,43 @@ The AI service is the central intelligence that orchestrates all other services.
   </Card>
 </CardGroup>
 
-
 ### Devices Service - Smart Device Abstraction
 
 The Devices service provides a unified interface for controlling any smart device, regardless of the underlying provider. It abstracts away the complexity of different smart home protocols and manufacturers.
 
 <CardGroup cols={2}>
-  <Card title="Universal Control" icon="zap">
+  <Card title="Universal Control" icon="bolt-lightning">
     Standardized commands for any smart home device
   </Card>
-  <Card title="Multi-Provider Support" icon="layers">
-    Support for Philips Hue, SmartThings, Tuya, and more
+  <Card title="Multi-Provider Support" icon="layer-group">
+    Support for Lifesmart, Philips Hue, SmartThings, Tuya, and more
   </Card>
-  <Card title="Device Discovery" icon="search">
+  <Card title="Device Discovery" icon="magnifying-glass">
     Automatic detection and registration of new devices
   </Card>
-  <Card title="Real-time Status" icon="activity">
-    Live device status monitoring and updates
+  <Card title="Real-time Status" icon="bell-on">
+    Live device status monitoring and updates for all device types on the platform
   </Card>
 </CardGroup>
-
 
 ### Handler Service - System Communication Hub
 
 The Handler service manages all database operations and inter-service communication. It acts as the central nervous system, handling data persistence and coordinating between different services.
 
 <CardGroup cols={2}>
-  <Card title="Database Operations" icon="database">
+  <Card title="Database Operations" icon="arrow-down-left">
     CRUD operations and data management
   </Card>
-  <Card title="Message Routing" icon="network">
+  <Card title="Message Routing" icon="route">
     Inter-service communication routing
   </Card>
-  <Card title="Event Handling" icon="activity">
+  <Card title="Event Handling" icon="arrow-progress">
     Event processing and message queuing
   </Card>
-  <Card title="System State" icon="settings">
+  <Card title="System State" icon="braille">
     System state management and configuration
   </Card>
 </CardGroup>
-
 
 ## Support Services
 
@@ -117,7 +97,7 @@ The Handler service manages all database operations and inter-service communicat
 Our invite-only authentication system provides secure user management and access control for the Roomi platform.
 
 <CardGroup cols={2}>
-  <Card title="Invite-Only Registration" icon="mail">
+  <Card title="Invite-Only Registration" icon="mailbox">
     Secure invitation system with access control
   </Card>
   <Card title="Multi-Factor Authentication" icon="shield">
@@ -131,26 +111,24 @@ Our invite-only authentication system provides secure user management and access
   </Card>
 </CardGroup>
 
-
 ### Logger Service - CloudWatch Integration
 
 The Logger service provides centralized logging and monitoring capabilities, integrating with AWS CloudWatch for comprehensive system observability.
 
 <CardGroup cols={2}>
-  <Card title="Structured Logging" icon="file-text">
+  <Card title="Structured Logging" icon="file-circle-check">
     CloudWatch integration with structured JSON logs
   </Card>
-  <Card title="Performance Monitoring" icon="activity">
-    Real-time metrics collection and monitoring
+  <Card title="Performance Monitoring" icon="eye">
+    Real-time metrics collection and monitoring of operations
   </Card>
-  <Card title="Error Tracking" icon="alert-triangle">
+  <Card title="Error Tracking" icon="triangle-exclamation">
     Error aggregation and root cause analysis
   </Card>
   <Card title="Audit Trail" icon="shield">
     User actions and system events tracking
   </Card>
 </CardGroup>
-
 
 ### Services Platform - Third-Party Integration
 
@@ -166,11 +144,10 @@ The Services platform handles all third-party integrations and external API comm
   <Card title="Property Developer APIs" icon="building">
     Custom integrations and property-specific services
   </Card>
-  <Card title="Data Transformation" icon="refresh-cw">
+  <Card title="Data Transformation" icon="align-justify">
     Consistent data models across different providers
   </Card>
 </CardGroup>
-
 
 ## Getting Started
 
@@ -186,7 +163,7 @@ Choose your path to get started with Roomi APIs:
   <Card title="AI Integration" icon="brain" href="/api-reference/ai">
     Integrate with Roomi's AI service for intelligent automation.
   </Card>
-  <Card title="Device Control" icon="smartphone" href="/api-reference/devices">
+  <Card title="Device Control" icon="lightbulb-cfl" href="/api-reference/devices">
     Control smart devices through our unified interface.
   </Card>
 </CardGroup>
@@ -199,7 +176,7 @@ Explore the complete API documentation for each service:
   <Card title="AI Service API" icon="brain" href="/api-reference/ai">
     Complete API reference for the AI service - the brain of the system.
   </Card>
-  <Card title="Devices Service API" icon="smartphone" href="/api-reference/devices">
+  <Card title="Devices Service API" icon="lightbulb-cfl" href="/api-reference/devices">
     Universal device control interface for all smart home devices.
   </Card>
   <Card title="Handler Service API" icon="database" href="/api-reference/handler">
@@ -208,7 +185,7 @@ Explore the complete API documentation for each service:
   <Card title="Auth Service API" icon="shield" href="/api-reference/auth">
     Private authentication system for invite-only access.
   </Card>
-  <Card title="Logger Service API" icon="file-text" href="/api-reference/logger">
+  <Card title="Logger Service API" icon="file-circle-check" href="/api-reference/logger">
     CloudWatch logging and monitoring capabilities.
   </Card>
   <Card title="Services Platform API" icon="globe" href="/api-reference/services">

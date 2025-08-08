@@ -12,32 +12,16 @@ description: "Understanding how Roomi's microservices architecture works togethe
 Roomi's microservices architecture is designed for scalability, reliability, and maintainability. Each service operates independently while maintaining seamless communication through well-defined APIs and the Handler service as the central coordination hub.
 
 <CardGroup cols={2}>
-  <Card
-    title="Scalability"
-    href="#scalability"
-    icon="trending-up"
-  >
+  <Card title="Scalability" icon="arrow-trend-up" href="#scalability">
     Independent service scaling based on demand
   </Card>
-  <Card
-    title="Reliability"
-    href="#reliability"
-    icon="shield"
-  >
+  <Card title="Reliability" icon="shield" href="#reliability">
     Fault isolation and graceful degradation
   </Card>
-  <Card
-    title="Flexibility"
-    href="#flexibility"
-    icon="settings"
-  >
+  <Card title="Flexibility" icon="settings" href="#flexibility">
     Easy service updates and feature additions
   </Card>
-  <Card
-    title="Maintainability"
-    href="#maintainability"
-    icon="wrench"
-  >
+  <Card title="Maintainability" icon="wrench" href="#maintainability">
     Clear service boundaries and responsibilities
   </Card>
 </CardGroup>
@@ -62,6 +46,7 @@ Roomi's microservices architecture is designed for scalability, reliability, and
 </CardGroup>
 
 **Communication Pattern:**
+
 <CodeGroup>
 
 ```mermaid
@@ -74,6 +59,7 @@ graph LR
     C --> B
     B --> A
 ```
+
 
 ```javascript
 // Example: User command flow
@@ -111,6 +97,7 @@ const processCommand = async (userCommand) => {
 </CardGroup>
 
 **Communication Pattern:**
+
 <CodeGroup>
 
 ```mermaid
@@ -120,6 +107,7 @@ graph LR
     C --> D[Smart Device Provider]
     D --> E[Physical Device]
 ```
+
 
 ```javascript
 // Example: Device control flow
@@ -157,6 +145,7 @@ const controlDevice = async (deviceId, action) => {
 </CardGroup>
 
 **Communication Pattern:**
+
 <CodeGroup>
 
 ```mermaid
@@ -166,6 +155,7 @@ graph LR
     B --> D[Database]
     B --> E[Event Bus]
 ```
+
 
 ```javascript
 // Example: Inter-service communication

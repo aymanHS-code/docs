@@ -1,150 +1,226 @@
 ---
 title: "Authentication"
-description: "Learn how to authenticate with Roomi using AWS SigV4"
+description: "Learn how to authenticate with Roomi"
 ---
 
 <Check>
-  Roomi uses AWS Signature Version 4 (SigV4) for secure API authentication. All API requests must include proper authentication headers and follow AWS SigV4 signing requirements.
+  Roomi uses AWS Signature Version 4 (SigV4) for secure API authentication.
+
+  All API requests must include proper authentication headers
 </Check>
 
 ## Overview
 
 Roomi SDK supports multiple authentication methods to provide secure and flexible access to our platform APIs. All authentication methods are built on top of AWS Signature Version 4 for maximum security.
 
-<CardGroup cols={2}>
-  <Card title="AWS SigV4 Authentication" icon="shield">
-    Primary authentication method for all API calls
-  </Card>
-  <Card title="OTP Authentication" icon="smartphone">
-    Phone number verification for user authentication
-  </Card>
-  <Card title="UAE Pass Integration" icon="user-check">
-    Government-issued digital identity authentication
-  </Card>
-  <Card title="Session Management" icon="key">
-    JWT tokens for user sessions and access control
-  </Card>
-</CardGroup>
+<Card title="AWS SigV4" icon="shield">
+  Primary authentication method for all API calls
+</Card>
 
-## AWS SigV4 Authentication
+## Required Headers
 
-All Roomi API endpoints require AWS Signature Version 4 authentication. This ensures that all API calls are properly authenticated and authorized.
+<Note>
+  Every API request must include these headers alongside AWS Signature
 
-### Required Headers
+  ```bash Required Headers
+  x-unit-id: unit-12345
+  x-user-id: user-67890
+  ```
+</Note>
 
-Every API request must include these headers alongside AWS SigV4:
+## Examples
 
-<CodeGroup>
-
-```bash
-# Required Headers
-x-unit-id: unit-12345
-x-user-id: user-67890
-```
-
-```javascript
-// Example with AWS SDK v3
-import { SignatureV4 } from "@aws-sdk/signature-v4";
-import { Sha256 } from "@aws-crypto/sha256-js";
-
-const signRequest = async (request, credentials) => {
-  const signer = new SignatureV4({
-    credentials,
-    region: "me-central-1",
-    service: "execute-api",
-    sha256: Sha256,
-  });
-
-  const signedRequest = await signer.sign(request);
-  return signedRequest;
-};
-```
-
-</CodeGroup>
-
-### Implementation Examples
-
-<CardGroup cols={2}>
-  <Card title="JavaScript/Node.js" icon="code">
-    AWS SDK v3 implementation for Node.js applications
-  </Card>
-  <Card title="Python" icon="code">
-    Boto3 implementation for Python applications
-  </Card>
-  <Card title="Java" icon="code">
-    AWS SDK for Java implementation
-  </Card>
-  <Card title="C#" icon="code">
-    AWS SDK for .NET implementation
-  </Card>
-</CardGroup>
-
-#### JavaScript/Node.js Example
-
-<CodeGroup>
-
-```javascript
-// Complete authentication example
-import { SignatureV4 } from "@aws-sdk/signature-v4";
-import { Sha256 } from "@aws-crypto/sha256-js";
-
-const authenticateRequest = async (endpoint, method, body) => {
-  const credentials = {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  };
-
-  const signer = new SignatureV4({
-    credentials,
-    region: "me-central-1",
-    service: "execute-api",
-    sha256: Sha256,
-  });
-
-  const request = {
-    method: method,
-    hostname: endpoint,
-    path: "/v1/health",
-    headers: {
-      "Content-Type": "application/json",
-      "x-unit-id": "unit-12345",
-      "x-user-id": "user-67890"
-    },
-    body: body ? JSON.stringify(body) : undefined
-  };
-
-  const signedRequest = await signer.sign(request);
-  return signedRequest;
-};
-```
-
-```python
-# Python example with boto3
-import boto3
-import json
-import requests
-from botocore.auth import SigV4Auth
-from botocore.awsrequest import AWSRequest
-
-def authenticate_request(endpoint, method, body=None):
-    session = boto3.Session()
-    credentials = session.get_credentials()
-    region = 'me-central-1'
+<AccordionGroup>
+  <Accordion title="Python">
+    ```python
+    # Python example with boto3
+    import boto3
+    import json
+    import requests
+    from botocore.auth import SigV4Auth
+    from botocore.awsrequest import AWSRequest
     
-    request = AWSRequest(
-        method=method,
-        url=endpoint,
-        data=json.dumps(body) if body else None,
-        headers={
-            'Content-Type': 'application/json',
-            'x-unit-id': 'unit-12345',
-            'x-user-id': 'user-67890'
+    def authenticate_request(endpoint, method, body=None):
+        session = boto3.Session()
+        credentials = session.get_credentials()
+        region = 'me-central-1'
+        
+        request = AWSRequest(
+            method=method,
+            url=endpoint,
+            data=json.dumps(body) if body else None,
+            headers={
+                'Content-Type': 'application/json',
+                'x-unit-id': 'unit-12345',
+                'x-user-id': 'user-67890'
+            }
+        )
+        
+        SigV4Auth(credentials, 'execute-api', region).add_auth(request)
+        
+        return request
+    ```
+  </Accordion>
+  <Accordion title="JavaScript/Node.js">
+    ```javascript
+    // Complete authentication example
+    import { SignatureV4 } from "@aws-sdk/signature-v4";
+    import { Sha256 } from "@aws-crypto/sha256-js";
+    
+    const authenticateRequest = async (endpoint, method, body) => {
+      const credentials = {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      };
+    
+      const signer = new SignatureV4({
+        credentials,
+        region: "me-central-1",
+        service: "execute-api",
+        sha256: Sha256,
+      });
+    
+      const request = {
+        method: method,
+        hostname: endpoint,
+        path: "/v1/health",
+        headers: {
+          "Content-Type": "application/json",
+          "x-unit-id": "unit-12345",
+          "x-user-id": "user-67890"
+        },
+        body: body ? JSON.stringify(body) : undefined
+      };
+    
+      const signedRequest = await signer.sign(request);
+      return signedRequest;
+    };
+    ```
+  </Accordion>
+  <Accordion title="C++">
+    ```bash
+    #include <aws/core/Aws.h>
+    #include <aws/core/auth/AWSCredentials.h>
+    #include <aws/core/http/HttpRequest.h>
+    #include <aws/core/auth/AWSAuthSigner.h>
+    #include <aws/core/utils/memory/stl/AWSStringStream.h>
+    
+    Aws::Http::HttpRequestOutcome AuthenticateRequest(
+        const Aws::String& endpoint,
+        const Aws::Http::HttpMethod method,
+        const Aws::String& body = "")
+    {
+        Aws::Auth::AWSCredentials credentials(
+            std::getenv("AWS_ACCESS_KEY_ID"),
+            std::getenv("AWS_SECRET_ACCESS_KEY")
+        );
+    
+        Aws::StringStream ss;
+        ss << "https://" << endpoint << "/v1/health";
+    
+        auto request = Aws::Http::CreateHttpRequest(
+            ss.str(),
+            method,
+            Aws::Utils::Stream::DefaultResponseStreamFactoryMethod
+        );
+    
+        request->SetHeaderValue("Content-Type", "application/json");
+        request->SetHeaderValue("x-unit-id", "unit-12345");
+        request->SetHeaderValue("x-user-id", "user-67890");
+    
+        if (!body.empty()) {
+            auto bodyStream = Aws::MakeShared<Aws::StringStream>("BodyStream");
+            *bodyStream << body;
+            request->AddContentBody(bodyStream);
         }
-    )
     
-    SigV4Auth(credentials, 'execute-api', region).add_auth(request)
+        Aws::Auth::AWSAuthV4Signer signer(
+            Aws::MakeShared<Aws::Auth::SimpleAWSCredentialsProvider>("Signer", credentials),
+            "execute-api",
+            "me-central-1"
+        );
     
-    return request
-```
-
-</CodeGroup>
+        signer.SignRequest(*request);
+    
+        // Now you can send the request with Aws::Http::HttpClient
+        return Aws::Http::HttpRequestOutcome(request);
+    }
+    
+    int main() {
+        Aws::SDKOptions options;
+        Aws::InitAPI(options);
+        {
+            auto signedRequest = AuthenticateRequest(
+                "{service}-{env}-{region}.roomi-services.com",
+                Aws::Http::HttpMethod::HTTP_GET
+            );
+            // Print signed headers
+            for (auto& header : signedRequest.GetResult()->GetHeaders()) {
+                std::cout << header.first << ": " << header.second << std::endl;
+            }
+        }
+        Aws::ShutdownAPI(options);
+        return 0;
+    }
+    
+    ```
+  </Accordion>
+  <Accordion title="Java">
+    ```java
+    import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+    import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+    import software.amazon.awssdk.auth.signer.Aws4Signer;
+    import software.amazon.awssdk.core.sync.RequestBody;
+    import software.amazon.awssdk.http.SdkHttpFullRequest;
+    import software.amazon.awssdk.http.SdkHttpMethod;
+    import software.amazon.awssdk.regions.Region;
+    
+    import java.net.URI;
+    import java.util.HashMap;
+    import java.util.Map;
+    
+    public class SigV4Example {
+    
+        public static SdkHttpFullRequest authenticateRequest(String endpoint, SdkHttpMethod method, String body) {
+            AwsBasicCredentials awsCreds = AwsBasicCredentials.create(
+                    System.getenv("AWS_ACCESS_KEY_ID"),
+                    System.getenv("AWS_SECRET_ACCESS_KEY")
+            );
+    
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/json");
+            headers.put("x-unit-id", "unit-12345");
+            headers.put("x-user-id", "user-67890");
+    
+            SdkHttpFullRequest unsignedRequest = SdkHttpFullRequest.builder()
+                    .method(method)
+                    .uri(URI.create("https://" + endpoint + "/v1/health"))
+                    .headers(headers)
+                    .contentStreamProvider(body != null ? RequestBody.fromString(body).contentStreamProvider() : null)
+                    .build();
+    
+            Aws4Signer signer = Aws4Signer.create();
+    
+            return signer.sign(unsignedRequest, software.amazon.awssdk.auth.signer.params.Aws4SignerParams.builder()
+                    .signingRegion(Region.of("me-central-1"))
+                    .signingName("execute-api")
+                    .awsCredentials(awsCreds)
+                    .build());
+        }
+    
+        public static void main(String[] args) {
+            SdkHttpFullRequest signedRequest = authenticateRequest(
+                    "{service}-{env}-{region}.roomi-services.com",
+                    SdkHttpMethod.GET,
+                    null
+            );
+    
+            signedRequest.headers().forEach((k, v) -> {
+                System.out.println(k + ": " + String.join(",", v));
+            });
+        }
+    }
+    
+    ```
+  </Accordion>
+</AccordionGroup>
