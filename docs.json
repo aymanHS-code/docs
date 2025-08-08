@@ -42,26 +42,10 @@
             ]
           }
         ]
-      },
-      {
-        "tab": "Guides",
-        "groups": [
-          {
-            "group": "Integration",
-            "pages": [
-              "guides/integration-overview"
-            ]
-          }
-        ]
       }
     ],
     "global": {
       "anchors": [
-        {
-          "anchor": "API Reference",
-          "href": "https://roomi.mintlify.app/api-reference",
-          "icon": "code-simple"
-        },
         {
           "anchor": "Website",
           "href": "https://roomi.ai",
