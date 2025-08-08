@@ -17,8 +17,7 @@
             "group": "Introduction",
             "pages": [
               "index",
-              "authentication",
-              "configuration"
+              "authentication"
             ]
           }
         ]
