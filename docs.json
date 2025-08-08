@@ -58,19 +58,9 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://docs.roomi.ai",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://community.roomi.ai",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://blog.roomi.ai",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://roomi.ai",
+          "icon": "globe"
         }
       ]
     }
