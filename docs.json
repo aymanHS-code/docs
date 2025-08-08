@@ -20,13 +20,6 @@
               "authentication",
               "configuration"
             ]
-          },
-          {
-            "group": "Architecture",
-            "pages": [
-              "architecture-overview",
-              "development"
-            ]
           }
         ]
       },
