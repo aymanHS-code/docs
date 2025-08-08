@@ -3,251 +3,299 @@ title: "Architecture Overview"
 description: "Understanding how Roomi's microservices architecture works together"
 ---
 
+<Check>
+  Roomi is built on a modern microservices architecture that provides scalability, reliability, and flexibility. Each service has a specific responsibility and communicates with others through well-defined APIs.
+</Check>
+
 ## Roomi Platform Architecture
 
-Roomi is built on a modern microservices architecture that provides scalability, reliability, and flexibility. Each service has a specific responsibility and communicates with others through well-defined APIs.
+Roomi's microservices architecture is designed for scalability, reliability, and maintainability. Each service operates independently while maintaining seamless communication through well-defined APIs and the Handler service as the central coordination hub.
 
-## Service Architecture
-
-![Conversational AI Architecture](/images/Conversational%20AI%20Architecture.svg)
+<CardGroup cols={2}>
+  <Card
+    title="Scalability"
+    href="#scalability"
+    icon="trending-up"
+  >
+    Independent service scaling based on demand
+  </Card>
+  <Card
+    title="Reliability"
+    href="#reliability"
+    icon="shield"
+  >
+    Fault isolation and graceful degradation
+  </Card>
+  <Card
+    title="Flexibility"
+    href="#flexibility"
+    icon="settings"
+  >
+    Easy service updates and feature additions
+  </Card>
+  <Card
+    title="Maintainability"
+    href="#maintainability"
+    icon="wrench"
+  >
+    Clear service boundaries and responsibilities
+  </Card>
+</CardGroup>
 
 ## Core Services
 
 ### AI Service - The Brain
-**Purpose**: Central intelligence that orchestrates all other services
 
-**Key Responsibilities**:
-- Natural language processing and understanding
-- Service orchestration and coordination
-- Context management and conversation flow
-- Background task management
-- Voice synthesis and processing
+<CardGroup cols={2}>
+  <Card title="Natural Language Processing" icon="message-circle">
+    Understand and process user commands in multiple languages
+  </Card>
+  <Card title="Service Orchestration" icon="network">
+    Coordinate actions across all other services
+  </Card>
+  <Card title="Context Management" icon="brain">
+    Maintain conversation context and user preferences
+  </Card>
+  <Card title="Background Tasks" icon="clock">
+    Handle long-running operations asynchronously
+  </Card>
+</CardGroup>
 
-**Communication Pattern**:
+**Communication Pattern:**
+<CodeGroup>
+
+```mermaid
+graph LR
+    A[User Command] --> B[AI Service]
+    B --> C[Handler Service]
+    C --> D[Target Service]
+    D --> E[Response]
+    E --> C
+    C --> B
+    B --> A
 ```
-User Command → AI Service → Handler Service → Target Service → Response
+
+```javascript
+// Example: User command flow
+const processCommand = async (userCommand) => {
+  // 1. AI Service processes natural language
+  const aiResponse = await aiService.process(userCommand);
+  
+  // 2. Handler Service routes to appropriate service
+  const handlerResponse = await handlerService.route(aiResponse);
+  
+  // 3. Target service executes action
+  const result = await targetService.execute(handlerResponse);
+  
+  return result;
+};
 ```
 
-**Base URL**: `https://ai-{environment}-{region}.roomi-services.com/v1/`
+</CodeGroup>
 
 ### Devices Service - Smart Device Abstraction
-**Purpose**: Universal interface for controlling any smart home device
 
-**Key Responsibilities**:
-- Multi-provider device support (Philips Hue, SmartThings, Tuya, etc.)
-- Protocol translation and abstraction
-- Device discovery and management
-- Room and floor organization
-- Real-time device status monitoring
+<CardGroup cols={2}>
+  <Card title="Multi-Provider Support" icon="layers">
+    Philips Hue, SmartThings, Tuya, and more
+  </Card>
+  <Card title="Protocol Translation" icon="refresh-cw">
+    Automatic conversion between different protocols
+  </Card>
+  <Card title="Device Discovery" icon="search">
+    Automatic detection and registration of new devices
+  </Card>
+  <Card title="Real-time Monitoring" icon="activity">
+    Live device status and health monitoring
+  </Card>
+</CardGroup>
 
-**Communication Pattern**:
+**Communication Pattern:**
+<CodeGroup>
+
+```mermaid
+graph LR
+    A[AI Service] --> B[Handler Service]
+    B --> C[Devices Service]
+    C --> D[Smart Device Provider]
+    D --> E[Physical Device]
 ```
-AI Service → Handler Service → Devices Service → Smart Device Provider → Device
+
+```javascript
+// Example: Device control flow
+const controlDevice = async (deviceId, action) => {
+  // 1. AI Service determines device and action
+  const deviceCommand = await aiService.analyzeDeviceCommand(action);
+  
+  // 2. Handler Service routes to Devices Service
+  const routeCommand = await handlerService.routeToDevices(deviceCommand);
+  
+  // 3. Devices Service translates and executes
+  const result = await devicesService.execute(routeCommand);
+  
+  return result;
+};
 ```
 
-**Base URL**: `https://devices-{environment}-{region}.roomi-services.com/v1/`
+</CodeGroup>
 
 ### Handler Service - System Communication Hub
-**Purpose**: Database operations and inter-service communication
 
-**Key Responsibilities**:
-- Database CRUD operations
-- Message routing between services
-- Event handling and distribution
-- Service discovery and health monitoring
-- Configuration management
-- Audit logging
+<CardGroup cols={2}>
+  <Card title="Database Operations" icon="database">
+    CRUD operations and data persistence
+  </Card>
+  <Card title="Message Routing" icon="send">
+    Route messages between services efficiently
+  </Card>
+  <Card title="Event Management" icon="zap">
+    Handle and distribute system events
+  </Card>
+  <Card title="Service Discovery" icon="compass">
+    Locate and connect to other services
+  </Card>
+</CardGroup>
 
-**Communication Pattern**:
+**Communication Pattern:**
+<CodeGroup>
+
+```mermaid
+graph LR
+    A[Service A] --> B[Handler Service]
+    B --> C[Service B]
+    B --> D[Database]
+    B --> E[Event Bus]
 ```
-Service A → Handler Service → Service B
+
+```javascript
+// Example: Inter-service communication
+const sendMessage = async (fromService, toService, message) => {
+  // 1. Service A sends message through Handler
+  const routeRequest = await handlerService.route({
+    from: fromService,
+    to: toService,
+    message: message
+  });
+  
+  // 2. Handler Service routes to Service B
+  const response = await handlerService.deliver(routeRequest);
+  
+  return response;
+};
 ```
 
-**Base URL**: `https://handler-{environment}-{region}.roomi-services.com/v1/`
-
-## Support Services
+</CodeGroup>
 
 ### Auth Service - Private Authentication
-**Purpose**: Invite-only authentication and user management
 
-**Key Responsibilities**:
-- Invitation-based user registration
-- OTP and UAE Pass authentication
-- Session management and token handling
-- Permission and role management
-- User profile management
-
-**Base URL**: `https://auth-{environment}-{region}.roomi-services.com/v1/`
+<CardGroup cols={2}>
+  <Card title="Invite-Only Registration" icon="mail">
+    Secure invitation system with access control
+  </Card>
+  <Card title="Multi-Factor Authentication" icon="shield">
+    OTP and UAE Pass integration
+  </Card>
+  <Card title="Session Management" icon="key">
+    Secure token-based sessions
+  </Card>
+  <Card title="Permission System" icon="lock">
+    Role-based access control
+  </Card>
+</CardGroup>
 
 ### Logger Service - CloudWatch Integration
-**Purpose**: Centralized logging and monitoring
 
-**Key Responsibilities**:
-- Structured logging to CloudWatch
-- Performance monitoring and metrics
-- Error tracking and aggregation
-- Audit trail management
-- System health monitoring
-
-**Base URL**: `https://logger-{environment}-{region}.roomi-services.com/v1/`
+<CardGroup cols={2}>
+  <Card title="Structured Logging" icon="file-text">
+    JSON-formatted logs to CloudWatch
+  </Card>
+  <Card title="Performance Monitoring" icon="activity">
+    Real-time metrics and dashboards
+  </Card>
+  <Card title="Error Tracking" icon="alert-triangle">
+    Error aggregation and analysis
+  </Card>
+  <Card title="Audit Trail" icon="shield">
+    Complete operation logging
+  </Card>
+</CardGroup>
 
 ### Services Platform - Third-Party Integration
-**Purpose**: External API and third-party service management
 
-**Key Responsibilities**:
-- Events and community management
-- Complaints and maintenance requests
-- Payment processing and billing
-- Facility booking and management
-- Automation routines
-- Email notifications
-
-**Base URL**: `https://services-{environment}-{region}.roomi-services.com/v1/`
+<CardGroup cols={2}>
+  <Card title="Events Management" icon="calendar">
+    Community events and social activities
+  </Card>
+  <Card title="Complaints System" icon="message-square">
+    Maintenance requests and issue tracking
+  </Card>
+  <Card title="Payment Processing" icon="credit-card">
+    Billing and payment services
+  </Card>
+  <Card title="Facility Booking" icon="building">
+    Amenity booking and management
+  </Card>
+</CardGroup>
 
 ## Service Communication Flow
 
 ### 1. User Authentication Flow
+
+<Steps>
+  <Step title="User Request">
+    User attempts to authenticate with credentials
+  </Step>
+  <Step title="Auth Service">
+    Validates credentials and generates tokens
+  </Step>
+  <Step title="Handler Service">
+    Routes authentication data to database
+  </Step>
+  <Step title="Logger Service">
+    Records authentication attempt for audit
+  </Step>
+</Steps>
+
+<CodeGroup>
+
+```mermaid
+graph TD
+    A[User] --> B[Auth Service]
+    B --> C[Handler Service]
+    C --> D[Database]
+    B --> E[Logger Service]
+    E --> F[CloudWatch]
 ```
-User → Auth Service → Handler Service → Database
-     ↓
-Auth Service → Logger Service → CloudWatch
-```
+
+</CodeGroup>
 
 ### 2. Device Control Flow
+
+<Steps>
+  <Step title="User Command">
+    User provides natural language device command
+  </Step>
+  <Step title="AI Processing">
+    AI interprets command and determines actions
+  </Step>
+  <Step title="Handler Routing">
+    Handler routes command to Devices Service
+  </Step>
+  <Step title="Device Execution">
+    Devices Service controls the physical device
+  </Step>
+</Steps>
+
+<CodeGroup>
+
+```mermaid
+graph TD
+    A[User Command] --> B[AI Service]
+    B --> C[Handler Service]
+    C --> D[Devices Service]
+    D --> E[Smart Device]
+    B --> F[Logger Service]
+    F --> G[CloudWatch]
 ```
-User Command → AI Service → Handler Service → Devices Service → Smart Device
-     ↓
-AI Service → Logger Service → CloudWatch
-```
 
-### 3. Payment Processing Flow
-```
-User Request → AI Service → Handler Service → Services Platform → Payment Gateway
-     ↓
-Services Platform → Logger Service → CloudWatch
-     ↓
-Services Platform → Email Service → User Notification
-```
-
-### 4. Event Management Flow
-```
-User Request → AI Service → Handler Service → Services Platform → Event System
-     ↓
-Services Platform → Email Service → Event Notifications
-     ↓
-Services Platform → Logger Service → CloudWatch
-```
-
-## Data Flow Architecture
-
-### Request Flow
-1. **User Input**: User provides command or request
-2. **AI Processing**: AI service interprets and plans actions
-3. **Handler Coordination**: Handler routes requests to appropriate services
-4. **Service Execution**: Target service performs the requested action
-5. **Response**: Results are returned through the same path
-6. **Logging**: All actions are logged for monitoring and audit
-
-### Event-Driven Architecture
-- **Event Publishing**: Services publish events for system-wide awareness
-- **Event Subscription**: Services subscribe to relevant events
-- **Event Processing**: Handler service manages event distribution
-- **Event Logging**: All events are logged for audit and debugging
-
-## Security Architecture
-
-### Authentication
-- **AWS SigV4**: All API calls require AWS Signature Version 4
-- **Service Headers**: Additional `x-unit-id` and `x-user-id` headers
-- **Token Management**: JWT tokens for user sessions
-- **Permission System**: Role-based access control
-
-### Data Protection
-- **Encryption**: All data encrypted in transit and at rest
-- **Audit Trail**: Complete audit logging of all operations
-- **Access Control**: Granular permissions per service and operation
-- **Rate Limiting**: Service-specific rate limiting to prevent abuse
-
-## Scalability Architecture
-
-### Horizontal Scaling
-- **Load Balancing**: Each service can scale horizontally
-- **Auto-scaling**: Automatic scaling based on demand
-- **Service Discovery**: Dynamic service discovery and routing
-- **Health Checks**: Continuous health monitoring and failover
-
-### Performance Optimization
-- **Caching**: Intelligent caching at multiple levels
-- **Connection Pooling**: Optimized database connections
-- **Batch Operations**: Batch processing for efficiency
-- **Async Processing**: Background task processing
-
-## Monitoring and Observability
-
-### Health Monitoring
-- **Service Health**: Each service provides health endpoints
-- **Dependency Health**: Monitor dependencies and third-party services
-- **Performance Metrics**: Real-time performance monitoring
-- **Error Tracking**: Comprehensive error tracking and alerting
-
-### Logging Strategy
-- **Structured Logging**: JSON-formatted logs with consistent schema
-- **Log Levels**: Debug, Info, Warn, Error, and Fatal levels
-- **Context Enrichment**: Automatic addition of metadata
-- **Centralized Storage**: All logs stored in CloudWatch
-
-## Deployment Architecture
-
-### Environment Strategy
-- **Development**: Local development environment
-- **Staging**: Pre-production testing environment
-- **Production**: Live production environment
-
-### Infrastructure
-- **AWS Cloud**: All services deployed on AWS
-- **Region**: Primary region in me-central-1 (UAE)
-- **CDN**: Global content delivery for static assets
-- **Backup**: Automated backup and disaster recovery
-
-## Integration Patterns
-
-### Internal Service Integration
-- **Synchronous**: Direct API calls for immediate responses
-- **Asynchronous**: Event-driven communication for background tasks
-- **Batch Processing**: Bulk operations for efficiency
-- **Error Handling**: Graceful error handling and retry logic
-
-### External Service Integration
-- **API Abstraction**: Unified interface for third-party services
-- **Data Transformation**: Consistent data models across providers
-- **Error Handling**: Provider-specific error handling
-- **Rate Limiting**: Provider-aware rate limiting
-
-## Best Practices
-
-### Service Design
-- **Single Responsibility**: Each service has a clear, focused purpose
-- **Loose Coupling**: Services communicate through well-defined APIs
-- **High Cohesion**: Related functionality grouped together
-- **Stateless Design**: Services are stateless for scalability
-
-### Communication
-- **RESTful APIs**: Standard REST API design
-- **JSON Data**: Consistent JSON data format
-- **Error Handling**: Comprehensive error handling
-- **Versioning**: API versioning for backward compatibility
-
-### Security
-- **Authentication**: Strong authentication for all services
-- **Authorization**: Fine-grained permission control
-- **Audit Logging**: Complete audit trail
-- **Data Protection**: Encryption and data protection
-
-## Next Steps
-
-- [AI Service API](/api-reference/ai) - Learn about the AI service
-- [Devices Service API](/api-reference/devices) - Understand device control
-- [Handler Service API](/api-reference/handler) - Database and communication
-- [Auth Service API](/api-reference/auth) - Authentication system
-- [Logger Service API](/api-reference/logger) - Logging and monitoring
-- [Services Platform API](/api-reference/services) - Third-party integrations 
+</CodeGroup>

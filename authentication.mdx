@@ -1,56 +1,57 @@
 ---
 title: "Authentication"
-description: "Learn how to authenticate with Roomi SDK using AWS SigV4, OTP, and UAE Pass"
+description: "Learn how to authenticate with Roomi using AWS SigV4"
 ---
+
+<Check>
+  Roomi uses AWS Signature Version 4 (SigV4) for secure API authentication. All API requests must include proper authentication headers and follow AWS SigV4 signing requirements.
+</Check>
 
 ## Overview
 
-Roomi SDK uses AWS Signature Version 4 (SigV4) for secure API authentication. All API requests must include proper authentication headers and follow AWS SigV4 signing requirements.
+Roomi SDK supports multiple authentication methods to provide secure and flexible access to our platform APIs. All authentication methods are built on top of AWS Signature Version 4 for maximum security.
 
-## Authentication Methods
-
-Roomi SDK supports multiple authentication methods:
-
-- **AWS SigV4 Authentication** - Primary authentication method for all API calls
-- **OTP Authentication** - Phone number verification for user authentication
-- **UAE Pass Integration** - Government-issued digital identity authentication
+<CardGroup cols={2}>
+  <Card title="AWS SigV4 Authentication" icon="shield">
+    Primary authentication method for all API calls
+  </Card>
+  <Card title="OTP Authentication" icon="smartphone">
+    Phone number verification for user authentication
+  </Card>
+  <Card title="UAE Pass Integration" icon="user-check">
+    Government-issued digital identity authentication
+  </Card>
+  <Card title="Session Management" icon="key">
+    JWT tokens for user sessions and access control
+  </Card>
+</CardGroup>
 
 ## AWS SigV4 Authentication
 
-All Roomi API endpoints require AWS Signature Version 4 authentication. This ensures secure, authenticated communication between your application and Roomi services.
+All Roomi API endpoints require AWS Signature Version 4 authentication. This ensures that all API calls are properly authenticated and authorized.
 
 ### Required Headers
 
-Every API request must include these headers:
+Every API request must include these headers alongside AWS SigV4:
 
-```http
-Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
-X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
-X-Amz-Date: 20240115T120000Z
+<CodeGroup>
+
+```bash
+# Required Headers
 x-unit-id: unit-12345
 x-user-id: user-67890
 ```
 
-### Authentication Parameters
-
-| Parameter | Description | Example |
-|-----------|-------------|---------|
-| **Region** | AWS region for Roomi services | `me-central-1` |
-| **Service** | AWS service name | `execute-api` |
-| **Access Key** | Your AWS access key ID | `AKIAIOSFODNN7EXAMPLE` |
-| **Secret Key** | Your AWS secret access key | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY` |
-
-### Implementation Example
-
 ```javascript
-import { SignatureV4 } from '@aws-sdk/signature-v4';
-import { Sha256 } from '@aws-crypto/sha256-js';
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
 
 const signRequest = async (request, credentials) => {
   const signer = new SignatureV4({
     credentials,
-    region: 'me-central-1',
-    service: 'execute-api',
+    region: "me-central-1",
+    service: "execute-api",
     sha256: Sha256,
   });
 
@@ -59,170 +60,91 @@ const signRequest = async (request, credentials) => {
 };
 ```
 
-## OTP Authentication
+</CodeGroup>
 
-OTP (One-Time Password) authentication is used for user verification and login.
+### Implementation Examples
 
-### Send OTP
+<CardGroup cols={2}>
+  <Card title="JavaScript/Node.js" icon="code">
+    AWS SDK v3 implementation for Node.js applications
+  </Card>
+  <Card title="Python" icon="code">
+    Boto3 implementation for Python applications
+  </Card>
+  <Card title="Java" icon="code">
+    AWS SDK for Java implementation
+  </Card>
+  <Card title="C#" icon="code">
+    AWS SDK for .NET implementation
+  </Card>
+</CardGroup>
 
-```http
-POST /api/send-otp
-Content-Type: application/json
+#### JavaScript/Node.js Example
 
-{
-  "phone": "+971501234567",
-  "unit_id": "unit-123"
-}
-```
-
-### Validate OTP
-
-```http
-POST /api/validate-otp
-Content-Type: application/json
-
-{
-  "phone": "+971501234567",
-  "otp": "123456",
-  "pin": "pin-123"
-}
-```
-
-### Response
-
-```json
-{
-  "token": "jwt-token-here",
-  "user": {
-    "user_id": "user-123",
-    "phone": "+971501234567",
-    "is_registered": true
-  }
-}
-```
-
-## UAE Pass Integration
-
-UAE Pass provides government-issued digital identity authentication for UAE residents.
-
-### UAE Pass Login
-
-```http
-POST /api/uaepass/login
-Content-Type: application/json
-
-{
-  "code": "auth-code-123",
-  "state": "state-123"
-}
-```
-
-### Response
-
-```json
-{
-  "token": "jwt-token-here",
-  "user": {
-    "user_id": "user-123",
-    "phone": "+971501234567"
-  }
-}
-```
-
-## LiveKit Token Generation
-
-Generate tokens for video/audio calling functionality.
-
-```http
-POST /api/generate-livekit-token
-Content-Type: application/json
-
-{
-  "roomName": "meeting-room-1",
-  "participantName": "John Doe"
-}
-```
-
-## User Management
-
-### Get Current User
-
-```http
-GET /api/me
-Authorization: Bearer YOUR_JWT_TOKEN
-```
-
-### Create User
-
-```http
-POST /api/user
-Content-Type: application/json
-
-{
-  "user_id": "user-123",
-  "phone": "+971501234567",
-  "is_registered": false
-}
-```
-
-### Update User
-
-```http
-PUT /api/user
-Content-Type: application/json
-
-{
-  "user_id": "user-123",
-  "phone": "+971501234567",
-  "is_registered": true
-}
-```
-
-## Error Handling
-
-### Common Authentication Errors
-
-| Error Code | Description | Solution |
-|------------|-------------|----------|
-| `401` | Unauthorized | Check your AWS credentials and signature |
-| `400` | Bad Request | Verify required headers and request format |
-| `403` | Forbidden | Ensure proper permissions for the resource |
-| `404` | User Not Found | Verify user ID and unit ID |
-
-### Error Response Format
-
-```json
-{
-  "error": "Error message describing what went wrong"
-}
-```
-
-## Security Best Practices
-
-1. **Secure Credential Storage**: Never hardcode AWS credentials in your application
-2. **Environment Variables**: Use environment variables for sensitive data
-3. **Token Expiration**: Implement proper token refresh mechanisms
-4. **HTTPS Only**: Always use HTTPS for API communication
-5. **Input Validation**: Validate all user inputs before sending to API
-
-## SDK Configuration
-
-Configure your Roomi SDK with authentication credentials:
+<CodeGroup>
 
 ```javascript
-import { RoomiSDK } from '@roomi/sdk';
+// Complete authentication example
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
 
-const roomi = new RoomiSDK({
-  region: 'me-central-1',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  unitId: 'unit-12345',
-  userId: 'user-67890'
-});
+const authenticateRequest = async (endpoint, method, body) => {
+  const credentials = {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  };
+
+  const signer = new SignatureV4({
+    credentials,
+    region: "me-central-1",
+    service: "execute-api",
+    sha256: Sha256,
+  });
+
+  const request = {
+    method: method,
+    hostname: endpoint,
+    path: "/v1/health",
+    headers: {
+      "Content-Type": "application/json",
+      "x-unit-id": "unit-12345",
+      "x-user-id": "user-67890"
+    },
+    body: body ? JSON.stringify(body) : undefined
+  };
+
+  const signedRequest = await signer.sign(request);
+  return signedRequest;
+};
 ```
 
-## Next Steps
+```python
+# Python example with boto3
+import boto3
+import json
+import requests
+from botocore.auth import SigV4Auth
+from botocore.awsrequest import AWSRequest
 
-- [Installation Guide](/installation) - Set up the Roomi SDK
-- [Configuration](/configuration) - Configure your environment
-- [API Reference](/api-reference/auth/introduction) - Detailed API documentation 
+def authenticate_request(endpoint, method, body=None):
+    session = boto3.Session()
+    credentials = session.get_credentials()
+    region = 'me-central-1'
+    
+    request = AWSRequest(
+        method=method,
+        url=endpoint,
+        data=json.dumps(body) if body else None,
+        headers={
+            'Content-Type': 'application/json',
+            'x-unit-id': 'unit-12345',
+            'x-user-id': 'user-67890'
+        }
+    )
+    
+    SigV4Auth(credentials, 'execute-api', region).add_auth(request)
+    
+    return request
+```
+
+</CodeGroup>

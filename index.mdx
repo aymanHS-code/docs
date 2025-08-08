@@ -3,17 +3,50 @@ title: "Roomi API Documentation"
 description: "Complete API documentation for Roomi's intelligent smart home platform"
 ---
 
+<Note>
+  Roomi is an intelligent smart home platform that provides a comprehensive suite of APIs for building next-generation smart home experiences.
+</Note>
+
 ## Welcome to Roomi API
 
-Roomi is an intelligent smart home platform that provides a comprehensive suite of APIs for building next-generation smart home experiences. Our platform consists of specialized services that work together to create a seamless, AI-powered smart home ecosystem.
+Roomi's platform is built on a microservices architecture with specialized services for different aspects of smart home management. Our platform consists of specialized services that work together to create a seamless, AI-powered smart home ecosystem.
+
+<Card title="Quick Start Guide" icon="rocket" href="/authentication">
+  Get up and running with Roomi APIs in minutes.
+</Card>
 
 ## Platform Architecture
 
-Roomi's platform is built on a microservices architecture with specialized services for different aspects of smart home management:
-
-<Card title="Quick Start Guide" icon="rocket" horizontal={false} href="/api-reference">
-  Get up and running with Roomi APIs in minutes.
-</Card>
+<CardGroup cols={2}>
+  <Card
+    title="AI Service"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Central intelligence that orchestrates all other services
+  </Card>
+  <Card
+    title="Devices Service"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Universal interface for controlling any smart device
+  </Card>
+  <Card
+    title="Handler Service"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database operations and inter-service communication
+  </Card>
+  <Card
+    title="Auth Service"
+    href="/api-reference/auth"
+    icon="shield"
+  >
+    Invite-only authentication and user management
+  </Card>
+</CardGroup>
 
 ## Core Services
 
@@ -21,43 +54,61 @@ Roomi's platform is built on a microservices architecture with specialized servi
 
 The AI service is the central intelligence that orchestrates all other services. It processes natural language commands, makes intelligent decisions, and coordinates actions across the entire platform.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Natural Language Processing" icon="message-circle">
+    Process and understand user commands in multiple languages
+  </Card>
+  <Card title="Service Orchestration" icon="network">
+    Coordinate actions across all platform services
+  </Card>
+  <Card title="Context Management" icon="brain">
+    Maintain conversation context and user preferences
+  </Card>
+  <Card title="Background Tasks" icon="clock">
+    Handle long-running operations asynchronously
+  </Card>
+</CardGroup>
 
-- Natural language processing and understanding
-- Context-aware conversations and decision making
-- Orchestration of all other services
-- Background task management
-- Voice synthesis and processing
-
-**Base URL:** `https://ai-{environment}-{region}.roomi-services.com/v1/`
 
 ### Devices Service - Smart Device Abstraction
 
 The Devices service provides a unified interface for controlling any smart device, regardless of the underlying provider. It abstracts away the complexity of different smart home protocols and manufacturers.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Universal Control" icon="zap">
+    Standardized commands for any smart home device
+  </Card>
+  <Card title="Multi-Provider Support" icon="layers">
+    Support for Philips Hue, SmartThings, Tuya, and more
+  </Card>
+  <Card title="Device Discovery" icon="search">
+    Automatic detection and registration of new devices
+  </Card>
+  <Card title="Real-time Status" icon="activity">
+    Live device status monitoring and updates
+  </Card>
+</CardGroup>
 
-- Universal device control interface
-- Multi-provider support (Philips Hue, SmartThings, etc.)
-- Device discovery and management
-- Room and floor organization
-- Real-time device status monitoring
-
-**Base URL:** `https://devices-{environment}-{region}.roomi-services.com/v1/`
 
 ### Handler Service - System Communication Hub
 
 The Handler service manages all database operations and inter-service communication. It acts as the central nervous system, handling data persistence and coordinating between different services.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Database Operations" icon="database">
+    CRUD operations and data management
+  </Card>
+  <Card title="Message Routing" icon="network">
+    Inter-service communication routing
+  </Card>
+  <Card title="Event Handling" icon="activity">
+    Event processing and message queuing
+  </Card>
+  <Card title="System State" icon="settings">
+    System state management and configuration
+  </Card>
+</CardGroup>
 
-- Database operations and data management
-- Inter-service communication routing
-- Event handling and message queuing
-- System state management
-- Data synchronization
-
-**Base URL:** `https://handler-{environment}-{region}.roomi-services.com/v1/`
 
 ## Support Services
 
@@ -65,78 +116,96 @@ The Handler service manages all database operations and inter-service communicat
 
 Our invite-only authentication system provides secure user management and access control for the Roomi platform.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Invite-Only Registration" icon="mail">
+    Secure invitation system with access control
+  </Card>
+  <Card title="Multi-Factor Authentication" icon="shield">
+    OTP verification and UAE Pass integration
+  </Card>
+  <Card title="Session Management" icon="key">
+    JWT token management and user sessions
+  </Card>
+  <Card title="Permission System" icon="lock">
+    Role-based access control and permissions
+  </Card>
+</CardGroup>
 
-- Invite-only user registration
-- OTP-based phone verification
-- UAE Pass integration
-- JWT token management
-- User session handling
-
-**Base URL:** `https://auth-{environment}-{region}.roomi-services.com/v1/`
 
 ### Logger Service - CloudWatch Integration
 
 The Logger service provides centralized logging and monitoring capabilities, integrating with AWS CloudWatch for comprehensive system observability.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Structured Logging" icon="file-text">
+    CloudWatch integration with structured JSON logs
+  </Card>
+  <Card title="Performance Monitoring" icon="activity">
+    Real-time metrics collection and monitoring
+  </Card>
+  <Card title="Error Tracking" icon="alert-triangle">
+    Error aggregation and root cause analysis
+  </Card>
+  <Card title="Audit Trail" icon="shield">
+    User actions and system events tracking
+  </Card>
+</CardGroup>
 
-- Structured logging to CloudWatch
-- Performance monitoring
-- Error tracking and alerting
-- Audit trail management
-- System health monitoring
-
-**Base URL:** `https://logger-{environment}-{region}.roomi-services.com/v1/`
 
 ### Services Platform - Third-Party Integration
 
 The Services platform handles all third-party integrations and external API communications, providing a unified interface for property developer and user-specific services.
 
-**Key Capabilities:**
+<CardGroup cols={2}>
+  <Card title="Third-Party Integration" icon="link">
+    Unified interface for multiple third-party services
+  </Card>
+  <Card title="Service Categories" icon="grid">
+    Events, complaints, payments, facilities, and more
+  </Card>
+  <Card title="Property Developer APIs" icon="building">
+    Custom integrations and property-specific services
+  </Card>
+  <Card title="Data Transformation" icon="refresh-cw">
+    Consistent data models across different providers
+  </Card>
+</CardGroup>
 
-- Third-party service integration
-- Property developer API management
-- User-specific service handling
-- Payment processing
-- Event and routine management
-
-**Base URL:** `https://services-{environment}-{region}.roomi-services.com/v1/`
 
 ## Getting Started
 
 Choose your path to get started with Roomi APIs:
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card title="Authentication Setup" icon="key" href="/authentication">
     Learn how to authenticate with Roomi's invite-only system.
   </Card>
-  <Card title="AI Integration" icon="brain" href="/guides/ai-integration">
+  <Card title="Architecture Overview" icon="sitemap" href="/architecture-overview">
+    Understand how all services work together in the Roomi platform.
+  </Card>
+  <Card title="AI Integration" icon="brain" href="/api-reference/ai">
     Integrate with Roomi's AI service for intelligent automation.
   </Card>
-  <Card title="Device Control" icon="microchip" href="/guides/device-integration">
+  <Card title="Device Control" icon="smartphone" href="/api-reference/devices">
     Control smart devices through our unified interface.
   </Card>
-  <Card title="Handler Setup" icon="cog" href="/guides/handler-setup">
-    Set up database and communication operations.
-  </Card>
-</Columns>
+</CardGroup>
 
 ## API Reference
 
 Explore the complete API documentation for each service:
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card title="AI Service API" icon="brain" href="/api-reference/ai">
     Complete API reference for the AI service - the brain of the system.
   </Card>
-  <Card title="Devices Service API" icon="microchip" href="/api-reference/devices">
+  <Card title="Devices Service API" icon="smartphone" href="/api-reference/devices">
     Universal device control interface for all smart home devices.
   </Card>
-  <Card title="Handler Service API" icon="cog" href="/api-reference/handler">
+  <Card title="Handler Service API" icon="database" href="/api-reference/handler">
     Database operations and inter-service communication.
   </Card>
-  <Card title="Auth Service API" icon="user-shield" href="/api-reference/auth">
+  <Card title="Auth Service API" icon="shield" href="/api-reference/auth">
     Private authentication system for invite-only access.
   </Card>
   <Card title="Logger Service API" icon="file-text" href="/api-reference/logger">
@@ -145,16 +214,4 @@ Explore the complete API documentation for each service:
   <Card title="Services Platform API" icon="globe" href="/api-reference/services">
     Third-party service integration and external APIs.
   </Card>
-</Columns>
-
-## Architecture Overview
-
-<Card title="Learn More About Architecture" icon="sitemap" href="/architecture-overview">
-  Understand how all services work together in the Roomi platform.
-</Card>
-
-## Support & Community
-
-<Card title="Get Help" icon="question-circle" href="mailto:admin@roomi.ai">
-  Contact our support team for assistance with API integration.
-</Card>
+</CardGroup>

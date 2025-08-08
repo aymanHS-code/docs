@@ -1,81 +1,187 @@
 ---
 title: "Handler Service API"
 description: "Complete API reference for Roomi's Handler service - database operations and inter-service communication hub"
+api: "Roomi Handler"
 ---
+
+<Note>
+  The Handler service is the central nervous system of the Roomi platform, managing all database operations and inter-service communication.
+</Note>
 
 ## Overview
 
-The Handler service is the central nervous system of the Roomi platform. It manages all database operations, handles inter-service communication, and coordinates data flow between different services. The Handler acts as a communication hub, ensuring data consistency and providing a unified interface for all system operations.
+The Handler service acts as a communication hub, ensuring data consistency and providing a unified interface for all system operations. It coordinates data flow between different services and maintains system integrity.
+
+<CardGroup cols={2}>
+  <Card
+    title="Database Operations"
+    href="#database-operations"
+    icon="database"
+  >
+    CRUD operations, data validation, and transaction management
+  </Card>
+  <Card
+    title="Inter-Service Communication"
+    href="#inter-service-communication"
+    icon="network"
+  >
+    Message routing, event handling, and service discovery
+  </Card>
+  <Card
+    title="System State Management"
+    href="#system-state-management"
+    icon="activity"
+  >
+    State tracking, configuration management, and audit logging
+  </Card>
+  <Card
+    title="Health Monitoring"
+    href="#health-monitoring"
+    icon="heart"
+  >
+    Service health monitoring and performance tracking
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://handler-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://handler-staging-ae.roomi-services.com/v1/
+
+# Development
+https://handler-dev-ae.roomi-services.com/v1/
 ```
-https://handler-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "GET",
+  hostname: "handler-prod-ae.roomi-services.com",
+  path: "/v1/health",
+  headers: {
+    "Content-Type": "application/json"
+  }
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Core Capabilities
 
 ### Database Operations
-- **Data Persistence**: CRUD operations for all system entities
-- **Data Synchronization**: Real-time sync between services
-- **Transaction Management**: ACID-compliant database transactions
-- **Data Validation**: Schema validation and data integrity checks
+
+<CardGroup cols={2}>
+  <Card title="Data Persistence" icon="save">
+    CRUD operations for all system entities
+  </Card>
+  <Card title="Data Synchronization" icon="refresh-cw">
+    Real-time sync between services
+  </Card>
+  <Card title="Transaction Management" icon="shield">
+    ACID-compliant database transactions
+  </Card>
+  <Card title="Data Validation" icon="check-circle">
+    Schema validation and data integrity checks
+  </Card>
+</CardGroup>
 
 ### Inter-Service Communication
-- **Message Routing**: Route messages between services
-- **Event Handling**: Process and distribute system events
-- **Service Discovery**: Locate and connect to other services
-- **Load Balancing**: Distribute requests across service instances
+
+<Steps>
+  <Step title="Message Routing">
+    Route messages between services efficiently
+  </Step>
+  <Step title="Event Handling">
+    Process and distribute system events
+  </Step>
+  <Step title="Service Discovery">
+    Locate and connect to other services
+  </Step>
+  <Step title="Load Balancing">
+    Distribute requests across service instances
+  </Step>
+</Steps>
 
 ### System State Management
-- **State Tracking**: Monitor system and device states
-- **Configuration Management**: Centralized system configuration
-- **Audit Logging**: Track all system operations
-- **Health Monitoring**: Monitor service health and performance
+
+The Handler service provides comprehensive system state management:
+
+- **State Tracking**: Monitor system and device states in real-time
+- **Configuration Management**: Centralized system configuration storage
+- **Audit Logging**: Track all system operations for compliance
+- **Health Monitoring**: Monitor service health and performance metrics
 
 ## API Endpoints
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "Handler service is operational",
+      "connected_services": {
+        "ai": "connected",
+        "devices": "connected",
+        "auth": "connected",
+        "logger": "connected",
+        "services": "connected"
+      },
+      "database": {
+        "status": "connected",
+        "latency": "2ms",
+        "connections": 15
+      },
+      "message_queue": {
+        "status": "operational",
+        "pending_messages": 5,
+        "processed_today": 1250
+      },
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the Handler service and connected services.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Handler service is operational",
-  "connected_services": {
-    "ai": "connected",
-    "devices": "connected",
-    "auth": "connected",
-    "logger": "connected",
-    "services": "connected"
-  },
-  "database": {
-    "status": "connected",
-    "latency": "2ms",
-    "connections": 15
-  },
-  "message_queue": {
-    "status": "operational",
-    "pending_messages": 5,
-    "processed_today": 1250
-  },
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the Handler service and verify connectivity with all dependent services.
 
 ### Database Operations
 
@@ -671,7 +777,33 @@ const controlDevice = async (deviceId, action) => {
 
 ## Next Steps
 
-- [AI Service API](/api-reference/ai) - Intelligent orchestration
-- [Devices Service API](/api-reference/devices) - Device control interface
-- [Handler Setup Guide](/guides/handler-setup) - Database and communication setup
-- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies 
+<CardGroup cols={2}>
+  <Card
+    title="AI Service API"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Intelligent orchestration and natural language processing
+  </Card>
+  <Card
+    title="Devices Service API"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Universal device control interface
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+  <Card
+    title="Authentication"
+    href="/authentication"
+    icon="shield"
+  >
+    Set up AWS Signature authentication
+  </Card>
+</CardGroup> 

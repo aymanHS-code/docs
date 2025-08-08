@@ -1,253 +1,466 @@
 ---
 title: "AI Service API"
 description: "Complete API reference for Roomi's AI service - the central intelligence that orchestrates all other services"
+api: "Roomi AI"
 ---
+
+<Note>
+  The AI service is the central intelligence of the Roomi platform. It processes natural language commands, makes intelligent decisions, and orchestrates actions across all other services.
+</Note>
 
 ## Overview
 
-The AI service is the central intelligence of the Roomi platform. It processes natural language commands, makes intelligent decisions, and orchestrates actions across all other services. The AI service acts as the brain of the system, understanding user intent and coordinating responses from devices, services, and external APIs.
+The AI service acts as the brain of the Roomi system, understanding user intent and coordinating responses from devices, services, and external APIs. It provides natural language processing, service orchestration, and intelligent automation capabilities.
+
+<CardGroup cols={2}>
+  <Card
+    title="Natural Language Processing"
+    href="#natural-language-processing"
+    icon="message-circle"
+  >
+    Understand and process natural language commands in multiple languages
+  </Card>
+  <Card
+    title="Service Orchestration"
+    href="#service-orchestration"
+    icon="network"
+  >
+    Coordinate with all other Roomi services for seamless integration
+  </Card>
+  <Card
+    title="Context Awareness"
+    href="#context-awareness"
+    icon="brain"
+  >
+    Maintain conversation context and user preferences for personalized responses
+  </Card>
+  <Card
+    title="Background Tasks"
+    href="#background-tasks"
+    icon="clock"
+  >
+    Handle long-running operations asynchronously with status tracking
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://ai-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://ai-staging-ae.roomi-services.com/v1/
+
+# Development
+https://ai-dev-ae.roomi-services.com/v1/
 ```
-https://ai-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "POST",
+  hostname: "ai-prod-ae.roomi-services.com",
+  path: "/v1/roomi",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(requestBody),
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Core Capabilities
 
 ### Natural Language Processing
-The AI service understands and processes natural language commands in multiple languages, converting them into actionable system commands.
+
+The AI service understands and processes natural language commands in multiple languages, converting them into actionable system commands. It supports:
+
+- **Multi-language Support**: English, Arabic, and other languages
+- **Intent Recognition**: Understands user intent from natural language
+- **Entity Extraction**: Identifies devices, actions, and parameters
+- **Context Understanding**: Maintains conversation context across interactions
 
 ### Service Orchestration
-The AI coordinates with all other Roomi services:
-- **Devices Service**: Controls smart home devices
-- **Handler Service**: Manages data and communication
-- **Auth Service**: Validates user permissions
-- **Services Platform**: Integrates with third-party APIs
+
+The AI coordinates with all other Roomi services through intelligent routing:
+
+<Steps>
+  <Step title="User Command">
+    User sends natural language command
+  </Step>
+  <Step title="Intent Analysis">
+    AI analyzes intent and identifies required services
+  </Step>
+  <Step title="Service Coordination">
+    AI orchestrates calls to relevant services
+  </Step>
+  <Step title="Response Generation">
+    AI generates natural language response with results
+  </Step>
+</Steps>
 
 ### Context Awareness
-The AI maintains conversation context and user preferences to provide personalized responses and intelligent automation.
+
+The AI maintains conversation context and user preferences to provide personalized responses:
+
+- **Thread Management**: Maintains conversation threads for context
+- **User Preferences**: Learns and applies user preferences
+- **Device State**: Tracks device states and capabilities
+- **Historical Context**: Uses conversation history for better responses
 
 ### Background Task Management
-Long-running operations are handled asynchronously with status tracking and progress monitoring.
+
+Long-running operations are handled asynchronously with comprehensive status tracking:
+
+<CodeGroup>
+
+```json
+{
+  "task_id": "task-789",
+  "status": "running",
+  "progress": 75,
+  "message": "Processing device commands...",
+  "estimated_completion": "2024-01-15T10:05:00Z"
+}
+```
+
+```javascript
+// Polling for task status
+const checkTaskStatus = async (taskId) => {
+  const response = await fetch(`/v1/task/${taskId}/status`);
+  const status = await response.json();
+  
+  if (status.status === 'completed') {
+    console.log('Task completed:', status.result);
+  } else if (status.status === 'running') {
+    setTimeout(() => checkTaskStatus(taskId), 2000);
+  }
+};
+```
+
+</CodeGroup>
 
 ## API Endpoints
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "AI service is operational",
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the AI service.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "AI service is operational",
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the AI service and verify connectivity.
 
 ### Process Message
 
-<Endpoint method="POST" path="/roomi" />
+<RequestExample>
+  <RequestExample.Method method="POST" path="/roomi" />
+  <RequestExample.Body>
+    ```json
+    {
+      "user_id": "user-123",
+      "unit_id": "unit-456",
+      "unit_name": "Apartment 101",
+      "transcript": "Turn on the living room lights and set temperature to 22 degrees",
+      "thread_id": "e0f5308e-0bd9-4dc9-b55d-5c74798283bf"
+    }
+    ```
+  </RequestExample.Body>
+  <RequestExample.Response>
+    ```json
+    {
+      "response": "I've turned on the living room lights and set the temperature to 22 degrees for you.",
+      "background_tasks": [
+        {
+          "task_id": "task-789",
+          "type": "device_control",
+          "status": "completed"
+        }
+      ],
+      "query_type": "DEVICE_CONTROL",
+      "query_types": ["DEVICE_CONTROL", "TEMPERATURE_SETTING"],
+      "transcript_parts": [
+        "Turn on the living room lights",
+        "set temperature to 22 degrees"
+      ],
+      "actions_taken": [
+        {
+          "service": "devices",
+          "action": "turn_on",
+          "target": "living_room_lights",
+          "status": "success"
+        },
+        {
+          "service": "devices",
+          "action": "set_temperature",
+          "target": "thermostat",
+          "value": 22,
+          "status": "success"
+        }
+      ]
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
 Process a natural language message and return an intelligent response with coordinated actions.
 
-**Request Body:**
-```json
-{
-  "user_id": "user-123",
-  "unit_id": "unit-456",
-  "unit_name": "Apartment 101",
-  "transcript": "Turn on the living room lights and set temperature to 22 degrees",
-  "thread_id": "e0f5308e-0bd9-4dc9-b55d-5c74798283bf"
-}
-```
+<Expandable title="Request Parameters">
 
-**Response:**
-```json
-{
-  "response": "I've turned on the living room lights and set the temperature to 22 degrees for you.",
-  "background_tasks": [
-    {
-      "task_id": "task-789",
-      "type": "device_control",
-      "status": "completed"
-    }
-  ],
-  "query_type": "DEVICE_CONTROL",
-  "query_types": ["DEVICE_CONTROL", "TEMPERATURE_SETTING"],
-  "transcript_parts": [
-    "Turn on the living room lights",
-    "set temperature to 22 degrees"
-  ],
-  "actions_taken": [
-    {
-      "service": "devices",
-      "action": "turn_on",
-      "target": "living_room_lights",
-      "status": "success"
-    },
-    {
-      "service": "devices",
-      "action": "set_temperature",
-      "target": "thermostat",
-      "value": 22,
-      "status": "success"
-    }
-  ]
-}
-```
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | string | Yes | Unique identifier for the user |
+| `unit_id` | string | Yes | Unique identifier for the unit/apartment |
+| `unit_name` | string | Yes | Human-readable name for the unit |
+| `transcript` | string | Yes | Natural language message to process |
+| `thread_id` | string | No | Conversation thread ID for context |
+
+</Expandable>
+
+<Expandable title="Response Fields">
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `response` | string | Natural language response to the user |
+| `background_tasks` | array | List of background tasks created |
+| `query_type` | string | Primary query type identified |
+| `query_types` | array | All query types that were handled |
+| `transcript_parts` | array | Unique parts of the transcript for each query type |
+| `actions_taken` | array | Actions performed by the AI service |
+
+</Expandable>
 
 ### Task Status
 
-<Endpoint method="GET" path="/task/{task_id}/status" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/task/{task_id}/status" />
+  <RequestExample.Response>
+    ```json
+    {
+      "task_id": "task-789",
+      "status": "completed",
+      "message": "All requested actions completed successfully",
+      "progress": 100,
+      "result": {
+        "devices_controlled": 2,
+        "services_contacted": 1
+      },
+      "error": null
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the status of a background task.
+Check the status of a background task and retrieve results.
 
-**Response:**
-```json
-{
-  "task_id": "task-789",
-  "status": "completed",
-  "message": "All requested actions completed successfully",
-  "progress": 100,
-  "result": {
-    "devices_controlled": 2,
-    "services_contacted": 1
-  },
-  "error": null
-}
-```
+<Expandable title="Task Status Values">
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Task is queued for processing |
+| `running` | Task is currently being executed |
+| `completed` | Task finished successfully |
+| `failed` | Task encountered an error |
+| `cancelled` | Task was cancelled by user or system |
+
+</Expandable>
 
 ### Platform Information
 
-<Endpoint method="GET" path="/platform" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/platform" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "operational",
+      "platform": "Roomi AI Service",
+      "architecture": "x86_64",
+      "amd64_optimized": true,
+      "workers": 8,
+      "version": "1.0.0",
+      "capabilities": [
+        "natural_language_processing",
+        "service_orchestration",
+        "context_management",
+        "background_tasks"
+      ]
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
 Get platform information including architecture and optimization details.
 
-**Response:**
-```json
-{
-  "status": "operational",
-  "platform": "Roomi AI Service",
-  "architecture": "x86_64",
-  "amd64_optimized": true,
-  "workers": 8,
-  "version": "1.0.0",
-  "capabilities": [
-    "natural_language_processing",
-    "service_orchestration",
-    "context_management",
-    "background_tasks"
-  ]
-}
-```
-
 ### ElevenLabs Webhook
 
-<Endpoint method="POST" path="/elevenlabs/webhook" />
-
-Handle webhook notifications from ElevenLabs for voice synthesis.
-
-**Request Body:**
-```json
-{
-  "audio_url": "https://api.elevenlabs.io/v1/text-to-speech/...",
-  "text": "I've turned on the living room lights",
-  "voice_id": "voice-123",
-  "status": "completed"
-}
-```
-
-**Response:**
-```json
-{
-  "response": "Audio processed successfully",
-  "background_tasks": [
+<RequestExample>
+  <RequestExample.Method method="POST" path="/elevenlabs/webhook" />
+  <RequestExample.Body>
+    ```json
     {
-      "task_id": "audio-task-456",
-      "type": "voice_synthesis",
+      "audio_url": "https://api.elevenlabs.io/v1/text-to-speech/...",
+      "text": "I've turned on the living room lights",
+      "voice_id": "voice-123",
       "status": "completed"
     }
-  ]
-}
-```
+    ```
+  </RequestExample.Body>
+  <RequestExample.Response>
+    ```json
+    {
+      "response": "Audio processed successfully",
+      "background_tasks": [
+        {
+          "task_id": "audio-task-456",
+          "type": "voice_synthesis",
+          "status": "completed"
+        }
+      ]
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
+
+Handle webhook notifications from ElevenLabs for voice synthesis.
 
 ## Query Types
 
 The AI service can handle various types of queries and intents:
 
-| Query Type | Description | Example Commands |
-|------------|-------------|------------------|
-| `GENERAL` | General conversation and assistance | "Hello", "How are you?", "What can you do?" |
-| `DEVICE_CONTROL` | Smart home device control | "Turn on the lights", "Set thermostat to 22" |
-| `INFORMATION` | Information requests | "What's the weather?", "Show me my schedule" |
-| `ROUTINE` | Routine management | "Create a morning routine", "Start bedtime routine" |
-| `PAYMENT` | Payment and billing queries | "Show my bills", "Pay maintenance fee" |
-| `COMPLAINT` | Complaint and maintenance | "Report a leak", "Submit maintenance request" |
-| `FACILITY` | Facility booking | "Book the pool", "Check gym availability" |
-| `EVENT` | Event management | "Show community events", "RSVP to meeting" |
-
-## Service Orchestration
-
-The AI service coordinates with other services through the Handler service:
-
-### Device Control Flow
-```
-User Command → AI Service → Handler Service → Devices Service → Smart Device
-```
-
-### Information Retrieval Flow
-```
-User Query → AI Service → Handler Service → Services Platform → External API
-```
-
-### Authentication Flow
-```
-User Request → AI Service → Handler Service → Auth Service → User Validation
-```
-
-## Background Tasks
-
-Long-running operations are handled asynchronously:
-
-### Task Status Values
-- `pending`: Task is queued for processing
-- `running`: Task is currently being executed
-- `completed`: Task finished successfully
-- `failed`: Task encountered an error
-- `cancelled`: Task was cancelled by user or system
-
-### Task Types
-- `device_control`: Controlling smart home devices
-- `data_sync`: Synchronizing data between services
-- `voice_synthesis`: Processing voice responses
-- `external_api`: Calling third-party services
-- `routine_execution`: Running automated routines
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Query Type</Table.Header>
+      <Table.Header>Description</Table.Header>
+      <Table.Header>Example Commands</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell><Badge variant="blue">GENERAL</Badge></Table.Cell>
+      <Table.Cell>General conversation and assistance</Table.Cell>
+      <Table.Cell>"Hello", "How are you?", "What can you do?"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="green">DEVICE_CONTROL</Badge></Table.Cell>
+      <Table.Cell>Smart home device control</Table.Cell>
+      <Table.Cell>"Turn on the lights", "Set thermostat to 22"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="purple">INFORMATION</Badge></Table.Cell>
+      <Table.Cell>Information requests</Table.Cell>
+      <Table.Cell>"What's the weather?", "Show me my schedule"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="orange">ROUTINE</Badge></Table.Cell>
+      <Table.Cell>Routine management</Table.Cell>
+      <Table.Cell>"Create a morning routine", "Start bedtime routine"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">PAYMENT</Badge></Table.Cell>
+      <Table.Cell>Payment and billing queries</Table.Cell>
+      <Table.Cell>"Show my bills", "Pay maintenance fee"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="yellow">COMPLAINT</Badge></Table.Cell>
+      <Table.Cell>Complaint and maintenance</Table.Cell>
+      <Table.Cell>"Report a leak", "Submit maintenance request"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="indigo">FACILITY</Badge></Table.Cell>
+      <Table.Cell>Facility booking</Table.Cell>
+      <Table.Cell>"Book the pool", "Check gym availability"</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="pink">EVENT</Badge></Table.Cell>
+      <Table.Cell>Event management</Table.Cell>
+      <Table.Cell>"Show community events", "RSVP to meeting"</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
 
 ## Error Handling
 
 ### Common Error Responses
 
-| Status Code | Description | Solution |
-|-------------|-------------|----------|
-| `400` | Bad Request | Check request format and required fields |
-| `401` | Unauthorized | Verify AWS credentials and signature |
-| `422` | Validation Error | Validate request parameters |
-| `429` | Rate Limited | Implement exponential backoff |
-| `500` | Internal Server Error | Contact support if persistent |
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Status Code</Table.Header>
+      <Table.Header>Description</Table.Header>
+      <Table.Header>Solution</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">400</Badge></Table.Cell>
+      <Table.Cell>Bad Request</Table.Cell>
+      <Table.Cell>Check request format and required fields</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">401</Badge></Table.Cell>
+      <Table.Cell>Unauthorized</Table.Cell>
+      <Table.Cell>Verify AWS credentials and signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">422</Badge></Table.Cell>
+      <Table.Cell>Validation Error</Table.Cell>
+      <Table.Cell>Validate request parameters</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="yellow">429</Badge></Table.Cell>
+      <Table.Cell>Rate Limited</Table.Cell>
+      <Table.Cell>Implement exponential backoff</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">500</Badge></Table.Cell>
+      <Table.Cell>Internal Server Error</Table.Cell>
+      <Table.Cell>Contact support if persistent</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
 
 ### Error Response Format
 
@@ -267,90 +480,29 @@ Long-running operations are handled asynchronously:
 
 The AI service implements intelligent rate limiting:
 
-- **General Requests**: 100 requests per minute per user
-- **Background Tasks**: 50 task creations per minute per user
-- **Voice Processing**: 20 voice requests per minute per user
-- **Service Orchestration**: 200 orchestration calls per minute per unit
-
-## Best Practices
-
-### 1. Context Management
-```javascript
-// Maintain conversation context
-const threadId = 'e0f5308e-0bd9-4dc9-b55d-5c74798283bf';
-
-const response1 = await fetch('/v1/roomi', {
-  method: 'POST',
-  body: JSON.stringify({
-    user_id: 'user-123',
-    unit_id: 'unit-456',
-    transcript: 'What devices are in the living room?',
-    thread_id: threadId
-  })
-});
-
-const response2 = await fetch('/v1/roomi', {
-  method: 'POST',
-  body: JSON.stringify({
-    user_id: 'user-123',
-    unit_id: 'unit-456',
-    transcript: 'Turn them all on',
-    thread_id: threadId // Same thread for context
-  })
-});
-```
-
-### 2. Background Task Monitoring
-```javascript
-const checkTaskStatus = async (taskId) => {
-  const response = await fetch(`/v1/task/${taskId}/status`);
-  const status = await response.json();
-  
-  switch (status.status) {
-    case 'completed':
-      console.log('Task completed:', status.result);
-      break;
-    case 'running':
-      console.log('Task still running...');
-      setTimeout(() => checkTaskStatus(taskId), 5000);
-      break;
-    case 'failed':
-      console.error('Task failed:', status.error);
-      break;
-  }
-};
-```
-
-### 3. Error Handling
-```javascript
-const processMessage = async (transcript) => {
-  try {
-    const response = await fetch('/v1/roomi', {
-      method: 'POST',
-      body: JSON.stringify({
-        user_id: 'user-123',
-        unit_id: 'unit-456',
-        transcript
-      })
-    });
-    
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
-    }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('AI processing failed:', error.message);
-    throw error;
-  }
-};
-```
+<CardGroup cols={2}>
+  <Card title="General Requests" icon="zap">
+    <strong>100 requests per minute</strong> per user
+  </Card>
+  <Card title="Background Tasks" icon="clock">
+    <strong>50 task creations per minute</strong> per user
+  </Card>
+  <Card title="Voice Processing" icon="mic">
+    <strong>20 voice requests per minute</strong> per user
+  </Card>
+  <Card title="Service Orchestration" icon="network">
+    <strong>200 orchestration calls per minute</strong> per unit
+  </Card>
+</CardGroup>
 
 ## Integration Examples
 
 ### Basic Message Processing
+
+<CodeGroup>
+
 ```javascript
+// Process a simple message
 const response = await fetch('https://ai-prod-ae.roomi-services.com/v1/roomi', {
   method: 'POST',
   headers: {
@@ -371,33 +523,203 @@ const result = await response.json();
 console.log('AI Response:', result.response);
 ```
 
-### Voice Integration
+```python
+# Python example with boto3
+import boto3
+import json
+import requests
+from botocore.auth import SigV4Auth
+from botocore.awsrequest import AWSRequest
+
+def process_message(transcript, user_id, unit_id):
+    # Create the request
+    url = 'https://ai-prod-ae.roomi-services.com/v1/roomi'
+    data = {
+        'user_id': user_id,
+        'unit_id': unit_id,
+        'unit_name': 'Smart Home',
+        'transcript': transcript
+    }
+    
+    # Sign the request
+    session = boto3.Session()
+    credentials = session.get_credentials()
+    region = 'me-central-1'
+    
+    request = AWSRequest(
+        method='POST',
+        url=url,
+        data=json.dumps(data),
+        headers={'Content-Type': 'application/json'}
+    )
+    
+    SigV4Auth(credentials, 'execute-api', region).add_auth(request)
+    
+    # Send the request
+    response = requests.post(url, data=request.data, headers=dict(request.headers))
+    return response.json()
+```
+
+</CodeGroup>
+
+### Context Management
+
+<CodeGroup>
+
 ```javascript
-// Process voice command
-const voiceResponse = await fetch('/v1/roomi', {
+// Maintain conversation context
+const threadId = 'e0f5308e-0bd9-4dc9-b55d-5c74798283bf';
+
+// First message
+const response1 = await fetch('/v1/roomi', {
   method: 'POST',
   body: JSON.stringify({
     user_id: 'user-123',
     unit_id: 'unit-456',
-    transcript: 'What's the temperature in the bedroom?'
+    transcript: 'What devices are in the living room?',
+    thread_id: threadId
   })
 });
 
-const result = await voiceResponse.json();
-
-// Generate voice response
-const audioResponse = await fetch('/v1/elevenlabs/webhook', {
+// Follow-up message with context
+const response2 = await fetch('/v1/roomi', {
   method: 'POST',
   body: JSON.stringify({
-    text: result.response,
-    voice_id: 'voice-123'
+    user_id: 'user-123',
+    unit_id: 'unit-456',
+    transcript: 'Turn them all on',
+    thread_id: threadId // Same thread for context
   })
 });
 ```
 
+```python
+# Python context management
+class ConversationManager:
+    def __init__(self, user_id, unit_id):
+        self.user_id = user_id
+        self.unit_id = unit_id
+        self.thread_id = None
+    
+    def start_conversation(self):
+        import uuid
+        self.thread_id = str(uuid.uuid4())
+        return self.thread_id
+    
+    def send_message(self, transcript):
+        if not self.thread_id:
+            self.start_conversation()
+        
+        return process_message(
+            transcript=transcript,
+            user_id=self.user_id,
+            unit_id=self.unit_id,
+            thread_id=self.thread_id
+        )
+```
+
+</CodeGroup>
+
+### Background Task Monitoring
+
+<CodeGroup>
+
+```javascript
+// Monitor background tasks
+const checkTaskStatus = async (taskId) => {
+  const response = await fetch(`/v1/task/${taskId}/status`);
+  const status = await response.json();
+  
+  switch (status.status) {
+    case 'completed':
+      console.log('Task completed:', status.result);
+      break;
+    case 'running':
+      console.log('Task still running...');
+      setTimeout(() => checkTaskStatus(taskId), 5000);
+      break;
+    case 'failed':
+      console.error('Task failed:', status.error);
+      break;
+  }
+};
+
+// Usage
+const result = await fetch('/v1/roomi', {
+  method: 'POST',
+  body: JSON.stringify({
+    user_id: 'user-123',
+    unit_id: 'unit-456',
+    transcript: 'Turn on all lights and set temperature'
+  })
+});
+
+const aiResponse = await result.json();
+if (aiResponse.background_tasks) {
+  aiResponse.background_tasks.forEach(task => {
+    checkTaskStatus(task.task_id);
+  });
+}
+```
+
+```python
+# Python task monitoring
+import asyncio
+import time
+
+async def monitor_task(task_id, max_wait=300):
+    start_time = time.time()
+    
+    while time.time() - start_time < max_wait:
+        status = get_task_status(task_id)
+        
+        if status['status'] == 'completed':
+            print(f"Task {task_id} completed: {status['result']}")
+            return status
+        elif status['status'] == 'failed':
+            print(f"Task {task_id} failed: {status['error']}")
+            return status
+        elif status['status'] == 'running':
+            print(f"Task {task_id} still running...")
+            await asyncio.sleep(5)
+        else:
+            await asyncio.sleep(2)
+    
+    print(f"Task {task_id} timed out")
+    return None
+```
+
+</CodeGroup>
+
 ## Next Steps
 
-- [Devices Service API](/api-reference/devices) - Control smart home devices
-- [Handler Service API](/api-reference/handler) - Database and communication operations
-- [AI Integration Guide](/guides/ai-integration) - Detailed AI service integration
-- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies 
+<CardGroup cols={2}>
+  <Card
+    title="Devices Service API"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Control smart home devices through our unified API
+  </Card>
+  <Card
+    title="Handler Service API"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database and communication operations
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+  <Card
+    title="Authentication"
+    href="/authentication"
+    icon="shield"
+  >
+    Set up AWS Signature authentication
+  </Card>
+</CardGroup> 

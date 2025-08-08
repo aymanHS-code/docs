@@ -1,23 +1,73 @@
 ---
 title: "Devices Service API"
 description: "Complete API reference for Roomi's Devices service - universal interface for controlling any smart home device"
+api: "Roomi Devices"
 ---
+
+<Note>
+  The Devices service provides a unified interface for controlling any smart home device, regardless of the underlying provider or manufacturer.
+</Note>
 
 ## Overview
 
-The Devices service provides a unified interface for controlling any smart home device, regardless of the underlying provider or manufacturer. It abstracts away the complexity of different smart home protocols (Zigbee, Z-Wave, Wi-Fi, Bluetooth) and provides a consistent API for device discovery, control, and management.
+The Devices service abstracts away the complexity of different smart home protocols (Zigbee, Z-Wave, Wi-Fi, Bluetooth) and provides a consistent API for device discovery, control, and management.
+
+<CardGroup cols={2}>
+  <Card
+    title="Universal Device Control"
+    href="#universal-device-control"
+    icon="smartphone"
+  >
+    Standardized commands for any smart home device
+  </Card>
+  <Card
+    title="Multi-Provider Support"
+    href="#multi-provider-support"
+    icon="layers"
+  >
+    Support for Philips Hue, SmartThings, Tuya, and more
+  </Card>
+  <Card
+    title="Device Discovery"
+    href="#device-discovery"
+    icon="search"
+  >
+    Automatic detection and registration of new devices
+  </Card>
+  <Card
+    title="Real-time Status"
+    href="#real-time-status"
+    icon="activity"
+  >
+    Live device status monitoring and updates
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://devices-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://devices-staging-ae.roomi-services.com/v1/
+
+# Development
+https://devices-dev-ae.roomi-services.com/v1/
 ```
-https://devices-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
@@ -25,38 +75,135 @@ x-unit-id: unit-12345
 x-user-id: user-67890
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "GET",
+  hostname: "devices-prod-ae.roomi-services.com",
+  path: "/v1/devices",
+  headers: {
+    "Content-Type": "application/json",
+    "x-unit-id": "unit-12345",
+    "x-user-id": "user-67890"
+  }
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Supported Device Providers
 
 The Devices service supports multiple smart home ecosystems:
 
-| Provider | Protocol | Supported Devices |
-|----------|----------|-------------------|
-| **Philips Hue** | Zigbee | Lights, switches, sensors |
-| **SmartThings** | Z-Wave/Zigbee | Lights, switches, thermostats, sensors |
-| **Tuya/Smart Life** | Wi-Fi | Lights, switches, cameras, sensors |
-| **IKEA Tradfri** | Zigbee | Lights, switches, blinds |
-| **Xiaomi/Aqara** | Zigbee | Sensors, switches, locks |
-| **Ring** | Z-Wave | Security devices, cameras |
-| **Nest** | Wi-Fi | Thermostats, cameras, doorbells |
-| **Echo/Alexa** | Wi-Fi | Smart speakers, displays |
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Provider</Table.Header>
+      <Table.Header>Protocol</Table.Header>
+      <Table.Header>Supported Devices</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell><Badge variant="blue">Philips Hue</Badge></Table.Cell>
+      <Table.Cell>Zigbee</Table.Cell>
+      <Table.Cell>Lights, switches, sensors</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="green">SmartThings</Badge></Table.Cell>
+      <Table.Cell>Z-Wave/Zigbee</Table.Cell>
+      <Table.Cell>Lights, switches, thermostats, sensors</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="purple">Tuya/Smart Life</Badge></Table.Cell>
+      <Table.Cell>Wi-Fi</Table.Cell>
+      <Table.Cell>Lights, switches, cameras, sensors</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="orange">IKEA Tradfri</Badge></Table.Cell>
+      <Table.Cell>Zigbee</Table.Cell>
+      <Table.Cell>Lights, switches, blinds</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">Xiaomi/Aqara</Badge></Table.Cell>
+      <Table.Cell>Zigbee</Table.Cell>
+      <Table.Cell>Sensors, switches, locks</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="indigo">Ring</Badge></Table.Cell>
+      <Table.Cell>Z-Wave</Table.Cell>
+      <Table.Cell>Security devices, cameras</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="pink">Nest</Badge></Table.Cell>
+      <Table.Cell>Wi-Fi</Table.Cell>
+      <Table.Cell>Thermostats, cameras, doorbells</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="yellow">Echo/Alexa</Badge></Table.Cell>
+      <Table.Cell>Wi-Fi</Table.Cell>
+      <Table.Cell>Smart speakers, displays</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
 
 ## Core Capabilities
 
 ### Universal Device Control
-- **Standardized Commands**: Common actions like turn on/off, dim, set color
-- **Provider Abstraction**: Same API regardless of underlying provider
-- **Protocol Translation**: Automatic conversion between different protocols
-- **Error Handling**: Graceful handling of provider-specific errors
+
+<CardGroup cols={2}>
+  <Card title="Standardized Commands" icon="zap">
+    Common actions like turn on/off, dim, set color
+  </Card>
+  <Card title="Provider Abstraction" icon="layers">
+    Same API regardless of underlying provider
+  </Card>
+  <Card title="Protocol Translation" icon="refresh-cw">
+    Automatic conversion between different protocols
+  </Card>
+  <Card title="Error Handling" icon="shield">
+    Graceful handling of provider-specific errors
+  </Card>
+</CardGroup>
 
 ### Device Discovery and Management
-- **Auto-Discovery**: Automatic detection of new devices
-- **Device Registration**: Manual device addition and configuration
-- **Status Monitoring**: Real-time device status updates
-- **Room Organization**: Logical grouping of devices by room
+
+<Steps>
+  <Step title="Auto-Discovery">
+    Automatic detection of new devices on the network
+  </Step>
+  <Step title="Device Registration">
+    Manual device addition and configuration
+  </Step>
+  <Step title="Status Monitoring">
+    Real-time device status updates and health checks
+  </Step>
+  <Step title="Room Organization">
+    Logical grouping of devices by room and function
+  </Step>
+</Steps>
 
 ### Multi-Provider Support
+
+The Devices service supports multiple providers simultaneously:
+
 - **Provider Management**: Add and configure multiple providers
-- **Device Migration**: Move devices between providers
+- **Device Migration**: Move devices between providers seamlessly
 - **Failover Support**: Automatic fallback to alternative providers
 - **Provider-Specific Features**: Access to provider-specific capabilities
 
@@ -64,148 +211,186 @@ The Devices service supports multiple smart home ecosystems:
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "Devices service is operational",
+      "providers": {
+        "philips_hue": "connected",
+        "smartthings": "connected",
+        "tuya": "connected"
+      },
+      "devices_count": 45,
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the Devices service.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Devices service is operational",
-  "providers": {
-    "philips_hue": "connected",
-    "smartthings": "connected",
-    "tuya": "connected"
-  },
-  "devices_count": 45,
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the Devices service and verify connectivity with all providers.
 
 ### Get All Devices
 
-<Endpoint method="GET" path="/devices" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/devices" />
+  <RequestExample.Response>
+    ```json
+    [
+      {
+        "device_id": "device-123",
+        "name": "Living Room Light",
+        "type": "light",
+        "provider": "philips_hue",
+        "room": "Living Room",
+        "floor": "Ground Floor",
+        "status": "online",
+        "capabilities": [
+          "turn_on",
+          "turn_off",
+          "set_brightness",
+          "set_color",
+          "set_color_temperature"
+        ],
+        "current_state": {
+          "power": "on",
+          "brightness": 75,
+          "color": "#FF5733",
+          "color_temperature": 2700
+        },
+        "last_seen": "2024-01-15T10:00:00Z"
+      },
+      {
+        "device_id": "device-456",
+        "name": "Bedroom Thermostat",
+        "type": "thermostat",
+        "provider": "nest",
+        "room": "Bedroom",
+        "floor": "First Floor",
+        "status": "online",
+        "capabilities": [
+          "set_temperature",
+          "set_mode",
+          "set_fan_speed"
+        ],
+        "current_state": {
+          "temperature": 22,
+          "mode": "cool",
+          "fan_speed": "auto"
+        },
+        "last_seen": "2024-01-15T10:00:00Z"
+      }
+    ]
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
 Retrieve all devices for a specific unit with their status and capabilities.
 
-**Response:**
-```json
-[
-  {
-    "device_id": "device-123",
-    "name": "Living Room Light",
-    "type": "light",
-    "provider": "philips_hue",
-    "room": "Living Room",
-    "floor": "Ground Floor",
-    "status": "online",
-    "capabilities": [
-      "turn_on",
-      "turn_off",
-      "set_brightness",
-      "set_color",
-      "set_color_temperature"
-    ],
-    "current_state": {
-      "power": "on",
-      "brightness": 75,
-      "color": "#FF5733",
-      "color_temperature": 2700
-    },
-    "last_seen": "2024-01-15T10:00:00Z"
-  },
-  {
-    "device_id": "device-456",
-    "name": "Bedroom Thermostat",
-    "type": "thermostat",
-    "provider": "nest",
-    "room": "Bedroom",
-    "floor": "First Floor",
-    "status": "online",
-    "capabilities": [
-      "set_temperature",
-      "set_mode",
-      "set_fan_speed"
-    ],
-    "current_state": {
-      "temperature": 22,
-      "mode": "cool",
-      "fan_speed": "auto"
-    },
-    "last_seen": "2024-01-15T10:00:00Z"
-  }
-]
-```
+<Expandable title="Response Fields">
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `device_id` | string | Unique identifier for the device |
+| `name` | string | Human-readable device name |
+| `type` | string | Device type (light, thermostat, switch, etc.) |
+| `provider` | string | Smart home provider (philips_hue, nest, etc.) |
+| `room` | string | Room where the device is located |
+| `floor` | string | Floor level of the device |
+| `status` | string | Device status (online, offline, error) |
+| `capabilities` | array | List of available device actions |
+| `current_state` | object | Current device state and settings |
+| `last_seen` | string | Last time the device was active |
+
+</Expandable>
 
 ### Control Devices
 
-<Endpoint method="POST" path="/devices/control" />
-
-Control multiple devices with a single request.
-
-**Request Body:**
-```json
-{
-  "user_id": "user-123",
-  "unit_id": "unit-456",
-  "commands": [
+<RequestExample>
+  <RequestExample.Method method="POST" path="/devices/control" />
+  <RequestExample.Body>
+    ```json
     {
-      "device_id": "device-123",
-      "action": "turn_on",
-      "parameters": {}
-    },
-    {
-      "device_id": "device-456",
-      "action": "set_temperature",
-      "parameters": {
-        "temperature": 22
-      }
-    },
-    {
-      "device_id": "device-789",
-      "action": "set_brightness",
-      "parameters": {
-        "brightness": 100
-      }
+      "user_id": "user-123",
+      "unit_id": "unit-456",
+      "commands": [
+        {
+          "device_id": "device-123",
+          "action": "turn_on",
+          "parameters": {}
+        },
+        {
+          "device_id": "device-456",
+          "action": "set_temperature",
+          "parameters": {
+            "temperature": 22
+          }
+        },
+        {
+          "device_id": "device-789",
+          "action": "set_brightness",
+          "parameters": {
+            "brightness": 100
+          }
+        }
+      ]
     }
-  ]
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "results": [
+    ```
+  </RequestExample.Body>
+  <RequestExample.Response>
+    ```json
     {
-      "device_id": "device-123",
-      "action": "turn_on",
-      "status": "success",
-      "provider_response": {
-        "hue_response": "light turned on successfully"
-      }
-    },
-    {
-      "device_id": "device-456",
-      "action": "set_temperature",
-      "status": "success",
-      "provider_response": {
-        "nest_response": "temperature set to 22°C"
-      }
-    },
-    {
-      "device_id": "device-789",
-      "action": "set_brightness",
-      "status": "success",
-      "provider_response": {
-        "tuya_response": "brightness set to 100%"
-      }
+      "success": true,
+      "results": [
+        {
+          "device_id": "device-123",
+          "action": "turn_on",
+          "status": "success",
+          "provider_response": {
+            "hue_response": "light turned on successfully"
+          }
+        },
+        {
+          "device_id": "device-456",
+          "action": "set_temperature",
+          "status": "success",
+          "provider_response": {
+            "nest_response": "temperature set to 22°C"
+          }
+        },
+        {
+          "device_id": "device-789",
+          "action": "set_brightness",
+          "status": "success",
+          "provider_response": {
+            "tuya_response": "brightness set to 100%"
+          }
+        }
+      ],
+      "execution_time": "1.2s"
     }
-  ],
-  "execution_time": "1.2s"
-}
-```
+    ```
+  </RequestExample.Response>
+</RequestExample>
+
+Control multiple devices with a single request across different providers.
+
+<Expandable title="Available Actions">
+
+| Action | Description | Parameters |
+|--------|-------------|------------|
+| `turn_on` | Turn device on | None |
+| `turn_off` | Turn device off | None |
+| `set_brightness` | Set brightness level | `brightness` (0-100) |
+| `set_color` | Set device color | `color` (hex code) |
+| `set_color_temperature` | Set color temperature | `temperature` (Kelvin) |
+| `set_temperature` | Set thermostat temperature | `temperature` (Celsius) |
+| `set_mode` | Set device mode | `mode` (string) |
+| `set_fan_speed` | Set fan speed | `speed` (string) |
+
+</Expandable>
 
 ### Get Device Details
 
@@ -617,7 +802,33 @@ const getAllDevices = async () => {
 
 ## Next Steps
 
-- [AI Service API](/api-reference/ai) - Intelligent device orchestration
-- [Handler Service API](/api-reference/handler) - Database and communication operations
-- [Device Integration Guide](/guides/device-integration) - Detailed device integration
-- [Error Handling](/guides/error-handling) - Comprehensive error handling strategies 
+<CardGroup cols={2}>
+  <Card
+    title="AI Service API"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Intelligent device orchestration and natural language processing
+  </Card>
+  <Card
+    title="Handler Service API"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database and communication operations
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+  <Card
+    title="Authentication"
+    href="/authentication"
+    icon="shield"
+  >
+    Set up AWS Signature authentication
+  </Card>
+</CardGroup> 

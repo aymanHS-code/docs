@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "almond",
-  "name": "Roomi Docs",
+  "name": "Roomi API Documentation",
   "colors": {
     "primary": "#243",
     "light": "#7ce02f",
@@ -17,15 +17,15 @@
             "group": "Introduction",
             "pages": [
               "index",
-              "quickstart",
-              "authentication"
+              "authentication",
+              "configuration"
             ]
           },
           {
             "group": "Architecture",
             "pages": [
               "architecture-overview",
-              "service-communication"
+              "development"
             ]
           }
         ]
@@ -57,27 +57,7 @@
           {
             "group": "Integration",
             "pages": [
-              "guides/authentication-setup",
-              "guides/ai-integration",
-              "guides/device-integration",
-              "guides/handler-setup"
-            ]
-          },
-          {
-            "group": "Best Practices",
-            "pages": [
-              "guides/error-handling",
-              "guides/rate-limiting",
-              "guides/security",
-              "guides/logging"
-            ]
-          },
-          {
-            "group": "Examples",
-            "pages": [
-              "guides/examples/ai-workflow",
-              "guides/examples/device-control",
-              "guides/examples/service-integration"
+              "guides/integration-overview"
             ]
           }
         ]
@@ -104,7 +84,7 @@
     }
   },
   "logo": {
-    "light": "/logo/dark.png",
+    "light": "/logo/light.png",
     "dark": "/logo/dark.png"
   },
   "navbar": {
@@ -116,25 +96,31 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Website",
+      "label": "Get Started",
       "href": "https://roomi.ai"
     }
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
       "github": "https://github.com/roomitechnologies"
+    }
+  },
+  "api": {
+    "baseUrl": "https://api.roomi.ai",
+    "auth": {
+      "type": "bearer"
     }
   }
 }

@@ -1,85 +1,192 @@
 ---
 title: "Logger Service API"
 description: "Complete API reference for Roomi's Logger service - CloudWatch logging and monitoring system"
+api: "Roomi Logger"
 ---
+
+<Note>
+  The Logger service provides centralized logging and monitoring capabilities for the Roomi platform, integrating with AWS CloudWatch for comprehensive system observability.
+</Note>
 
 ## Overview
 
-The Logger service provides centralized logging and monitoring capabilities for the Roomi platform, integrating with AWS CloudWatch for comprehensive system observability. It handles structured logging, performance monitoring, error tracking, and audit trail management across all services.
+The Logger service handles structured logging, performance monitoring, error tracking, and audit trail management across all services with seamless CloudWatch integration.
+
+<CardGroup cols={2}>
+  <Card
+    title="Structured Logging"
+    href="#structured-logging"
+    icon="file-text"
+  >
+    CloudWatch integration with structured JSON logs
+  </Card>
+  <Card
+    title="Performance Monitoring"
+    href="#performance-monitoring"
+    icon="activity"
+  >
+    Real-time metrics collection and monitoring
+  </Card>
+  <Card
+    title="Error Tracking"
+    href="#error-tracking"
+    icon="alert-triangle"
+  >
+    Error aggregation and root cause analysis
+  </Card>
+  <Card
+    title="Audit Trail"
+    href="#audit-trail"
+    icon="shield"
+  >
+    User actions and system events tracking
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://logger-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://logger-staging-ae.roomi-services.com/v1/
+
+# Development
+https://logger-dev-ae.roomi-services.com/v1/
 ```
-https://logger-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "GET",
+  hostname: "logger-prod-ae.roomi-services.com",
+  path: "/v1/health",
+  headers: {
+    "Content-Type": "application/json"
+  }
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Core Capabilities
 
 ### Structured Logging
-- **CloudWatch Integration**: Direct logging to AWS CloudWatch Logs
-- **Structured Data**: JSON-formatted logs with consistent schema
-- **Log Levels**: Debug, Info, Warn, Error, and Fatal levels
-- **Context Enrichment**: Automatic addition of metadata and context
+
+<CardGroup cols={2}>
+  <Card title="CloudWatch Integration" icon="cloud">
+    Direct logging to AWS CloudWatch Logs
+  </Card>
+  <Card title="Structured Data" icon="file-text">
+    JSON-formatted logs with consistent schema
+  </Card>
+  <Card title="Log Levels" icon="layers">
+    Debug, Info, Warn, Error, and Fatal levels
+  </Card>
+  <Card title="Context Enrichment" icon="plus">
+    Automatic addition of metadata and context
+  </Card>
+</CardGroup>
 
 ### Performance Monitoring
-- **Metrics Collection**: System and application performance metrics
-- **Custom Metrics**: User-defined business metrics
-- **Real-time Monitoring**: Live performance dashboards
-- **Alerting**: Automated alerts for performance issues
+
+<Steps>
+  <Step title="Metrics Collection">
+    System and application performance metrics
+  </Step>
+  <Step title="Custom Metrics">
+    User-defined business metrics and KPIs
+  </Step>
+  <Step title="Real-time Monitoring">
+    Live performance dashboards and alerts
+  </Step>
+  <Step title="Alerting">
+    Automated alerts for performance issues
+  </Step>
+</Steps>
 
 ### Error Tracking
-- **Error Aggregation**: Group and categorize errors
-- **Stack Traces**: Detailed error information and stack traces
-- **Error Trends**: Historical error analysis and trends
-- **Root Cause Analysis**: Automated error correlation
+
+The Logger service provides comprehensive error tracking capabilities:
+
+- **Error Aggregation**: Group and categorize errors by type and frequency
+- **Stack Traces**: Detailed error information and stack traces for debugging
+- **Error Trends**: Historical error analysis and trend identification
+- **Root Cause Analysis**: Automated error correlation and root cause identification
 
 ### Audit Trail
-- **User Actions**: Track all user interactions and changes
-- **System Events**: Monitor system-level events and changes
+
+- **User Actions**: Track all user interactions and changes for compliance
+- **System Events**: Monitor system-level events and configuration changes
 - **Compliance Logging**: Meet regulatory and compliance requirements
-- **Data Retention**: Configurable log retention policies
+- **Data Retention**: Configurable log retention policies and archival
 
 ## API Endpoints
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "Logger service is operational",
+      "cloudwatch": {
+        "status": "connected",
+        "log_groups": 15,
+        "metrics_namespaces": 8
+      },
+      "performance": {
+        "logs_per_second": 1250,
+        "average_latency": "45ms",
+        "error_rate": "0.1%"
+      },
+      "storage": {
+        "total_logs": 15000000,
+        "storage_used": "2.5GB",
+        "retention_days": 90
+      },
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the Logger service and CloudWatch connectivity.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Logger service is operational",
-  "cloudwatch": {
-    "status": "connected",
-    "log_groups": 15,
-    "metrics_namespaces": 8
-  },
-  "performance": {
-    "logs_per_second": 1250,
-    "average_latency": "45ms",
-    "error_rate": "0.1%"
-  },
-  "storage": {
-    "total_logs": 15000000,
-    "storage_used": "2.5GB",
-    "retention_days": 90
-  },
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the Logger service and verify CloudWatch connectivity and performance metrics.
 
 ### Logging Operations
 
@@ -776,7 +883,33 @@ const trackAPIPerformance = async (endpoint, startTime) => {
 
 ## Next Steps
 
-- [AI Service API](/api-reference/ai) - Intelligent orchestration
-- [Devices Service API](/api-reference/devices) - Device control interface
-- [Handler Service API](/api-reference/handler) - Database and communication operations
-- [Logging Guide](/guides/logging) - Comprehensive logging strategies 
+<CardGroup cols={2}>
+  <Card
+    title="AI Service API"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Intelligent orchestration and natural language processing
+  </Card>
+  <Card
+    title="Devices Service API"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Universal device control interface
+  </Card>
+  <Card
+    title="Handler Service API"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database and communication operations
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+</CardGroup> 

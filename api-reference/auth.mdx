@@ -1,23 +1,73 @@
 ---
 title: "Auth Service API"
 description: "Complete API reference for Roomi's Auth service - invite-only authentication system"
+api: "Roomi Auth"
 ---
+
+<Note>
+  The Auth service provides a private, invite-only authentication system for the Roomi platform with OTP verification and UAE Pass integration.
+</Note>
 
 ## Overview
 
-The Auth service provides a private, invite-only authentication system for the Roomi platform. It handles user registration, authentication, and session management with support for OTP verification and UAE Pass integration. The service is designed for exclusive access, requiring invitations for user registration.
+The Auth service is designed for exclusive access, requiring invitations for user registration. It handles user registration, authentication, and session management with comprehensive security features.
+
+<CardGroup cols={2}>
+  <Card
+    title="Invite-Only Registration"
+    href="#invite-only-registration"
+    icon="mail"
+  >
+    Secure invitation system with access control
+  </Card>
+  <Card
+    title="Multi-Factor Authentication"
+    href="#multi-factor-authentication"
+    icon="shield"
+  >
+    OTP verification and UAE Pass integration
+  </Card>
+  <Card
+    title="User Management"
+    href="#user-management"
+    icon="users"
+  >
+    Comprehensive user profiles and permissions
+  </Card>
+  <Card
+    title="Session Management"
+    href="#session-management"
+    icon="key"
+  >
+    Secure token-based sessions and device registration
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://auth-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://auth-staging-ae.roomi-services.com/v1/
+
+# Development
+https://auth-dev-ae.roomi-services.com/v1/
 ```
-https://auth-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
@@ -25,45 +75,103 @@ x-unit-id: unit-12345
 x-user-id: user-67890
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "GET",
+  hostname: "auth-prod-ae.roomi-services.com",
+  path: "/v1/health",
+  headers: {
+    "Content-Type": "application/json",
+    "x-unit-id": "unit-12345",
+    "x-user-id": "user-67890"
+  }
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Core Capabilities
 
 ### Invite-Only Registration
-- **Invitation System**: Users can only register with valid invitations
-- **Invitation Management**: Create, track, and revoke invitations
-- **Access Control**: Granular permission management
-- **Audit Trail**: Complete registration and access logs
+
+<CardGroup cols={2}>
+  <Card title="Invitation System" icon="mail">
+    Users can only register with valid invitations
+  </Card>
+  <Card title="Invitation Management" icon="settings">
+    Create, track, and revoke invitations
+  </Card>
+  <Card title="Access Control" icon="lock">
+    Granular permission management
+  </Card>
+  <Card title="Audit Trail" icon="file-text">
+    Complete registration and access logs
+  </Card>
+</CardGroup>
 
 ### Multi-Factor Authentication
-- **OTP Verification**: Phone number-based one-time password
-- **UAE Pass Integration**: Government-issued digital identity
-- **Session Management**: Secure token-based sessions
-- **Device Registration**: Multi-device authentication support
+
+<Steps>
+  <Step title="OTP Verification">
+    Phone number-based one-time password verification
+  </Step>
+  <Step title="UAE Pass Integration">
+    Government-issued digital identity verification
+  </Step>
+  <Step title="Session Management">
+    Secure token-based sessions with expiration
+  </Step>
+  <Step title="Device Registration">
+    Multi-device authentication support
+  </Step>
+</Steps>
 
 ### User Management
+
+The Auth service provides comprehensive user management capabilities:
+
 - **User Profiles**: Comprehensive user information management
-- **Permission System**: Role-based access control
+- **Permission System**: Role-based access control with granular permissions
 - **Account Status**: Active, suspended, and deactivated states
-- **Profile Updates**: Secure profile modification
+- **Profile Updates**: Secure profile modification with validation
 
 ## API Endpoints
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "Auth service is operational",
+      "invitations_pending": 15,
+      "active_users": 1250,
+      "sessions_active": 890,
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the Auth service.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Auth service is operational",
-  "invitations_pending": 15,
-  "active_users": 1250,
-  "sessions_active": 890,
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the Auth service and view system statistics.
 
 ### Invitation Management
 
@@ -817,7 +925,33 @@ const registerWithInvitation = async (invitationCode, userData) => {
 
 ## Next Steps
 
-- [AI Service API](/api-reference/ai) - Intelligent orchestration
-- [Devices Service API](/api-reference/devices) - Device control interface
-- [Handler Service API](/api-reference/handler) - Database and communication operations
-- [Authentication Setup Guide](/guides/authentication-setup) - Detailed authentication configuration 
+<CardGroup cols={2}>
+  <Card
+    title="AI Service API"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Intelligent orchestration and natural language processing
+  </Card>
+  <Card
+    title="Devices Service API"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Universal device control interface
+  </Card>
+  <Card
+    title="Handler Service API"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database and communication operations
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+</CardGroup> 

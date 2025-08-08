@@ -1,23 +1,73 @@
 ---
 title: "Services Platform API"
 description: "Complete API reference for Roomi's Services Platform - third-party integrations and external APIs"
+api: "Roomi Services"
 ---
+
+<Note>
+  The Services Platform handles all third-party integrations and external API communications for the Roomi ecosystem with unified interfaces.
+</Note>
 
 ## Overview
 
-The Services Platform handles all third-party integrations and external API communications for the Roomi ecosystem. It provides a unified interface for property developer and user-specific services, including events, complaints, payments, facilities booking, routines, and email services. The platform abstracts away the complexity of different third-party APIs and provides consistent data models.
+The Services Platform provides a unified interface for property developer and user-specific services, including events, complaints, payments, facilities booking, routines, and email services. It abstracts away the complexity of different third-party APIs and provides consistent data models.
+
+<CardGroup cols={2}>
+  <Card
+    title="Third-Party Integration"
+    href="#third-party-integration"
+    icon="link"
+  >
+    Unified interface for multiple third-party services
+  </Card>
+  <Card
+    title="Service Categories"
+    href="#service-categories"
+    icon="grid"
+  >
+    Events, complaints, payments, facilities, and more
+  </Card>
+  <Card
+    title="Property Developer APIs"
+    href="#property-developer-apis"
+    icon="building"
+  >
+    Custom integrations and property-specific services
+  </Card>
+  <Card
+    title="Data Transformation"
+    href="#data-transformation"
+    icon="refresh-cw"
+  >
+    Consistent data models across different providers
+  </Card>
+</CardGroup>
 
 ## Base URL
 
+<CodeGroup>
+
+```bash
+# Production
+https://services-prod-ae.roomi-services.com/v1/
+
+# Staging
+https://services-staging-ae.roomi-services.com/v1/
+
+# Development
+https://services-dev-ae.roomi-services.com/v1/
 ```
-https://services-{environment}-{region}.roomi-services.com/v1/
-```
+
+</CodeGroup>
 
 ## Authentication
 
 All API endpoints require AWS Signature Version 4 (SigV4) authentication with additional headers:
 
-```http
+<CodeGroup>
+
+```bash
+# Required Headers
 Authorization: AWS4-HMAC-SHA256 Credential=YOUR_ACCESS_KEY/20240115/me-central-1/execute-api/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=YOUR_SIGNATURE
 X-Amz-Content-Sha256: SHA256_HASH_OF_REQUEST_BODY
 X-Amz-Date: 20240115T120000Z
@@ -25,63 +75,146 @@ x-unit-id: unit-12345
 x-user-id: user-67890
 ```
 
+```javascript
+// Example with AWS SDK v3
+import { SignatureV4 } from "@aws-sdk/signature-v4";
+import { Sha256 } from "@aws-crypto/sha256-js";
+
+const signer = new SignatureV4({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "me-central-1",
+  service: "execute-api",
+  sha256: Sha256,
+});
+
+const request = {
+  method: "GET",
+  hostname: "services-prod-ae.roomi-services.com",
+  path: "/v1/health",
+  headers: {
+    "Content-Type": "application/json",
+    "x-unit-id": "unit-12345",
+    "x-user-id": "user-67890"
+  }
+};
+
+const signedRequest = await signer.sign(request);
+```
+
+</CodeGroup>
+
 ## Core Capabilities
 
 ### Third-Party Integration
-- **API Abstraction**: Unified interface for multiple third-party services
-- **Data Transformation**: Consistent data models across different providers
-- **Error Handling**: Graceful handling of provider-specific errors
-- **Rate Limiting**: Provider-aware rate limiting and throttling
+
+<CardGroup cols={2}>
+  <Card title="API Abstraction" icon="layers">
+    Unified interface for multiple third-party services
+  </Card>
+  <Card title="Data Transformation" icon="refresh-cw">
+    Consistent data models across different providers
+  </Card>
+  <Card title="Error Handling" icon="shield">
+    Graceful handling of provider-specific errors
+  </Card>
+  <Card title="Rate Limiting" icon="clock">
+    Provider-aware rate limiting and throttling
+  </Card>
+</CardGroup>
 
 ### Service Categories
-- **Events**: Community events and social activities
-- **Complaints**: Maintenance requests and issue reporting
-- **Payments**: Billing, payments, and financial services
-- **Facilities**: Amenity booking and facility management
-- **Routines**: Automation and scheduled tasks
-- **Email**: Communication and notification services
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Service</Table.Header>
+      <Table.Header>Description</Table.Header>
+      <Table.Header>Features</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell><Badge variant="blue">Events</Badge></Table.Cell>
+      <Table.Cell>Community events and social activities</Table.Cell>
+      <Table.Cell>Event creation, RSVP, notifications</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="red">Complaints</Badge></Table.Cell>
+      <Table.Cell>Maintenance requests and issue reporting</Table.Cell>
+      <Table.Cell>Ticket creation, tracking, resolution</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="green">Payments</Badge></Table.Cell>
+      <Table.Cell>Billing, payments, and financial services</Table.Cell>
+      <Table.Cell>Invoicing, payment processing, history</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="purple">Facilities</Badge></Table.Cell>
+      <Table.Cell>Amenity booking and facility management</Table.Cell>
+      <Table.Cell>Booking, availability, scheduling</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="orange">Routines</Badge></Table.Cell>
+      <Table.Cell>Automation and scheduled tasks</Table.Cell>
+      <Table.Cell>Automation, scheduling, triggers</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell><Badge variant="indigo">Email</Badge></Table.Cell>
+      <Table.Cell>Communication and notification services</Table.Cell>
+      <Table.Cell>Templates, delivery, tracking</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
 
 ### Property Developer APIs
-- **Custom Integrations**: Property-specific service integrations
-- **Data Synchronization**: Real-time data sync with property systems
+
+The Services Platform provides comprehensive property developer integration:
+
+- **Custom Integrations**: Property-specific service integrations and workflows
+- **Data Synchronization**: Real-time data sync with property management systems
 - **Configuration Management**: Property-specific settings and preferences
-- **Multi-Property Support**: Support for multiple property developments
+- **Multi-Property Support**: Support for multiple property developments and portfolios
 
 ## API Endpoints
 
 ### Health Check
 
-<Endpoint method="GET" path="/health" />
+<RequestExample>
+  <RequestExample.Method method="GET" path="/health" />
+  <RequestExample.Response>
+    ```json
+    {
+      "status": "healthy",
+      "message": "Services platform is operational",
+      "connected_services": {
+        "events": "connected",
+        "complaints": "connected",
+        "payments": "connected",
+        "facilities": "connected",
+        "routines": "connected",
+        "email": "connected"
+      },
+      "third_party_providers": {
+        "payment_gateway": "stripe",
+        "email_service": "sendgrid",
+        "facility_management": "custom",
+        "event_platform": "custom"
+      },
+      "performance": {
+        "average_response_time": "120ms",
+        "success_rate": "99.8%",
+        "active_integrations": 15
+      },
+      "timestamp": "2024-01-15T10:00:00Z"
+    }
+    ```
+  </RequestExample.Response>
+</RequestExample>
 
-Check the health status of the Services Platform and connected third-party services.
-
-**Response:**
-```json
-{
-  "status": "healthy",
-  "message": "Services platform is operational",
-  "connected_services": {
-    "events": "connected",
-    "complaints": "connected",
-    "payments": "connected",
-    "facilities": "connected",
-    "routines": "connected",
-    "email": "connected"
-  },
-  "third_party_providers": {
-    "payment_gateway": "stripe",
-    "email_service": "sendgrid",
-    "facility_management": "custom",
-    "event_platform": "custom"
-  },
-  "performance": {
-    "average_response_time": "120ms",
-    "success_rate": "99.8%",
-    "active_integrations": 15
-  },
-  "timestamp": "2024-01-15T10:00:00Z"
-}
-```
+Check the health status of the Services Platform and verify connectivity with all third-party services.
 
 ## Events Service
 
@@ -938,7 +1071,33 @@ const facilityBookingSystem = {
 
 ## Next Steps
 
-- [AI Service API](/api-reference/ai) - Intelligent orchestration
-- [Devices Service API](/api-reference/devices) - Device control interface
-- [Handler Service API](/api-reference/handler) - Database and communication operations
-- [Service Integration Guide](/guides/service-integration) - Third-party integration strategies 
+<CardGroup cols={2}>
+  <Card
+    title="AI Service API"
+    href="/api-reference/ai"
+    icon="brain"
+  >
+    Intelligent orchestration and natural language processing
+  </Card>
+  <Card
+    title="Devices Service API"
+    href="/api-reference/devices"
+    icon="smartphone"
+  >
+    Universal device control interface
+  </Card>
+  <Card
+    title="Handler Service API"
+    href="/api-reference/handler"
+    icon="database"
+  >
+    Database and communication operations
+  </Card>
+  <Card
+    title="Integration Guide"
+    href="/guides/integration-overview"
+    icon="book"
+  >
+    Learn how to integrate with Roomi services
+  </Card>
+</CardGroup> 
