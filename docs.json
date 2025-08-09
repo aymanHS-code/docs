@@ -26,22 +26,6 @@
         "tab": "API Reference",
         "groups": [
           {
-            "group": "Core Services",
-            "pages": [
-              "api-reference/ai",
-              "api-reference/devices",
-              "api-reference/handler"
-            ]
-          },
-          {
-            "group": "Support Services",
-            "pages": [
-              "api-reference/auth",
-              "api-reference/logger",
-              "api-reference/services"
-            ]
-          },
-          {
             "group": "AI Endpoints",
             "pages": [
               "api-reference/ai/health",
@@ -195,6 +179,9 @@
     }
   },
   "api": {
+    "playground": {
+      "display": "interactive"
+    },
     "mdx": {
       "server": [
         "https://ai-dev-ae.roomi-services.com",
