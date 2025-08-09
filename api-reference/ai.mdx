@@ -5,18 +5,7 @@ description: "Interactive API reference for the Roomi AI Assistant"
 
 # Roomi AI API
 
-Roomi AI Assistant API for processing messages, checking task statuses, and platform health.\
-All requests require **AWS SigV4 Authentication**.
-
-> **AWS SigV4 Authentication**
->
-> - `Authorization` — AWS4-HMAC-SHA256 signature
-> - `X-Amz-Content-Sha256` — SHA256 hash of the request body
-> - `X-Amz-Date` — ISO8601 timestamp (e.g., `20230101T120000Z`)
->
->   \
->   **Region:** `me-central-1`\
->   **Service:** `execute-api`
+Roomi AI Assistant API for processing messages, checking task statuses, and platform health.
 
 ---
 
@@ -27,8 +16,8 @@ All requests require **AWS SigV4 Authentication**.
   path="/health"
   baseUrl="https://ai-{env}-ae.roomi-services.com"
   headers={{
-  "x-unit-id": "unit-12345",
-  "x-user-id": "user-67890"
+"x-unit-id": "unit-12345",
+"x-user-id": "user-67890"
 }}
 >
   <Response status={200}>
@@ -50,8 +39,8 @@ All requests require **AWS SigV4 Authentication**.
   path="/task/{task_id}/status"
   baseUrl="https://ai-{env}-ae.roomi-services.com"
   headers={{
-  "x-unit-id": "unit-12345",
-  "x-user-id": "user-67890"
+"x-unit-id": "unit-12345",
+"x-user-id": "user-67890"
 }}
 >
   <Param name="task_id" type="string" required>
@@ -92,9 +81,9 @@ All requests require **AWS SigV4 Authentication**.
   path="/roomi"
   baseUrl="https://ai-{env}-ae.roomi-services.com"
   headers={{
-  "Content-Type": "application/json",
-  "x-unit-id": "unit-12345",
-  "x-user-id": "user-67890"
+"Content-Type": "application/json",
+"x-unit-id": "unit-12345",
+"x-user-id": "user-67890"
 }}
 >
   <Request>
@@ -144,8 +133,8 @@ All requests require **AWS SigV4 Authentication**.
   path="/elevenlabs/webhook"
   baseUrl="https://ai-{env}-ae.roomi-services.com"
   headers={{
-  "Content-Type": "application/json",
-  "x-roomi-token": "YOUR_PRIVATE_TOKEN"
+"Content-Type": "application/json",
+"x-roomi-token": "YOUR_PRIVATE_TOKEN"
 }}
 >
   <Response status={200}>
@@ -167,8 +156,8 @@ All requests require **AWS SigV4 Authentication**.
   path="/platform"
   baseUrl="https://ai-{env}-ae.roomi-services.com"
   headers={{
-  "x-unit-id": "unit-12345",
-  "x-user-id": "user-67890"
+"x-unit-id": "unit-12345",
+"x-user-id": "user-67890"
 }}
 >
   <Response status={200}>
