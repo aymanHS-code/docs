@@ -40,6 +40,48 @@
               "api-reference/logger",
               "api-reference/services"
             ]
+          },
+          {
+            "group": "AI Endpoints",
+            "pages": [
+              "api-reference/ai/health",
+              "api-reference/ai/process-message",
+              "api-reference/ai/task-status",
+              "api-reference/ai/elevenlabs-webhook"
+            ]
+          },
+          {
+            "group": "Devices Endpoints",
+            "pages": [
+              "api-reference/devices/health",
+              "api-reference/devices/list",
+              "api-reference/devices/control"
+            ]
+          },
+          {
+            "group": "Handler Endpoints",
+            "pages": [
+              "api-reference/handler/health"
+            ]
+          },
+          {
+            "group": "Auth Endpoints",
+            "pages": [
+              "api-reference/auth/health",
+              "api-reference/auth/validate-otp"
+            ]
+          },
+          {
+            "group": "Logger Endpoints",
+            "pages": [
+              "api-reference/logger/health"
+            ]
+          },
+          {
+            "group": "Services Endpoints",
+            "pages": [
+              "api-reference/services/health"
+            ]
           }
         ]
       }
@@ -89,9 +131,15 @@
     }
   },
   "api": {
-    "baseUrl": "https://api.roomi.ai",
-    "auth": {
-      "type": "bearer"
+    "mdx": {
+      "server": [
+        "https://ai-dev-ae.roomi-services.com",
+        "https://devices-dev-ae.roomi-services.com",
+        "https://handler-dev-ae.roomi-services.com",
+        "https://auth-dev-ae.roomi-services.com",
+        "https://logger-dev-ae.roomi-services.com",
+        "https://services-dev-ae.roomi-services.com"
+      ]
     }
   }
 }

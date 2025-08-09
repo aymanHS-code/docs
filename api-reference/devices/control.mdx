@@ -1,0 +1,23 @@
+---
+title: "Devices - Control"
+api: "POST /v1/devices/control"
+authMethod: "none"
+---
+
+Control multiple devices with a single request.
+
+<Note>
+  Set `x-unit-id` and `x-user-id` and sign with AWS SigV4. No `x-roomi-token` here.
+</Note>
+
+```json
+// Example body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "commands": [
+    { "device_id": "device-123", "action": "turn_on" }
+  ]
+}
+```
+

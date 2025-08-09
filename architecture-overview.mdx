@@ -1,0 +1,72 @@
+---
+title: "Architecture Overview"
+description: "How Roomi's services work together"
+---
+
+<Note>
+  High-level view of Roomi's microservices and how they communicate.
+</Note>
+
+## Core Services
+
+<CardGroup cols={2}>
+  <Card title="AI Service" href="/api-reference/ai" icon="brain">
+    Central intelligence that orchestrates all other services
+  </Card>
+  <Card title="Devices Service" href="/api-reference/devices" icon="lightbulb-cfl">
+    Unified control over smart devices across providers
+  </Card>
+  <Card title="Handler Service" href="/api-reference/handler" icon="database">
+    Database operations and inter-service communication
+  </Card>
+  <Card title="Auth Service" href="/api-reference/auth" icon="shield">
+    Invite-only authentication and user management
+  </Card>
+</CardGroup>
+
+## Communication Flows
+
+<Steps>
+  <Step title="User Authentication">
+    User → Auth → Handler → Database → Logger
+  </Step>
+  <Step title="Device Control">
+    User → AI → Handler → Devices → Provider → Device → Logger
+  </Step>
+  <Step title="Payment Processing">
+    User → AI → Handler → Services (Payments) → Gateway → Email → Logger
+  </Step>
+</Steps>
+
+## Security
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Area</Table.Header>
+      <Table.Header>Details</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Auth</Table.Cell>
+      <Table.Cell>AWS SigV4 + `x-roomi-token` (playground), `x-unit-id`, `x-user-id` headers</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>Data Protection</Table.Cell>
+      <Table.Cell>Encryption in transit and at rest, audit trail, RBAC</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+  </Table>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="API Reference" href="/api-reference/ai" icon="book">
+    Explore endpoints and try them in the playground
+  </Card>
+  <Card title="Authentication" href="/authentication" icon="key">
+    Configure auth for the interactive playground
+  </Card>
+</CardGroup>
+

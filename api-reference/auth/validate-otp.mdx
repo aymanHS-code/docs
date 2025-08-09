@@ -1,0 +1,21 @@
+---
+title: "Auth - Validate OTP"
+api: "POST /v1/auth/validate-otp"
+authMethod: "key"
+---
+
+Validate a one-time password (OTP) to authenticate a user.
+
+<Note>
+  Include `x-roomi-token` in auth and provide body fields `phone`, `otp`, and `pin`.
+</Note>
+
+```json
+// Example body
+{
+  "phone": "+971501234567",
+  "otp": "123456",
+  "pin": "pin-id-from-send-otp"
+}
+```
+

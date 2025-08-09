@@ -1,0 +1,43 @@
+---
+title: "AI - Process Message"
+api: "POST /v1/roomi"
+authMethod: "none"
+---
+
+Process a natural language message and return an intelligent response with coordinated actions.
+
+<Note>
+  Use AWS SigV4 for this endpoint and include:
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
+  
+  Do not include `x-roomi-token`.
+</Note>
+
+```json
+// Example request body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "unit_name": "Apartment 101",
+  "transcript": "Turn on the living room lights and set temperature to 22 degrees",
+  "thread_id": "e0f5308e-0bd9-4dc9-b55d-5c74798283bf"
+}
+```
+
+```json
+// Example response
+{
+  "response": "I've turned on the living room lights and set the temperature to 22 degrees for you.",
+  "background_tasks": [
+    {
+      "task_id": "task-789",
+      "type": "device_control",
+      "status": "completed"
+    }
+  ],
+  "query_type": "DEVICE_CONTROL"
+}
+```
+

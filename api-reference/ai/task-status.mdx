@@ -1,0 +1,22 @@
+---
+title: "AI - Task Status"
+api: "GET /v1/task/{task_id}/status"
+authMethod: "none"
+---
+
+Check the status of a background task.
+
+<Note>
+  Replace `{task_id}` and sign using AWS SigV4 headers. No `x-roomi-token` required.
+</Note>
+
+```json
+// Example response
+{
+  "task_id": "task-789",
+  "status": "completed",
+  "message": "All requested actions completed successfully",
+  "progress": 100
+}
+```
+
