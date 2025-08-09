@@ -18,3 +18,13 @@ Control multiple devices with a single request.
 | X-User-ID | Yes | User identifier |
 
 
+```json
+// Example body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "commands": [
+    { "device_id": "device-123", "action": "turn_on" }
+  ]
+}
+```

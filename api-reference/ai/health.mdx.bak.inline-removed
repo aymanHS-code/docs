@@ -17,3 +17,11 @@ Check the health status of the AI service.
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
 
+```json
+// Example response
+{
+  "status": "healthy",
+  "message": "AI service is operational",
+  "timestamp": "2024-01-15T10:00:00Z"
+}
+```

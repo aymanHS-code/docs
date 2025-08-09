@@ -138,6 +138,7 @@ def ensure_components_parameters(spec: Dict) -> bool:
     changed = False
     components = spec.setdefault("components", {})
     parameters = components.setdefault("parameters", {})
+    # Create DRY parameters for common headers we add
     if "XUnitIdHeader" not in parameters:
         parameters["XUnitIdHeader"] = X_UNIT_HEADER_PARAM
         changed = True
@@ -154,6 +155,27 @@ def ensure_components_parameters(spec: Dict) -> bool:
     if "AWSDateHeader" not in parameters:
         parameters["AWSDateHeader"] = AUTH_HEADER_PARAMS["X-Amz-Date"]
         changed = True
+    # Auto-create parameters for any apiKey header security schemes
+    security_schemes = components.get("securitySchemes", {})
+    if isinstance(security_schemes, dict):
+        for scheme_key, scheme in security_schemes.items():
+            if not isinstance(scheme, dict):
+                continue
+            if scheme.get("type") == "apiKey" and scheme.get("in") == "header":
+                header_name = scheme.get("name")
+                if not header_name:
+                    continue
+                param_key = f"{scheme_key}HeaderParam"
+                if param_key not in parameters:
+                    parameters[param_key] = {
+                        "name": header_name,
+                        "in": "header",
+                        "description": scheme.get("description", f"{header_name} header"),
+                        "required": True,
+                        "schema": {"type": "string"},
+                        "example": "token",
+                    }
+                    changed = True
     return changed
 
 
@@ -184,27 +206,53 @@ def ensure_unit_user_headers_on_ops(spec: Dict, spec_filename: str) -> bool:
     return changed
 
 
-def ensure_auth_headers_on_ops(spec: Dict) -> bool:
-    """If spec uses AWS SigV4 security globally, also surface headers as parameters for UI."""
+def ensure_security_headers_on_ops(spec: Dict) -> bool:
+    """Ensure apiKey header schemes in effective security are exposed as parameters on each operation."""
+    components = spec.get("components", {})
+    security_schemes = components.get("securitySchemes", {}) or {}
     global_security = spec.get("security") or []
-    uses_aws = any(
-        isinstance(sec, dict) and any(k in sec for k in ("AWSSignatureV4", "AWSContentSha256", "AWSDate"))
-        for sec in global_security
-    )
-    if not uses_aws:
-        return False
     changed = False
     for _path, _method, op in iter_operations(spec):
+        effective_security = op.get("security", global_security)
+        if not effective_security:
+            # Still ensure parameters array exists for consistency
+            op.setdefault("parameters", [])
+            continue
         params: List[Dict] = op.setdefault("parameters", [])
-        header_names = {p.get("name") for p in params if p.get("in") == "header"}
-        if "Authorization" not in header_names:
-            params.append({"$ref": "#/components/parameters/AuthorizationHeader"})
-            changed = True
-        if "X-Amz-Content-Sha256" not in header_names:
-            params.append({"$ref": "#/components/parameters/AWSContentSha256Header"})
-            changed = True
-        if "X-Amz-Date" not in header_names:
-            params.append({"$ref": "#/components/parameters/AWSDateHeader"})
+        header_names = {p.get("name") for p in params if isinstance(p, dict) and p.get("in") == "header"}
+        for sec_obj in effective_security:
+            if not isinstance(sec_obj, dict):
+                continue
+            for scheme_key in sec_obj.keys():
+                scheme = security_schemes.get(scheme_key)
+                if not isinstance(scheme, dict):
+                    continue
+                if scheme.get("type") == "apiKey" and scheme.get("in") == "header":
+                    name = scheme.get("name")
+                    if name and name not in header_names:
+                        # Use the parameter we created earlier
+                        param_key = f"{scheme_key}HeaderParam"
+                        params.append({"$ref": f"#/components/parameters/{param_key}"})
+                        changed = True
+        # Special-case AWS SigV4 group
+        if any(isinstance(s, dict) and any(k in s for k in ("AWSSignatureV4", "AWSContentSha256", "AWSDate")) for s in effective_security):
+            if "Authorization" not in header_names:
+                params.append({"$ref": "#/components/parameters/AuthorizationHeader"})
+                changed = True
+            if "X-Amz-Content-Sha256" not in header_names:
+                params.append({"$ref": "#/components/parameters/AWSContentSha256Header"})
+                changed = True
+            if "X-Amz-Date" not in header_names:
+                params.append({"$ref": "#/components/parameters/AWSDateHeader"})
+                changed = True
+    return changed
+
+
+def ensure_parameters_array_on_all_ops(spec: Dict) -> bool:
+    changed = False
+    for _path, _method, op in iter_operations(spec):
+        if "parameters" not in op:
+            op["parameters"] = []
             changed = True
     return changed
 
@@ -417,7 +465,9 @@ def process_specs(root: Path, apply: bool, backup: bool) -> List[Path]:
             changed = True
         if ensure_unit_user_headers_on_ops(spec, spec_file):
             changed = True
-        if ensure_auth_headers_on_ops(spec):
+        if ensure_security_headers_on_ops(spec):
+            changed = True
+        if ensure_parameters_array_on_all_ops(spec):
             changed = True
         if ensure_request_body_examples(spec):
             changed = True

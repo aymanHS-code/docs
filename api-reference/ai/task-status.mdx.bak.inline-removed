@@ -25,7 +25,15 @@ Check the status of a background task.
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
 
-
+```json
+// Example response
+{
+  "task_id": "task-789",
+  "status": "completed",
+  "message": "All requested actions completed successfully",
+  "progress": 100
+}
+```
 
 <ResponseExample>
 
