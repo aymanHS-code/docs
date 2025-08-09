@@ -10,4 +10,23 @@ Handle webhook notifications from ElevenLabs for voice synthesis.
   This is the only AI endpoint that uses the header `x-roomi-token`
 </Note>
 
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>x-roomi-token</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Private Roomi authentication token for ElevenLabs agent access</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
 This is not used to POST to Elevenlabs, but is used to give the Elevenlabs agents access to Roomi AI.

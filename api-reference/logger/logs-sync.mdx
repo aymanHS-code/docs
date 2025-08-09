@@ -1,20 +1,10 @@
 ---
-title: "Auth - Health"
-api: "GET /v1/health"
+title: "Logger - Get Weave Calls"
+api: "POST /logs/sync"
 authMethod: "none"
 ---
 
-Check the health status of the Auth service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Fetch Weave calls with optional filtering.
 
 ## Headers
 
@@ -29,7 +19,7 @@ Check the health status of the Auth service.
   <Table.Body>
     <Table.Row>
       <Table.Cell>Authorization</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Yes</TableCell>
       <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
     </Table.Row>
     <Table.Row>
@@ -42,15 +32,17 @@ Check the health status of the Auth service.
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Unit-ID</Table.Cell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
-    </Table.Row>
   </Table.Body>
 </Table>
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "limit": 100,
+  "start_time": "2024-01-15T00:00:00Z",
+  "end_time": "2024-01-16T00:00:00Z"
+}
+```

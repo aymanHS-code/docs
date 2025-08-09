@@ -1,20 +1,10 @@
 ---
-title: "Logger - Health"
-api: "GET /v1/health"
+title: "Services - Create Routine"
+api: "POST /api/routines/"
 authMethod: "none"
 ---
 
-Check the health status of the Logger service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Create a new routine for the user.
 
 ## Headers
 
@@ -28,7 +18,7 @@ Check the health status of the Logger service.
   </Table.Head>
   <Table.Body>
     <Table.Row>
-      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Authorization</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
     </Table.Row>
@@ -42,15 +32,18 @@ Check the health status of the Logger service.
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Unit-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
-    </Table.Row>
   </Table.Body>
 </Table>
+
+## Body
+
+```json
+{
+  "name": "Morning Workout",
+  "description": "Daily morning exercise routine",
+  "schedule": "Daily at 7:00 AM",
+  "activities": ["Push-ups","Squats","Running"],
+  "duration": 60,
+  "isActive": true
+}
+```

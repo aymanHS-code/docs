@@ -1,19 +1,13 @@
 ---
-title: "Auth - Health"
-api: "GET /v1/health"
+title: "Devices - Rooms"
+api: "GET /api/rooms"
 authMethod: "none"
 ---
 
-Check the health status of the Auth service.
+Retrieve all rooms for a unit with their associated device information.
 
 <Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
+  Requires `X-Unit-ID` and `X-User-ID` plus SigV4 headers.
 </Note>
 
 ## Headers
@@ -29,7 +23,7 @@ Check the health status of the Auth service.
   <Table.Body>
     <Table.Row>
       <Table.Cell>Authorization</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Yes</TableCell>
       <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
     </Table.Row>
     <Table.Row>
@@ -54,3 +48,4 @@ Check the health status of the Auth service.
     </Table.Row>
   </Table.Body>
 </Table>
+

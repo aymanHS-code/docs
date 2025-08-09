@@ -1,20 +1,10 @@
 ---
-title: "Logger - Health"
-api: "GET /v1/health"
+title: "Handler - LifeSmart Use Device"
+api: "POST /lifesmart/use-device"
 authMethod: "none"
 ---
 
-Check the health status of the Logger service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Control a LifeSmart device.
 
 ## Headers
 
@@ -42,15 +32,28 @@ Check the health status of the Logger service.
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Unit-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
-    </Table.Row>
   </Table.Body>
 </Table>
+
+## Body
+
+```json
+{
+  "user_id": "user1",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "devtype": "SL_NATURE",
+        "idx": "P8",
+        "me": "0001",
+        "tag": "m",
+        "type": "0x88",
+        "user_request": "turn off kitchen AC",
+        "val": "24"
+      }
+    ]
+  }
+}
+```

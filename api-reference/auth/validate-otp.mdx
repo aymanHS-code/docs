@@ -1,7 +1,7 @@
 ---
 title: "Auth - Validate OTP"
 api: "POST /v1/auth/validate-otp"
-authMethod: "key"
+authMethod: "none"
 ---
 
 Validate a one-time password (OTP) to authenticate a user.
@@ -15,6 +15,45 @@ Validate a one-time password (OTP) to authenticate a user.
   - X-Unit-ID
   - X-User-ID
 </Note>
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Unit identifier</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-User-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>User identifier</TableCell>
+    </Table.Row>
+  </Table.Body>
+</Table>
 
 ```json
 // Example body

@@ -1,20 +1,10 @@
 ---
-title: "Logger - Health"
-api: "GET /v1/health"
+title: "Services - Cancel Facility Booking"
+api: "POST /api/facilities/cancel"
 authMethod: "none"
 ---
 
-Check the health status of the Logger service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Cancel an existing facility booking.
 
 ## Headers
 
@@ -42,15 +32,15 @@ Check the health status of the Logger service.
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Unit-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
-    </Table.Row>
   </Table.Body>
 </Table>
+
+## Body
+
+```json
+{
+  "facilityId": "facility-123",
+  "slotId": "slot-456",
+  "unitId": "unit-789"
+}
+```

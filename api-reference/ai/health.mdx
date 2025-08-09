@@ -14,6 +14,35 @@ Check the health status of the AI service.
   - X-Amz-Date
 </Note>
 
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>SHA256 hash of the request body</TableCell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</TableCell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>ISO8601 timestamp</TableCell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
 ```json
 // Example response
 {

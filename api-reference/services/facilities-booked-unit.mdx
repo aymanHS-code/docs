@@ -1,20 +1,10 @@
 ---
-title: "Auth - Health"
-api: "GET /v1/health"
+title: "Services - Bookings by Unit"
+api: "GET /api/facilities/booked/unit"
 authMethod: "none"
 ---
 
-Check the health status of the Auth service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Retrieve all facility bookings made by a specific unit.
 
 ## Headers
 
@@ -29,8 +19,8 @@ Check the health status of the Auth service.
   <Table.Body>
     <Table.Row>
       <Table.Cell>Authorization</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
     </Table.Row>
     <Table.Row>
       <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
@@ -43,14 +33,9 @@ Check the health status of the Auth service.
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>X-Unit-ID</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
     </Table.Row>
   </Table.Body>
 </Table>

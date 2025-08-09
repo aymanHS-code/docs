@@ -1,20 +1,10 @@
 ---
-title: "Logger - Health"
-api: "GET /v1/health"
+title: "Services - Send Email"
+api: "POST /api/send-email/"
 authMethod: "none"
 ---
 
-Check the health status of the Logger service.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-  - X-Unit-ID
-  - X-User-ID
-</Note>
+Send an email to specified recipients.
 
 ## Headers
 
@@ -28,12 +18,12 @@ Check the health status of the Logger service.
   </Table.Head>
   <Table.Body>
     <Table.Row>
-      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Authorization</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Amz-Content-Sha256</TableCell>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>SHA256 hash of the request body</TableCell>
     </Table.Row>
@@ -42,15 +32,26 @@ Check the health status of the Logger service.
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Unit-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>Unit identifier</TableCell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-User-ID</TableCell>
-      <Table.Cell>Yes</TableCell>
-      <Table.Cell>User identifier</TableCell>
-    </Table.Row>
   </Table.Body>
 </Table>
+
+## Body
+
+```json
+{
+  "to": ["user@example.com"],
+  "subject": "Important Notification",
+  "body": "This is the email body content.",
+  "html": "<h1>Important Notification</h1><p>This is the email body content.</p>",
+  "from": "noreply@roomi-services.com",
+  "cc": ["cc@example.com"],
+  "bcc": ["bcc@example.com"],
+  "attachments": [
+    {
+      "filename": "document.pdf",
+      "content": "base64encodedcontent...",
+      "contentType": "application/pdf"
+    }
+  ]
+}
+```

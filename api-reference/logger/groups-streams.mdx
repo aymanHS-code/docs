@@ -1,25 +1,18 @@
 ---
-title: "AI - Task Status"
-api: "GET /v1/task/{task_id}/status"
+title: "Logger - Log Streams"
+api: "POST /groups/{group_name}/streams"
 authMethod: "none"
 ---
 
-Check the status of a background task.
+Create a new log stream in the specified log group. Use GET /groups/{group_name}/streams to list.
 
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-  
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-</Note>
-
-## Path Parameters
+## Path/Query Parameters
 
 <Table>
   <Table.Head>
     <Table.Row>
       <Table.Header>Name</Table.Header>
+      <Table.Header>In</Table.Header>
       <Table.Header>Type</Table.Header>
       <Table.Header>Required</Table.Header>
       <Table.Header>Description</Table.Header>
@@ -27,10 +20,18 @@ Check the status of a background task.
   </Table.Head>
   <Table.Body>
     <Table.Row>
-      <Table.Cell>task_id</Table.Cell>
+      <Table.Cell>group_name</Table.Cell>
+      <Table.Cell>path</Table.Cell>
       <Table.Cell>string</Table.Cell>
       <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>Background task identifier</Table.Cell>
+      <Table.Cell>Log group name</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>stream_name</Table.Cell>
+      <Table.Cell>query</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Name of the log stream</Table.Cell>
     </Table.Row>
   </Table.Body>
 </Table>
@@ -49,27 +50,27 @@ Check the status of a background task.
     <Table.Row>
       <Table.Cell>Authorization</Table.Cell>
       <Table.Cell>Yes</TableCell>
-      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>X-Amz-Content-Sha256</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>SHA256 hash of the request body</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>X-Amz-Date</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
   </Table.Body>
 </Table>
 
+## Body
+
 ```json
-// Example response
 {
-  "task_id": "task-789",
-  "status": "completed",
-  "message": "All requested actions completed successfully",
-  "progress": 100
+  "tags": {
+    "env": "dev"
+  }
 }
 ```

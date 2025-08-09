@@ -8,11 +8,40 @@ Process a natural language message and return an intelligent response with coord
 
 <Note>
   Sign your request with AWS SigV4 and include these headers in your request
-
+  
   - Authorization
   - X-Amz-Content-Sha256
   - X-Amz-Date
 </Note>
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp (e.g., 20240115T120000Z)</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+ </Table>
 
 ```json
 // Example request body

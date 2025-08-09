@@ -55,32 +55,96 @@
             "pages": [
               "api-reference/devices/health",
               "api-reference/devices/list",
-              "api-reference/devices/control"
+              "api-reference/devices/control",
+              "api-reference/devices/devices-update",
+              "api-reference/devices/device-by-me",
+              "api-reference/devices/messages-unit",
+              "api-reference/devices/rooms",
+              "api-reference/devices/rooms-create",
+              "api-reference/devices/rooms-id",
+              "api-reference/devices/rooms-update",
+              "api-reference/devices/rooms-delete",
+              "api-reference/devices/rooms-floor",
+              "api-reference/devices/rooms-move",
+              "api-reference/devices/floors",
+              "api-reference/devices/floors-update"
             ]
           },
           {
             "group": "Handler Endpoints",
             "pages": [
-              "api-reference/handler/health"
+              "api-reference/handler/health",
+              "api-reference/handler/users",
+              "api-reference/handler/users-create",
+              "api-reference/handler/users-id",
+              "api-reference/handler/users-update",
+              "api-reference/handler/units",
+              "api-reference/handler/units-create",
+              "api-reference/handler/units-id-update",
+              "api-reference/handler/units-id-delete",
+              "api-reference/handler/units-id-users",
+              "api-reference/handler/units-id-admin",
+              "api-reference/handler/user-units-create",
+              "api-reference/handler/user-units-update",
+              "api-reference/handler/user-units-delete",
+              "api-reference/handler/lifesmart-use-device",
+              "api-reference/handler/lifesmart-unlock-door"
             ]
           },
           {
             "group": "Auth Endpoints",
             "pages": [
               "api-reference/auth/health",
-              "api-reference/auth/validate-otp"
+              "api-reference/auth/send-otp",
+              "api-reference/auth/resend-otp",
+              "api-reference/auth/validate-otp",
+              "api-reference/auth/me"
             ]
           },
           {
             "group": "Logger Endpoints",
             "pages": [
-              "api-reference/logger/health"
+              "api-reference/logger/health",
+              "api-reference/logger/logs",
+              "api-reference/logger/groups",
+              "api-reference/logger/groups-streams",
+              "api-reference/logger/logs-sync"
             ]
           },
           {
             "group": "Services Endpoints",
             "pages": [
-              "api-reference/services/health"
+              "api-reference/services/health",
+              "api-reference/services/complaints",
+              "api-reference/services/complaints-lookups",
+              "api-reference/services/complaints-list",
+              "api-reference/services/complaints-case",
+              "api-reference/services/complaints-update",
+              "api-reference/services/events-location",
+              "api-reference/services/events-all",
+              "api-reference/services/payments-services",
+              "api-reference/services/payments-cards",
+              "api-reference/services/payments-cards-id",
+              "api-reference/services/payments-cards-default",
+              "api-reference/services/payments-bills",
+              "api-reference/services/payments-bills-id",
+              "api-reference/services/payments-bills-status",
+              "api-reference/services/payments-bills-checkout",
+              "api-reference/services/facilities-list",
+              "api-reference/services/facilities-id",
+              "api-reference/services/facilities-book",
+              "api-reference/services/facilities-cancel",
+              "api-reference/services/facilities-booking-slot",
+              "api-reference/services/facilities-booking-item",
+              "api-reference/services/facilities-booked-unit",
+              "api-reference/services/routines-list",
+              "api-reference/services/routines-create",
+              "api-reference/services/routines-suggested",
+              "api-reference/services/routines-id",
+              "api-reference/services/routines-update",
+              "api-reference/services/routines-delete",
+              "api-reference/services/routines-suggested-id",
+              "api-reference/services/email-send"
             ]
           }
         ]

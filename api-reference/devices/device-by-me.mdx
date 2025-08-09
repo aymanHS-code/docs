@@ -1,0 +1,39 @@
+---
+title: "Devices - Get by ME"
+api: "GET /api/devices/{me}"
+authMethod: "none"
+---
+
+Retrieve a specific device using its ME identifier.
+
+<Note>
+  Sign your request with AWS SigV4 and include these headers in your request
+
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
+  - X-Unit-ID
+  - X-User-ID
+</Note>
+
+## Path Parameters
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Type</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>me</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Device ME identifier</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+

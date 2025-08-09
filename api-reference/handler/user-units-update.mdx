@@ -1,18 +1,10 @@
 ---
-title: "AI - Task Status"
-api: "GET /v1/task/{task_id}/status"
+title: "Handler - Update User Unit"
+api: "PATCH /user-units/{user_id}/{unit_id}"
 authMethod: "none"
 ---
 
-Check the status of a background task.
-
-<Note>
-  Sign your request with AWS SigV4 and include these headers in your request
-  
-  - Authorization
-  - X-Amz-Content-Sha256
-  - X-Amz-Date
-</Note>
+Update a user-unit relationship.
 
 ## Path Parameters
 
@@ -27,10 +19,16 @@ Check the status of a background task.
   </Table.Head>
   <Table.Body>
     <Table.Row>
-      <Table.Cell>task_id</Table.Cell>
+      <Table.Cell>user_id</Table.Cell>
       <Table.Cell>string</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>Background task identifier</Table.Cell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>User identifier</TableCell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>unit_id</Table.Cell>
+      <Table.Cell>string</TableCell>
+      <Table.Cell>Yes</TableCell>
+      <Table.Cell>Unit identifier</TableCell>
     </Table.Row>
   </Table.Body>
 </Table>
@@ -47,29 +45,28 @@ Check the status of a background task.
   </Table.Head>
   <Table.Body>
     <Table.Row>
-      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Authorization</TableCell>
       <Table.Cell>Yes</TableCell>
-      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>X-Amz-Content-Sha256</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>SHA256 hash of the request body</TableCell>
     </Table.Row>
     <Table.Row>
-      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>X-Amz-Date</TableCell>
       <Table.Cell>Yes</TableCell>
       <Table.Cell>ISO8601 timestamp</TableCell>
     </Table.Row>
   </Table.Body>
 </Table>
 
+## Body
+
 ```json
-// Example response
 {
-  "task_id": "task-789",
-  "status": "completed",
-  "message": "All requested actions completed successfully",
-  "progress": 100
+  "access_type": "member",
+  "user_type": "tenant"
 }
 ```
