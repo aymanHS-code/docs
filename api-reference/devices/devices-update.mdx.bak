@@ -1,0 +1,65 @@
+---
+title: "Update Devices"
+api: "POST /api/devices"
+authMethod: "none"
+---
+
+Update device settings and control states for multiple devices.
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Unit identifier</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-User-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>User identifier</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "deviceId": "device-456",
+        "targetValue": "100",
+        "actionType": "set_brightness",
+        "actionId": 1
+      }
+    ]
+  }
+}
+```

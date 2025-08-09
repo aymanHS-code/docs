@@ -1,0 +1,71 @@
+---
+title: "Update Complaint"
+api: "POST /api/complaints/update/{caseNumber}"
+authMethod: "none"
+---
+
+Update an existing complaint with additional comments and optional attachment.
+
+## Path Parameters
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Type</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>caseNumber</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Complaint case number</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Unit identifier</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Body
+
+```json
+{
+  "comments": "Issue has been resolved",
+  "attachmentBase64": "base64encodedimage..."
+}
+```

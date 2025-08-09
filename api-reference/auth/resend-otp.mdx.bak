@@ -1,0 +1,54 @@
+---
+title: "Resend OTP"
+api: "POST /api/resend-otp"
+authMethod: "none"
+---
+
+Resend OTP using pin ID.
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Unit identifier</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-User-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>User identifier</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Body
+
+```json
+{
+  "pin": "pin-123"
+}
+```

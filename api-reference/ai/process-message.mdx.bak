@@ -1,0 +1,62 @@
+---
+title: "Process Message"
+api: "POST /v1/roomi"
+authMethod: "none"
+---
+
+Process a natural language message and return an intelligent response with coordinated actions.
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp (e.g., 20240115T120000Z)</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+ </Table>
+
+```json
+// Example request body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "unit_name": "Apartment 101",
+  "transcript": "Turn on the living room lights and set temperature to 22 degrees",
+  "thread_id": "e0f5308e-0bd9-4dc9-b55d-5c74798283bf"
+}
+```
+
+```json
+// Example response
+{
+  "response": "I've turned on the living room lights and set the temperature to 22 degrees for you.",
+  "background_tasks": [
+    {
+      "task_id": "task-789",
+      "type": "device_control",
+      "status": "completed"
+    }
+  ],
+  "query_type": "DEVICE_CONTROL"
+}
+```

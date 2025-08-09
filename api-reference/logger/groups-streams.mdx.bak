@@ -1,0 +1,76 @@
+---
+title: "Log Streams"
+api: "POST /groups/{group_name}/streams"
+authMethod: "none"
+---
+
+Create a new log stream in the specified log group. Use GET /groups/{group_name}/streams to list.
+
+## Path/Query Parameters
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>In</Table.Header>
+      <Table.Header>Type</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>group_name</Table.Cell>
+      <Table.Cell>path</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Log group name</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>stream_name</Table.Cell>
+      <Table.Cell>query</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Name of the log stream</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Body
+
+```json
+{
+  "tags": {
+    "env": "dev"
+  }
+}
+```

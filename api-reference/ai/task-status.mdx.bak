@@ -1,0 +1,67 @@
+---
+title: "Task Status"
+api: "GET /v1/task/{task_id}/status"
+authMethod: "none"
+---
+
+Check the status of a background task.
+
+## Path Parameters
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Type</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>task_id</Table.Cell>
+      <Table.Cell>string</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Background task identifier</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+```json
+// Example response
+{
+  "task_id": "task-789",
+  "status": "completed",
+  "message": "All requested actions completed successfully",
+  "progress": 100
+}
+```

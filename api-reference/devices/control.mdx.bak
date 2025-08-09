@@ -1,0 +1,57 @@
+---
+title: "Control Device"
+api: "POST /v1/devices/control"
+authMethod: "none"
+---
+
+Control multiple devices with a single request.
+
+## Headers
+
+<Table>
+  <Table.Head>
+    <Table.Row>
+      <Table.Header>Name</Table.Header>
+      <Table.Header>Required</Table.Header>
+      <Table.Header>Description</Table.Header>
+    </Table.Row>
+  </Table.Head>
+  <Table.Body>
+    <Table.Row>
+      <Table.Cell>Authorization</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>SHA256 hash of the request body</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Amz-Date</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>ISO8601 timestamp (e.g., 20240115T120000Z)</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-Unit-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>Unit identifier (e.g., unit-12345)</Table.Cell>
+    </Table.Row>
+    <Table.Row>
+      <Table.Cell>X-User-ID</Table.Cell>
+      <Table.Cell>Yes</Table.Cell>
+      <Table.Cell>User identifier (e.g., user-67890)</Table.Cell>
+    </Table.Row>
+  </Table.Body>
+</Table>
+
+```json
+// Example body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "commands": [
+    { "device_id": "device-123", "action": "turn_on" }
+  ]
+}
+```
