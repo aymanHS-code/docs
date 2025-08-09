@@ -7,6 +7,11 @@ authMethod: "none"
 Check the health status of the Devices service.
 
 <Note>
-  Use AWS SigV4. Add `x-unit-id` and `x-user-id` headers in the playground. No `x-roomi-token`.
-</Note>
+  Sign your request with AWS SigV4 and include these headers in your request
 
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
+  - X-Unit-ID
+  - X-User-ID
+</Note>

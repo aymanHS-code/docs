@@ -7,12 +7,11 @@ authMethod: "none"
 Check the health status of the AI service.
 
 <Note>
-  Sign your request with AWS SigV4 and add these headers in the playground:
+  Sign your request with AWS SigV4 and include these headers in your request
+
   - Authorization
   - X-Amz-Content-Sha256
   - X-Amz-Date
-  
-  No `x-roomi-token` is required for this endpoint.
 </Note>
 
 ```json
@@ -23,4 +22,3 @@ Check the health status of the AI service.
   "timestamp": "2024-01-15T10:00:00Z"
 }
 ```
-

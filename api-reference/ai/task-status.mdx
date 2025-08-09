@@ -7,7 +7,11 @@ authMethod: "none"
 Check the status of a background task.
 
 <Note>
-  Replace `{task_id}` and sign using AWS SigV4 headers. No `x-roomi-token` required.
+  Sign your request with AWS SigV4 and include these headers in your request
+
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
 </Note>
 
 ```json
@@ -19,4 +23,3 @@ Check the status of a background task.
   "progress": 100
 }
 ```
-

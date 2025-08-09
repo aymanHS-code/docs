@@ -7,6 +7,11 @@ authMethod: "none"
 Retrieve all devices for a specific unit with their status and capabilities.
 
 <Note>
-  Include `x-unit-id` and `x-user-id` headers and sign with AWS SigV4. No `x-roomi-token`.
-</Note>
+  Sign your request with AWS SigV4 and include these headers in your request
 
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
+  - X-Unit-ID
+  - X-User-ID
+</Note>

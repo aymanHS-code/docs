@@ -7,12 +7,11 @@ authMethod: "none"
 Process a natural language message and return an intelligent response with coordinated actions.
 
 <Note>
-  Use AWS SigV4 for this endpoint and include:
+  Sign your request with AWS SigV4 and include these headers in your request
+
   - Authorization
   - X-Amz-Content-Sha256
   - X-Amz-Date
-  
-  Do not include `x-roomi-token`.
 </Note>
 
 ```json
@@ -40,4 +39,3 @@ Process a natural language message and return an intelligent response with coord
   "query_type": "DEVICE_CONTROL"
 }
 ```
-

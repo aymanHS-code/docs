@@ -7,7 +7,13 @@ authMethod: "none"
 Control multiple devices with a single request.
 
 <Note>
-  Set `x-unit-id` and `x-user-id` and sign with AWS SigV4. No `x-roomi-token` here.
+  Sign your request with AWS SigV4 and include these headers in your request
+
+  - Authorization
+  - X-Amz-Content-Sha256
+  - X-Amz-Date
+  - X-Unit-ID
+  - X-User-ID
 </Note>
 
 ```json
@@ -20,4 +26,3 @@ Control multiple devices with a single request.
   ]
 }
 ```
-
