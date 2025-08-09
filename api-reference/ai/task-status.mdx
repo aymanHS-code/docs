@@ -1,7 +1,8 @@
 ---
 title: "Task Status"
 api: "GET /v1/task/{task_id}/status"
-authMethod: "none"
+authMethod: none
+openapi: "/openapi-specs/Roomi AI.json GET /task/{task_id}/status"
 ---
 
 Check the status of a background task.
@@ -33,3 +34,14 @@ Check the status of a background task.
   "progress": 100
 }
 ```
+
+<ResponseExample>
+
+```json Response
+{
+  "status": "status",
+  "message": "message"
+}
+```
+
+</ResponseExample>

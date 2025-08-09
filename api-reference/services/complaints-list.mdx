@@ -17,3 +17,29 @@ List all complaints for a unit.
 | X-Amz-Date | Yes | ISO8601 timestamp |
 | X-Unit-ID | Yes | Unit identifier |
 
+
+
+<ResponseExample>
+
+```json Response
+[
+  {
+    "id": "ticket-123",
+    "status": "pending",
+    "CommunityId": "community-456",
+    "UnitId": "unit-789",
+    "PrecinctId": "precinct-012",
+    "TypeId": 1,
+    "CategoryId": 2,
+    "SubcategoryId": 3,
+    "Comments": "Water leak in bathroom",
+    "Email": "user@example.com",
+    "CustomerId": "customer-345",
+    "PartyId": 1,
+    "CreatedDate": "2024-01-15T10:00:00Z",
+    "AttachmentBase64": null
+  }
+]
+```
+
+</ResponseExample>

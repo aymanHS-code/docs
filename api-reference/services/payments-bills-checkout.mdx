@@ -33,3 +33,28 @@ Process payment for a specific bill.
   "amount": 150.5
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "cardId": "card-123",
+  "amount": 150.5
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "transactionId": "txn-123",
+  "status": "success",
+  "message": "Payment processed successfully"
+}
+```
+
+</ResponseExample>

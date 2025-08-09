@@ -36,3 +36,51 @@ Update room information including name, floor, and device assignments.
   "deviceMes": ["device-123","device-456","device-789"]
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "roomName": "Updated Living Room",
+  "roomFloor": "Ground Floor",
+  "deviceMes": [
+    "device-123",
+    "device-456",
+    "device-789"
+  ]
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Room updated successfully",
+  "updatedRoom": {
+    "roomId": "550e8400-e29b-41d4-a716-446655440000",
+    "roomName": "Updated Living Room",
+    "roomFloor": "Ground Floor",
+    "deviceMes": [
+      "device-123",
+      "device-456",
+      "device-789"
+    ]
+  },
+  "updatedDevices": [
+    {
+      "deviceId": "device-123",
+      "success": true
+    },
+    {
+      "deviceId": "device-456",
+      "success": true
+    }
+  ]
+}
+```
+
+</ResponseExample>

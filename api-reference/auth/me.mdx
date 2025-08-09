@@ -16,3 +16,29 @@ Get current authenticated user information.
 | X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "phone": "+971501234567",
+  "unit_id": "unit-123"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "user_id": "user-123",
+  "phone": "+971501234567",
+  "is_registered": true,
+  "units": []
+}
+```
+
+</ResponseExample>

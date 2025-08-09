@@ -16,3 +16,31 @@ Retrieve all available facilities with their details and available slots.
 | X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
+
+
+<ResponseExample>
+
+```json Response
+[
+  {
+    "facilityId": "facility-123",
+    "facilityName": "Swimming Pool",
+    "rating": 4.5,
+    "numOfReviews": 25,
+    "description": "Olympic-sized swimming pool with heating",
+    "availableSlots": [
+      {
+        "slotId": "slot-456",
+        "date": "Tuesday, 24 November 2024",
+        "time": "9:00 AM - 10:00 AM",
+        "isBooked": false,
+        "facilityId": "facility-123",
+        "facilityName": "Swimming Pool",
+        "bookedBy": null
+      }
+    ]
+  }
+]
+```
+
+</ResponseExample>

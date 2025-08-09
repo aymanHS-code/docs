@@ -24,3 +24,19 @@ Retrieve a specific bill by its ID.
 | X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
+
+
+<ResponseExample>
+
+```json Response
+{
+  "billId": "bill-123",
+  "amount": 150.5,
+  "description": "Monthly maintenance fee",
+  "dueDate": "2024-02-15",
+  "status": "pending",
+  "createdDate": "2024-01-15T10:00:00Z"
+}
+```
+
+</ResponseExample>

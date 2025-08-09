@@ -26,3 +26,30 @@ Retrieve a specific room by its ID with detailed device information.
 | X-Unit-ID | Yes | Unit identifier |
 | X-User-ID | Yes | User identifier |
 
+
+
+<ResponseExample>
+
+```json Response
+{
+  "roomId": "LIVINGROOM",
+  "roomName": "Living Room",
+  "roomFloor": "Ground Floor",
+  "deviceMes": [
+    "device-123",
+    "device-456"
+  ],
+  "devices": [
+    {
+      "me": "device-123",
+      "name": "Living Room Light"
+    },
+    {
+      "me": "device-456",
+      "name": "Living Room Fan"
+    }
+  ]
+}
+```
+
+</ResponseExample>

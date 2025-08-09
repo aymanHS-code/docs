@@ -19,3 +19,27 @@ Retrieve all device-related messages and notifications for a specific unit.
 | X-User-ID | Yes | User identifier |
 
 
+
+
+<ResponseExample>
+
+```json Response
+[
+  {
+    "messageId": "msg-123",
+    "deviceId": "device-456",
+    "message": "Device status updated",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "type": "status_update"
+  },
+  {
+    "messageId": "msg-124",
+    "deviceId": "device-789",
+    "message": "Device turned on",
+    "timestamp": "2024-01-15T10:35:00Z",
+    "type": "action"
+  }
+]
+```
+
+</ResponseExample>

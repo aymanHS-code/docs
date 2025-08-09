@@ -24,3 +24,17 @@ Retrieve the payment status of a specific bill.
 | X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
 | X-Amz-Date | Yes | ISO8601 timestamp |
 
+
+
+<ResponseExample>
+
+```json Response
+{
+  "billId": "bill-123",
+  "status": "pending",
+  "lastPaymentDate": "2024-01-10T14:30:00Z",
+  "nextDueDate": "2024-02-15"
+}
+```
+
+</ResponseExample>

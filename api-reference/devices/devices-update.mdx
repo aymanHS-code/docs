@@ -37,3 +37,37 @@ Update device settings and control states for multiple devices.
   }
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "deviceId": "device-456",
+        "targetValue": "100",
+        "actionType": "set_brightness",
+        "actionId": 1
+      }
+    ]
+  }
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "message": "Device updated successfully"
+}
+```
+
+</ResponseExample>

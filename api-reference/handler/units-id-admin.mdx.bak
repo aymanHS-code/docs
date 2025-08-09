@@ -1,57 +1,26 @@
 ---
 title: "Unit Admin"
 api: "GET /units/{unit_id}/admin"
-authMethod: "none"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json GET /units/{unit_id}/admin"
 ---
 
 Check if a unit has an admin/owner and return admin info if exists.
 
 ## Path Parameters
 
-<Table>
-  <Table.Head>
-    <Table.Row>
-      <Table.Header>Name</Table.Header>
-      <Table.Header>Type</Table.Header>
-      <Table.Header>Required</Table.Header>
-      <Table.Header>Description</Table.Header>
-    </Table.Row>
-  </Table.Head>
-  <Table.Body>
-    <Table.Row>
-      <Table.Cell>unit_id</Table.Cell>
-      <Table.Cell>string</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>The ID of the unit to check for admin</Table.Cell>
-    </Table.Row>
-  </Table.Body>
-</Table>
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| unit_id | string | Yes | The ID of the unit to check for admin |
+
 
 ## Headers
 
-<Table>
-  <Table.Head>
-    <Table.Row>
-      <Table.Header>Name</Table.Header>
-      <Table.Header>Required</Table.Header>
-      <Table.Header>Description</Table.Header>
-    </Table.Row>
-  </Table.Head>
-  <Table.Body>
-    <Table.Row>
-      <Table.Cell>Authorization</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>AWS4-HMAC-SHA256 signature</Table.Cell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Amz-Content-Sha256</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>SHA256 hash of the request body</Table.Cell>
-    </Table.Row>
-    <Table.Row>
-      <Table.Cell>X-Amz-Date</Table.Cell>
-      <Table.Cell>Yes</Table.Cell>
-      <Table.Cell>ISO8601 timestamp</Table.Cell>
-    </Table.Row>
-  </Table.Body>
-</Table>
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+

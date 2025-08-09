@@ -23,3 +23,32 @@ Retrieve all rooms for a unit with their associated device information.
 | X-User-ID | Yes | User identifier |
 
 
+
+
+<ResponseExample>
+
+```json Response
+[
+  {
+    "roomId": "550e8400-e29b-41d4-a716-446655440000",
+    "roomName": "Living Room",
+    "roomFloor": "Ground Floor",
+    "deviceMes": [
+      "device-123",
+      "device-456"
+    ],
+    "devices": [
+      {
+        "me": "device-123",
+        "name": "Living Room Light"
+      },
+      {
+        "me": "device-456",
+        "name": "Living Room Fan"
+      }
+    ]
+  }
+]
+```
+
+</ResponseExample>

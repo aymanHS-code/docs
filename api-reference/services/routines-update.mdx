@@ -37,3 +37,36 @@ Update an existing routine.
   "isActive": true
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "name": "Updated Morning Workout",
+  "description": "Updated daily morning exercise routine",
+  "schedule": "Daily at 6:30 AM",
+  "activities": [
+    "Push-ups",
+    "Squats",
+    "Running",
+    "Yoga"
+  ],
+  "duration": 75,
+  "isActive": true
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Routine updated successfully",
+  "routine": {}
+}
+```
+
+</ResponseExample>

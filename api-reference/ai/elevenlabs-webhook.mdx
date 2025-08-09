@@ -1,7 +1,8 @@
 ---
 title: "ElevenLabs Webhook"
 api: "POST /v1/elevenlabs/webhook"
-authMethod: "key"
+authMethod: key
+openapi: "/openapi-specs/Roomi AI.json POST /elevenlabs/webhook"
 ---
 
 Handle webhook notifications from ElevenLabs for voice synthesis.
@@ -19,3 +20,13 @@ Handle webhook notifications from ElevenLabs for voice synthesis.
 
 
 This is not used to POST to Elevenlabs, but is used to give the Elevenlabs agents access to Roomi AI.
+
+<ResponseExample>
+
+```json Response
+{
+  "response": "response"
+}
+```
+
+</ResponseExample>

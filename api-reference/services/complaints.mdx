@@ -17,3 +17,26 @@ Create a new complaint ticket for a specific unit.
 | X-Amz-Date | Yes | ISO8601 timestamp |
 | X-Unit-ID | Yes | Unit identifier |
 
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "typeId": "type-1",
+  "comments": "Water leak in bathroom"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "caseNumber": "CASE-123456"
+}
+```
+
+</ResponseExample>

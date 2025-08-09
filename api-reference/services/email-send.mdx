@@ -37,3 +37,43 @@ Send an email to specified recipients.
   ]
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "to": [
+    "user@example.com",
+    "admin@example.com"
+  ],
+  "subject": "Important Notification",
+  "body": "This is the email body content.",
+  "html": "<h1>Important Notification</h1><p>This is the email body content.</p>",
+  "from": "noreply@roomi-services.com",
+  "cc": [
+    "cc@example.com"
+  ],
+  "bcc": [
+    "bcc@example.com"
+  ],
+  "attachments": []
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Email sent successfully",
+  "messageId": "msg-123456",
+  "recipients": [
+    "user@example.com"
+  ]
+}
+```
+
+</ResponseExample>

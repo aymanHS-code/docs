@@ -39,3 +39,38 @@ Control a LifeSmart device.
   }
 }
 ```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user1",
+  "unit_id": "a0L4K000008UDoJUAW",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "devtype": "SL_NATURE",
+        "idx": "P8",
+        "me": "0001",
+        "tag": "m",
+        "type": "0x88",
+        "user_request": "turn off kitchen AC",
+        "val": "24"
+      }
+    ]
+  }
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{}
+```
+
+</ResponseExample>

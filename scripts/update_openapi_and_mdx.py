@@ -36,12 +36,12 @@ MDX_DIR = "api-reference"
 
 
 DEFAULT_SERVER_BY_SPEC_TITLE: Dict[str, str] = {
-    "Roomi AI": "https://ai-{env}-ae.roomi-services.com",
-    "Roomi Auth": "https://auth-{env}-ae.roomi-services.com",
-    "Roomi Devices": "https://devices-{env}-ae.roomi-services.com",
-    "Roomi Services": "https://services-{env}-ae.roomi-services.com",
-    "Roomi Logger": "https://logger-{env}-ae.roomi-services.com",
-    "Roomi Handler": "https://handler-{env}-ae.roomi-services.com",
+    "Roomi AI": "https://ai-{env}-ae.roomi-services.com/v1",
+    "Roomi Auth": "https://auth-{env}-ae.roomi-services.com/api/v1",
+    "Roomi Devices": "https://devices-{env}-ae.roomi-services.com/api/v1",
+    "Roomi Services": "https://services-{env}-ae.roomi-services.com/api/v1",
+    "Roomi Logger": "https://logger-{env}-ae.roomi-services.com/v1",
+    "Roomi Handler": "https://handler-{env}-ae.roomi-services.com/v1",
 }
 
 
@@ -69,6 +69,33 @@ X_USER_HEADER_PARAM = {
     "example": "user-67890",
 }
 
+AUTH_HEADER_PARAMS = {
+    "Authorization": {
+        "name": "Authorization",
+        "in": "header",
+        "description": "AWS Signature Version 4 authorization header",
+        "required": True,
+        "schema": {"type": "string"},
+        "example": "AWS4-HMAC-SHA256 Credential=...",
+    },
+    "X-Amz-Content-Sha256": {
+        "name": "X-Amz-Content-Sha256",
+        "in": "header",
+        "description": "SHA256 hash of the request body",
+        "required": True,
+        "schema": {"type": "string"},
+        "example": "e3b0c44298fc1c149afbf4c8996fb924...",
+    },
+    "X-Amz-Date": {
+        "name": "X-Amz-Date",
+        "in": "header",
+        "description": "ISO8601 timestamp for the request",
+        "required": True,
+        "schema": {"type": "string"},
+        "example": "20240101T120000Z",
+    },
+}
+
 
 def load_json(path: Path) -> Dict:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -87,6 +114,23 @@ def ensure_servers(spec: Dict, spec_file: Path) -> bool:
         if default_url:
             spec["servers"] = [{"url": default_url}]
             changed = True
+    else:
+        # Normalize Roomi AI base path to include /v1 so that /roomi path produces /v1/roomi
+        title = spec.get("info", {}).get("title")
+        if title == "Roomi AI":
+            servers = spec.get("servers", [])
+            new_servers = []
+            mutated = False
+            for s in servers:
+                url = s.get("url")
+                if isinstance(url, str) and not url.endswith("/v1") and "/v1/" not in url:
+                    new_servers.append({**s, "url": url.rstrip("/") + "/v1"})
+                    mutated = True
+                else:
+                    new_servers.append(s)
+            if mutated:
+                spec["servers"] = new_servers
+                changed = True
     return changed
 
 
@@ -99,6 +143,16 @@ def ensure_components_parameters(spec: Dict) -> bool:
         changed = True
     if "XUserIdHeader" not in parameters:
         parameters["XUserIdHeader"] = X_USER_HEADER_PARAM
+        changed = True
+    # Ensure auth headers exist as reusable params when security schemes reference them
+    if "AuthorizationHeader" not in parameters:
+        parameters["AuthorizationHeader"] = AUTH_HEADER_PARAMS["Authorization"]
+        changed = True
+    if "AWSContentSha256Header" not in parameters:
+        parameters["AWSContentSha256Header"] = AUTH_HEADER_PARAMS["X-Amz-Content-Sha256"]
+        changed = True
+    if "AWSDateHeader" not in parameters:
+        parameters["AWSDateHeader"] = AUTH_HEADER_PARAMS["X-Amz-Date"]
         changed = True
     return changed
 
@@ -127,6 +181,87 @@ def ensure_unit_user_headers_on_ops(spec: Dict, spec_filename: str) -> bool:
         if "x-user-id" not in header_names:
             params.append({"$ref": "#/components/parameters/XUserIdHeader"})
             changed = True
+    return changed
+
+
+def ensure_auth_headers_on_ops(spec: Dict) -> bool:
+    """If spec uses AWS SigV4 security globally, also surface headers as parameters for UI."""
+    global_security = spec.get("security") or []
+    uses_aws = any(
+        isinstance(sec, dict) and any(k in sec for k in ("AWSSignatureV4", "AWSContentSha256", "AWSDate"))
+        for sec in global_security
+    )
+    if not uses_aws:
+        return False
+    changed = False
+    for _path, _method, op in iter_operations(spec):
+        params: List[Dict] = op.setdefault("parameters", [])
+        header_names = {p.get("name") for p in params if p.get("in") == "header"}
+        if "Authorization" not in header_names:
+            params.append({"$ref": "#/components/parameters/AuthorizationHeader"})
+            changed = True
+        if "X-Amz-Content-Sha256" not in header_names:
+            params.append({"$ref": "#/components/parameters/AWSContentSha256Header"})
+            changed = True
+        if "X-Amz-Date" not in header_names:
+            params.append({"$ref": "#/components/parameters/AWSDateHeader"})
+            changed = True
+    return changed
+
+
+def synthesize_example_from_schema(schema: Dict) -> Dict:
+    properties = schema.get("properties", {})
+    example: Dict = {}
+    for key, prop in properties.items():
+        if "example" in prop:
+            example[key] = prop["example"]
+        elif prop.get("type") == "string":
+            example[key] = key
+        elif prop.get("type") == "number":
+            example[key] = 0
+        elif prop.get("type") == "integer":
+            example[key] = 0
+        elif prop.get("type") == "boolean":
+            example[key] = False
+        elif prop.get("type") == "array":
+            example[key] = []
+        elif prop.get("type") == "object":
+            example[key] = {}
+    return example
+
+
+def ensure_request_body_examples(spec: Dict) -> bool:
+    changed = False
+    components = spec.get("components", {})
+    schemas = components.get("schemas", {})
+    for _path, _method, op in iter_operations(spec):
+        rb = op.get("requestBody")
+        if not isinstance(rb, dict):
+            continue
+        content = rb.get("content")
+        if not isinstance(content, dict):
+            continue
+        json_ct = content.get("application/json")
+        if not isinstance(json_ct, dict):
+            continue
+        if "example" in json_ct:
+            continue
+        schema = json_ct.get("schema")
+        if isinstance(schema, dict) and "$ref" in schema:
+            ref = schema["$ref"]
+            if ref.startswith("#/components/schemas/"):
+                key = ref.split("/")[-1]
+                target = schemas.get(key)
+                if isinstance(target, dict):
+                    example = synthesize_example_from_schema(target)
+                    if example:
+                        json_ct["example"] = example
+                        changed = True
+        elif isinstance(schema, dict):
+            example = synthesize_example_from_schema(schema)
+            if example:
+                json_ct["example"] = example
+                changed = True
     return changed
 
 
@@ -220,9 +355,11 @@ def normalize_mdx_openapi_reference(root: Path, specs: Dict[str, Dict], apply: b
         mdx_path_str = match.group(2).strip()
 
         candidate_paths = [mdx_path_str]
-        # Try mapping '/v1/...' to '/api/...'
+        # Try mapping '/v1/...' to '/api/...' and to '/...'
         if mdx_path_str.startswith("/v1/"):
-            candidate_paths.append("/api/" + mdx_path_str[len("/v1/"):])
+            suffix = mdx_path_str[len("/v1/"):]
+            candidate_paths.append("/api/" + suffix)
+            candidate_paths.append("/" + suffix)
 
         chosen: Optional[Tuple[str, str]] = None
         chosen_spec: Optional[str] = None
@@ -249,7 +386,7 @@ def normalize_mdx_openapi_reference(root: Path, specs: Dict[str, Dict], apply: b
         if not chosen or not chosen_spec:
             continue
 
-        fm["openapi"] = f"/{SPEC_DIR}/{chosen_spec} {chosen[0]} {chosen[1]}"
+        fm["openapi"] = f"{SPEC_DIR}/{chosen_spec} {chosen[0]} {chosen[1]}"
         new_fm = build_frontmatter_text(fm)
         new_text = new_fm + text[end:]
 
@@ -279,6 +416,10 @@ def process_specs(root: Path, apply: bool, backup: bool) -> List[Path]:
         if ensure_components_parameters(spec):
             changed = True
         if ensure_unit_user_headers_on_ops(spec, spec_file):
+            changed = True
+        if ensure_auth_headers_on_ops(spec):
+            changed = True
+        if ensure_request_body_examples(spec):
             changed = True
         if ensure_x_mint_metadata(spec):
             changed = True

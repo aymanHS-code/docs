@@ -26,3 +26,34 @@ Delete a room and move all its devices to 'Unassigned Devices'.
 | X-Unit-ID | Yes | Unit identifier |
 | X-User-ID | Yes | User identifier |
 
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Room deleted successfully",
+  "deletedRoom": {
+    "roomId": "550e8400-e29b-41d4-a716-446655440000",
+    "roomName": "Old Room",
+    "roomFloor": "Ground Floor",
+    "deviceMes": [
+      "device-123",
+      "device-456"
+    ]
+  },
+  "movedDevices": [
+    {
+      "deviceId": "device-123",
+      "success": true
+    },
+    {
+      "deviceId": "device-456",
+      "success": true
+    }
+  ],
+  "movedTo": "Unassigned Devices"
+}
+```
+
+</ResponseExample>
