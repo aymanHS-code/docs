@@ -50,3 +50,48 @@ Cancel an existing facility booking.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:post_api_facilities_cancel -->
+<Panel>
+  <div id="form-post_api_facilities_cancel">
+    <form id="f-post_api_facilities_cancel" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">facilityId *</label><input id="fld_facilityId" type="text" placeholder="facility-123" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">slotId *</label><input id="fld_slotId" type="text" placeholder="slot-456" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">unitId *</label><input id="fld_unitId" type="text" placeholder="unit-789" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-post_api_facilities_cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-post_api_facilities_cancel" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-post_api_facilities_cancel');
+  const out = document.getElementById('resp-post_api_facilities_cancel');
+  const resetBtn = document.getElementById('reset-post_api_facilities_cancel');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_facilityId").value; if(v!=="" || true) body["facilityId"] = (String)(v); }
+{ const v = document.getElementById("fld_slotId").value; if(v!=="" || true) body["slotId"] = (String)(v); }
+{ const v = document.getElementById("fld_unitId").value; if(v!=="" || true) body["unitId"] = (String)(v); }
+      const res = await fetch('https://services-{env}-ae.roomi-services.com/api/facilities/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

@@ -1,0 +1,48 @@
+---
+title: "Get Weave Calls"
+api: "POST /logs/sync"
+authMethod: none
+openapi: "/openapi-specs/Roomi Logger.json POST /logs/sync"
+---
+
+Fetch Weave calls with optional filtering.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "limit": 100,
+  "start_time": "2024-01-15T00:00:00Z",
+  "end_time": "2024-01-16T00:00:00Z"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{}
+```
+
+</ResponseExample>

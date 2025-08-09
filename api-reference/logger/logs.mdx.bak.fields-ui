@@ -1,0 +1,44 @@
+---
+title: "Create Log"
+api: "POST /logs"
+authMethod: none
+openapi: "/openapi-specs/Roomi Logger.json POST /logs"
+---
+
+Create a new log entry in CloudWatch.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "message": "message",
+  "group": "group",
+  "stream": "stream",
+  "metadata": {}
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "status": "status",
+  "response": {}
+}
+```
+
+</ResponseExample>

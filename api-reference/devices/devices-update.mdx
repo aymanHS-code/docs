@@ -71,3 +71,48 @@ Update device settings and control states for multiple devices.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:post_api_devices -->
+<Panel>
+  <div id="form-post_api_devices">
+    <form id="f-post_api_devices" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">user_id </label><input id="fld_user_id" type="text" placeholder="user_id" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">unit_id </label><input id="fld_unit_id" type="text" placeholder="unit_id" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">data (JSON)</label><textarea id="fld_data_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-post_api_devices" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-post_api_devices" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-post_api_devices');
+  const out = document.getElementById('resp-post_api_devices');
+  const resetBtn = document.getElementById('reset-post_api_devices');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_user_id").value; if(v!=="" || false) body["user_id"] = (String)(v); }
+{ const v = document.getElementById("fld_unit_id").value; if(v!=="" || false) body["unit_id"] = (String)(v); }
+{ const v = document.getElementById("fld_data_json").value.trim(); if(v){ try{ body["data"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for data") } } }
+      const res = await fetch('https://devices-{env}-ae.roomi-services.com/api/devices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

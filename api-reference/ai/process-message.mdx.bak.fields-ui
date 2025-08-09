@@ -1,0 +1,50 @@
+---
+title: "Process Message"
+api: "POST /v1/roomi"
+authMethod: none
+openapi: "/openapi-specs/Roomi AI.json POST /roomi"
+---
+
+Process a natural language message and return an intelligent response with coordinated actions.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+
+
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user_id",
+  "unit_id": "unit_id",
+  "unit_name": "unit_name",
+  "transcript": "transcript"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "response": "response",
+  "background_tasks": [],
+  "query_type": "query_type",
+  "query_types": [],
+  "transcript_parts": []
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,64 @@
+---
+title: "Update User Unit"
+api: "PATCH /user-units/{user_id}/{unit_id}"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json PATCH /user-units/{user_id}/{unit_id}"
+---
+
+Update a user-unit relationship.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| user_id | string | Yes | User identifier |
+| unit_id | string | Yes | Unit identifier |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "access_type": "member",
+  "user_type": "tenant"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "PK": "PK",
+  "GSI1PK": "GSI1PK",
+  "unit_id": "unit_id",
+  "user_id": "user_id"
+}
+```
+
+</ResponseExample>

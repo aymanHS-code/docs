@@ -77,3 +77,58 @@ Send an email to specified recipients.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:post_api_send-email_ -->
+<Panel>
+  <div id="form-post_api_send-email_">
+    <form id="f-post_api_send-email_" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">to (JSON)</label><textarea id="fld_to_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">subject *</label><input id="fld_subject" type="text" placeholder="Important Notification" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">body *</label><input id="fld_body" type="text" placeholder="This is the email body content." style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">html </label><input id="fld_html" type="text" placeholder="<h1>Important Notification</h1><p>This is the email body content.</p>" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">from </label><input id="fld_from" type="text" placeholder="noreply@roomi-services.com" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">cc (JSON)</label><textarea id="fld_cc_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">bcc (JSON)</label><textarea id="fld_bcc_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">attachments (JSON)</label><textarea id="fld_attachments_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-post_api_send-email_" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-post_api_send-email_" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-post_api_send-email_');
+  const out = document.getElementById('resp-post_api_send-email_');
+  const resetBtn = document.getElementById('reset-post_api_send-email_');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_to_json").value.trim(); if(v){ try{ body["to"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for to") } } }
+{ const v = document.getElementById("fld_subject").value; if(v!=="" || true) body["subject"] = (String)(v); }
+{ const v = document.getElementById("fld_body").value; if(v!=="" || true) body["body"] = (String)(v); }
+{ const v = document.getElementById("fld_html").value; if(v!=="" || false) body["html"] = (String)(v); }
+{ const v = document.getElementById("fld_from").value; if(v!=="" || false) body["from"] = (String)(v); }
+{ const v = document.getElementById("fld_cc_json").value.trim(); if(v){ try{ body["cc"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for cc") } } }
+{ const v = document.getElementById("fld_bcc_json").value.trim(); if(v){ try{ body["bcc"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for bcc") } } }
+{ const v = document.getElementById("fld_attachments_json").value.trim(); if(v){ try{ body["attachments"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for attachments") } } }
+      const res = await fetch('https://services-{env}-ae.roomi-services.com/api/send-email/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

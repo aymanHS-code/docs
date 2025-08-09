@@ -59,3 +59,62 @@ Update a user's data.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:patch_users_user_id -->
+<Panel>
+  <div id="form-patch_users_user_id">
+    <form id="f-patch_users_user_id" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">created_at </label><input id="fld_created_at" type="text" placeholder="created_at" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">updated_at </label><input id="fld_updated_at" type="text" placeholder="updated_at" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">username (JSON)</label><textarea id="fld_username_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">phone (JSON)</label><textarea id="fld_phone_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">is_registered (JSON)</label><textarea id="fld_is_registered_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">access_token (JSON)</label><textarea id="fld_access_token_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">refresh_token (JSON)</label><textarea id="fld_refresh_token_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">accessible_devices (JSON)</label><textarea id="fld_accessible_devices_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">metadata (JSON)</label><textarea id="fld_metadata_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">user_type (JSON)</label><textarea id="fld_user_type_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-patch_users_user_id" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-patch_users_user_id" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-patch_users_user_id');
+  const out = document.getElementById('resp-patch_users_user_id');
+  const resetBtn = document.getElementById('reset-patch_users_user_id');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_created_at").value; if(v!=="" || false) body["created_at"] = (String)(v); }
+{ const v = document.getElementById("fld_updated_at").value; if(v!=="" || false) body["updated_at"] = (String)(v); }
+{ const v = document.getElementById("fld_username_json").value.trim(); if(v){ try{ body["username"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for username") } } }
+{ const v = document.getElementById("fld_phone_json").value.trim(); if(v){ try{ body["phone"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for phone") } } }
+{ const v = document.getElementById("fld_is_registered_json").value.trim(); if(v){ try{ body["is_registered"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for is_registered") } } }
+{ const v = document.getElementById("fld_access_token_json").value.trim(); if(v){ try{ body["access_token"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for access_token") } } }
+{ const v = document.getElementById("fld_refresh_token_json").value.trim(); if(v){ try{ body["refresh_token"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for refresh_token") } } }
+{ const v = document.getElementById("fld_accessible_devices_json").value.trim(); if(v){ try{ body["accessible_devices"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for accessible_devices") } } }
+{ const v = document.getElementById("fld_metadata_json").value.trim(); if(v){ try{ body["metadata"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for metadata") } } }
+{ const v = document.getElementById("fld_user_type_json").value.trim(); if(v){ try{ body["user_type"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for user_type") } } }
+      const res = await fetch('https://handler-{env}-ae.roomi-services.com/users/{user_id}', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

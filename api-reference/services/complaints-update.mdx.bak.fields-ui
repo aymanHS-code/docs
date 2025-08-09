@@ -1,0 +1,60 @@
+---
+title: "Update Complaint"
+api: "POST /api/complaints/update/{caseNumber}"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json POST /api/complaints/update/{caseNumber}"
+---
+
+Update an existing complaint with additional comments and optional attachment.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| caseNumber | string | Yes | Complaint case number |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+
+
+## Body
+
+```json
+{
+  "comments": "Issue has been resolved",
+  "attachmentBase64": "base64encodedimage..."
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "comments": "Issue has been resolved",
+  "attachmentBase64": "base64encodedimage..."
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "type": "object",
+  "properties": {}
+}
+```
+
+</ResponseExample>

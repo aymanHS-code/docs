@@ -1,0 +1,79 @@
+---
+title: "Send Email"
+api: "POST /api/send-email/"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json POST /api/send-email/"
+---
+
+Send an email to specified recipients.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "to": ["user@example.com"],
+  "subject": "Important Notification",
+  "body": "This is the email body content.",
+  "html": "<h1>Important Notification</h1><p>This is the email body content.</p>",
+  "from": "noreply@roomi-services.com",
+  "cc": ["cc@example.com"],
+  "bcc": ["bcc@example.com"],
+  "attachments": [
+    {
+      "filename": "document.pdf",
+      "content": "base64encodedcontent...",
+      "contentType": "application/pdf"
+    }
+  ]
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "to": [
+    "user@example.com",
+    "admin@example.com"
+  ],
+  "subject": "Important Notification",
+  "body": "This is the email body content.",
+  "html": "<h1>Important Notification</h1><p>This is the email body content.</p>",
+  "from": "noreply@roomi-services.com",
+  "cc": [
+    "cc@example.com"
+  ],
+  "bcc": [
+    "bcc@example.com"
+  ],
+  "attachments": []
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Email sent successfully",
+  "messageId": "msg-123456",
+  "recipients": [
+    "user@example.com"
+  ]
+}
+```
+
+</ResponseExample>

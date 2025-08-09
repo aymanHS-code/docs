@@ -1,0 +1,86 @@
+---
+title: "Update Room"
+api: "PUT /api/rooms/{roomId}"
+authMethod: none
+openapi: "/openapi-specs/Roomi Devices.json PUT /api/rooms/{roomId}"
+---
+
+Update room information including name, floor, and device assignments.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| roomId | string | Yes | Room identifier |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+| X-User-ID | Yes | User identifier |
+
+
+## Body
+
+```json
+{
+  "roomName": "Updated Living Room",
+  "roomFloor": "Ground Floor",
+  "deviceMes": ["device-123","device-456","device-789"]
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "roomName": "Updated Living Room",
+  "roomFloor": "Ground Floor",
+  "deviceMes": [
+    "device-123",
+    "device-456",
+    "device-789"
+  ]
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Room updated successfully",
+  "updatedRoom": {
+    "roomId": "550e8400-e29b-41d4-a716-446655440000",
+    "roomName": "Updated Living Room",
+    "roomFloor": "Ground Floor",
+    "deviceMes": [
+      "device-123",
+      "device-456",
+      "device-789"
+    ]
+  },
+  "updatedDevices": [
+    {
+      "deviceId": "device-123",
+      "success": true
+    },
+    {
+      "deviceId": "device-456",
+      "success": true
+    }
+  ]
+}
+```
+
+</ResponseExample>

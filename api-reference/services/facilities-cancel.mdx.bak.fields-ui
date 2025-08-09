@@ -1,0 +1,52 @@
+---
+title: "Cancel Facility Booking"
+api: "POST /api/facilities/cancel"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json POST /api/facilities/cancel"
+---
+
+Cancel an existing facility booking.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "facilityId": "facility-123",
+  "slotId": "slot-456",
+  "unitId": "unit-789"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "facilityId": "facility-123",
+  "slotId": "slot-456",
+  "unitId": "unit-789"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Booking cancelled successfully"
+}
+```
+
+</ResponseExample>

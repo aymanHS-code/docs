@@ -1,0 +1,61 @@
+---
+title: "Create Unit"
+api: "POST /units"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json POST /units"
+---
+
+Create a new unit.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "unit_id": "unit-456",
+  "unit_name": "Unit A-101",
+  "lifesmart_id": "LS-123",
+  "lifesmart_pass": "secret"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "unit_id": "unit_id",
+  "unit_name": "unit_name",
+  "lifesmart_id": "lifesmart_id",
+  "lifesmart_pass": "lifesmart_pass"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "unit_id": "unit_id",
+  "unit_name": "unit_name",
+  "lifesmart_id": "lifesmart_id",
+  "lifesmart_pass": "lifesmart_pass"
+}
+```
+
+</ResponseExample>

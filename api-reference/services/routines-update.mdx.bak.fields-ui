@@ -1,0 +1,72 @@
+---
+title: "Update Routine"
+api: "PUT /api/routines/{routineId}"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json PUT /api/routines/{routineId}"
+---
+
+Update an existing routine.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| routineId | string | Yes | Routine identifier |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "name": "Updated Morning Workout",
+  "description": "Updated daily morning exercise routine",
+  "schedule": "Daily at 6:30 AM",
+  "activities": ["Push-ups","Squats","Running","Yoga"],
+  "duration": 75,
+  "isActive": true
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "name": "Updated Morning Workout",
+  "description": "Updated daily morning exercise routine",
+  "schedule": "Daily at 6:30 AM",
+  "activities": [
+    "Push-ups",
+    "Squats",
+    "Running",
+    "Yoga"
+  ],
+  "duration": 75,
+  "isActive": true
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "Routine updated successfully",
+  "routine": {}
+}
+```
+
+</ResponseExample>

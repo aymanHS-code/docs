@@ -1,0 +1,53 @@
+---
+title: "Log Groups"
+api: "POST /groups"
+authMethod: none
+openapi: "/openapi-specs/Roomi Logger.json POST /groups"
+---
+
+Create a log group. Use GET /groups to list groups and DELETE /groups/{group_name} to remove.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "name": "roomi/app",
+  "retention_days": 30,
+  "tags": {
+    "env": "dev"
+  }
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "name": "name",
+  "tags": {}
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "message"
+}
+```
+
+</ResponseExample>

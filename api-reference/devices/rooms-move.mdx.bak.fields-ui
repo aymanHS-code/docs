@@ -1,0 +1,70 @@
+---
+title: "Move Devices to Room"
+api: "POST /api/rooms/move"
+authMethod: none
+openapi: "/openapi-specs/Roomi Devices.json POST /api/rooms/move"
+---
+
+Move multiple devices to a specific room.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+| X-User-ID | Yes | User identifier |
+
+
+## Body
+
+```json
+{
+  "deviceIds": ["device-123","device-456","device-789"],
+  "roomId": "LIVINGROOM"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "deviceIds": [
+    "device-123",
+    "device-456",
+    "device-789"
+  ],
+  "roomId": "LIVINGROOM"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "All devices moved successfully",
+  "results": [
+    {
+      "deviceId": "device-123",
+      "success": true,
+      "previousRoom": "Bedroom",
+      "newRoom": "Living Room"
+    },
+    {
+      "deviceId": "device-456",
+      "success": true,
+      "previousRoom": "Kitchen",
+      "newRoom": "Living Room"
+    }
+  ]
+}
+```
+
+</ResponseExample>

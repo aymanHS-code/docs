@@ -1,0 +1,51 @@
+---
+title: "Create Routine"
+api: "POST /api/routines/"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json POST /api/routines/"
+---
+
+Create a new routine for the user.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "name": "Morning Workout",
+  "description": "Daily morning exercise routine",
+  "schedule": "Daily at 7:00 AM",
+  "activities": ["Push-ups","Squats","Running"],
+  "duration": 60,
+  "isActive": true
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "name": "Morning Workout",
+  "description": "Daily morning exercise routine",
+  "schedule": "Daily at 7:00 AM",
+  "activities": [
+    "Push-ups",
+    "Squats",
+    "Running"
+  ],
+  "duration": 60,
+  "isActive": true
+}
+```
+
+</RequestExample>

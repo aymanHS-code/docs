@@ -1,0 +1,61 @@
+---
+title: "Update User"
+api: "PATCH /users/{user_id}"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json PATCH /users/{user_id}"
+---
+
+Update a user's data.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| user_id | string | Yes | The ID of the user to update |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "phone": "+971501234567",
+  "is_registered": true
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "user_id": "user_id",
+  "is_registered": false,
+  "metadata": {},
+  "accessible_devices": []
+}
+```
+
+</ResponseExample>

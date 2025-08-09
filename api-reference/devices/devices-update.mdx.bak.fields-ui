@@ -1,0 +1,73 @@
+---
+title: "Update Devices"
+api: "POST /api/devices"
+authMethod: none
+openapi: "/openapi-specs/Roomi Devices.json POST /api/devices"
+---
+
+Update device settings and control states for multiple devices.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+| X-User-ID | Yes | User identifier |
+
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "deviceId": "device-456",
+        "targetValue": "100",
+        "actionType": "set_brightness",
+        "actionId": 1
+      }
+    ]
+  }
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "deviceId": "device-456",
+        "targetValue": "100",
+        "actionType": "set_brightness",
+        "actionId": 1
+      }
+    ]
+  }
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "success": true,
+  "message": "Device updated successfully"
+}
+```
+
+</ResponseExample>

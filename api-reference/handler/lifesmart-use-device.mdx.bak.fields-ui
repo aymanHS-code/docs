@@ -1,0 +1,76 @@
+---
+title: "LifeSmart Use Device"
+api: "POST /lifesmart/use-device"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json POST /lifesmart/use-device"
+---
+
+Control a LifeSmart device.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "user_id": "user1",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "devtype": "SL_NATURE",
+        "idx": "P8",
+        "me": "0001",
+        "tag": "m",
+        "type": "0x88",
+        "user_request": "turn off kitchen AC",
+        "val": "24"
+      }
+    ]
+  }
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user1",
+  "unit_id": "a0L4K000008UDoJUAW",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "devtype": "SL_NATURE",
+        "idx": "P8",
+        "me": "0001",
+        "tag": "m",
+        "type": "0x88",
+        "user_request": "turn off kitchen AC",
+        "val": "24"
+      }
+    ]
+  }
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{}
+```
+
+</ResponseExample>

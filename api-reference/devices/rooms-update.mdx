@@ -84,3 +84,48 @@ Update room information including name, floor, and device assignments.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:put_api_rooms_roomid -->
+<Panel>
+  <div id="form-put_api_rooms_roomid">
+    <form id="f-put_api_rooms_roomid" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">roomName </label><input id="fld_roomName" type="text" placeholder="roomName" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">roomFloor </label><input id="fld_roomFloor" type="text" placeholder="roomFloor" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">deviceMes (JSON)</label><textarea id="fld_deviceMes_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-put_api_rooms_roomid" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-put_api_rooms_roomid" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-put_api_rooms_roomid');
+  const out = document.getElementById('resp-put_api_rooms_roomid');
+  const resetBtn = document.getElementById('reset-put_api_rooms_roomid');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_roomName").value; if(v!=="" || false) body["roomName"] = (String)(v); }
+{ const v = document.getElementById("fld_roomFloor").value; if(v!=="" || false) body["roomFloor"] = (String)(v); }
+{ const v = document.getElementById("fld_deviceMes_json").value.trim(); if(v){ try{ body["deviceMes"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for deviceMes") } } }
+      const res = await fetch('https://devices-{env}-ae.roomi-services.com/api/rooms/{roomId}', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

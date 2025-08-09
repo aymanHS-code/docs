@@ -1,0 +1,58 @@
+---
+title: "Create User"
+api: "POST /users"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json POST /users"
+---
+
+Create a new user.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "phone": "+971501234567",
+  "is_registered": false
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "user_id": "user_id",
+  "metadata": {},
+  "is_registered": false,
+  "accessible_devices": []
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "user_id": "user_id",
+  "is_registered": false,
+  "metadata": {},
+  "accessible_devices": []
+}
+```
+
+</ResponseExample>

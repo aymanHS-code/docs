@@ -1,0 +1,43 @@
+---
+title: Bills
+api: "POST /api/payments/bills"
+authMethod: none
+openapi: "/openapi-specs/Roomi Services.json POST /api/payments/bills"
+---
+
+Add a new bill to the system. Use GET /api/payments/bills to list all bills.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "amount": 150.5,
+  "description": "Monthly maintenance fee",
+  "dueDate": "2024-02-15",
+  "serviceId": "service-123"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "amount": 150.5,
+  "description": "Monthly maintenance fee",
+  "dueDate": "2024-02-15",
+  "serviceId": "service-123"
+}
+```
+
+</RequestExample>

@@ -1,0 +1,59 @@
+---
+title: "Create User Unit"
+api: "POST /user-units"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json POST /user-units"
+---
+
+Create a new user-unit relationship.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "user_id": "user-123",
+  "unit_id": "unit-456",
+  "access_type": "admin",
+  "user_type": "owner"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "user_id": "user_id",
+  "unit_id": "unit_id"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "created_at": "created_at",
+  "updated_at": "updated_at",
+  "PK": "PK",
+  "GSI1PK": "GSI1PK",
+  "unit_id": "unit_id",
+  "user_id": "user_id"
+}
+```
+
+</ResponseExample>

@@ -1,0 +1,64 @@
+---
+title: "Update Room Floor"
+api: "PATCH /api/rooms/{roomId}/floor"
+authMethod: none
+openapi: "/openapi-specs/Roomi Devices.json PATCH /api/rooms/{roomId}/floor"
+---
+
+Update the floor assignment for a specific room.
+
+## Path Parameters
+
+
+| Name | Type | Required | Description |
+| --- | --- | --- | --- |
+| roomId | string | Yes | Room identifier |
+
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+| X-User-ID | Yes | User identifier |
+
+
+## Body
+
+```json
+{
+  "floor": "Second Floor"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "floor": "Second Floor"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "roomId": "550e8400-e29b-41d4-a716-446655440000",
+  "roomName": "Living Room",
+  "roomFloor": "Second Floor",
+  "deviceMes": [
+    "device-123",
+    "device-456"
+  ]
+}
+```
+
+</ResponseExample>

@@ -70,3 +70,54 @@ Update an existing routine.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:put_api_routines_routineid -->
+<Panel>
+  <div id="form-put_api_routines_routineid">
+    <form id="f-put_api_routines_routineid" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">name </label><input id="fld_name" type="text" placeholder="Updated Morning Workout" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">description </label><input id="fld_description" type="text" placeholder="Updated daily morning exercise routine" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">schedule </label><input id="fld_schedule" type="text" placeholder="Daily at 6:30 AM" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">activities (JSON)</label><textarea id="fld_activities_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">duration </label><input id="fld_duration" type="number" placeholder="75" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">isActive </label><select id="fld_isActive" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"><option value="true">true</option><option value="false">false</option></select>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-put_api_routines_routineid" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-put_api_routines_routineid" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-put_api_routines_routineid');
+  const out = document.getElementById('resp-put_api_routines_routineid');
+  const resetBtn = document.getElementById('reset-put_api_routines_routineid');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_name").value; if(v!=="" || false) body["name"] = (String)(v); }
+{ const v = document.getElementById("fld_description").value; if(v!=="" || false) body["description"] = (String)(v); }
+{ const v = document.getElementById("fld_schedule").value; if(v!=="" || false) body["schedule"] = (String)(v); }
+{ const v = document.getElementById("fld_activities_json").value.trim(); if(v){ try{ body["activities"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for activities") } } }
+{ const v = document.getElementById("fld_duration").value; if(v!=="" || false) body["duration"] = (Number)(v); }
+{ const v = document.getElementById("fld_isActive").value; body["isActive"] = (v === "true"); }
+      const res = await fetch('https://services-{env}-ae.roomi-services.com/api/routines/{routineId}', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>

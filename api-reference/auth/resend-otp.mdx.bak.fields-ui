@@ -1,0 +1,50 @@
+---
+title: "Resend OTP"
+api: "POST /api/resend-otp"
+authMethod: none
+openapi: "/openapi-specs/Roomi Auth.json POST /api/resend-otp"
+---
+
+Resend OTP using pin ID.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+| X-Unit-ID | Yes | Unit identifier |
+| X-User-ID | Yes | User identifier |
+
+
+## Body
+
+```json
+{
+  "pin": "pin-123"
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "pin": "pin-123"
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{
+  "message": "OTP resent successfully"
+}
+```
+
+</ResponseExample>

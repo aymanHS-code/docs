@@ -212,6 +212,21 @@ def ensure_security_headers_on_ops(spec: Dict) -> bool:
     security_schemes = components.get("securitySchemes", {}) or {}
     global_security = spec.get("security") or []
     changed = False
+    parameters_components = (spec.get("components", {}).get("parameters", {}) or {})
+
+    def param_display_name(p: Dict) -> Optional[str]:
+        if "$ref" in p and isinstance(p["$ref"], str):
+            ref = p["$ref"]
+            if ref.startswith("#/components/parameters/"):
+                key = ref.split("/")[-1]
+                target = parameters_components.get(key)
+                if isinstance(target, dict):
+                    return target.get("name")
+            return None
+        if p.get("in") == "header":
+            return p.get("name")
+        return None
+
     for _path, _method, op in iter_operations(spec):
         effective_security = op.get("security", global_security)
         if not effective_security:
@@ -219,7 +234,8 @@ def ensure_security_headers_on_ops(spec: Dict) -> bool:
             op.setdefault("parameters", [])
             continue
         params: List[Dict] = op.setdefault("parameters", [])
-        header_names = {p.get("name") for p in params if isinstance(p, dict) and p.get("in") == "header"}
+        header_names = set(filter(None, (param_display_name(p) for p in params)))
+        param_refs = {p.get("$ref") for p in params if isinstance(p, dict) and p.get("$ref")}
         for sec_obj in effective_security:
             if not isinstance(sec_obj, dict):
                 continue
@@ -229,22 +245,28 @@ def ensure_security_headers_on_ops(spec: Dict) -> bool:
                     continue
                 if scheme.get("type") == "apiKey" and scheme.get("in") == "header":
                     name = scheme.get("name")
-                    if name and name not in header_names:
+                    if name and (name not in header_names):
                         # Use the parameter we created earlier
                         param_key = f"{scheme_key}HeaderParam"
-                        params.append({"$ref": f"#/components/parameters/{param_key}"})
-                        changed = True
+                        ref_path = f"#/components/parameters/{param_key}"
+                        if ref_path not in param_refs:
+                            params.append({"$ref": ref_path})
+                            header_names.add(name)
+                            param_refs.add(ref_path)
+                            changed = True
         # Special-case AWS SigV4 group
         if any(isinstance(s, dict) and any(k in s for k in ("AWSSignatureV4", "AWSContentSha256", "AWSDate")) for s in effective_security):
-            if "Authorization" not in header_names:
-                params.append({"$ref": "#/components/parameters/AuthorizationHeader"})
-                changed = True
-            if "X-Amz-Content-Sha256" not in header_names:
-                params.append({"$ref": "#/components/parameters/AWSContentSha256Header"})
-                changed = True
-            if "X-Amz-Date" not in header_names:
-                params.append({"$ref": "#/components/parameters/AWSDateHeader"})
-                changed = True
+            for name, ref_key in (
+                ("Authorization", "AuthorizationHeader"),
+                ("X-Amz-Content-Sha256", "AWSContentSha256Header"),
+                ("X-Amz-Date", "AWSDateHeader"),
+            ):
+                ref_path = f"#/components/parameters/{ref_key}"
+                if name not in header_names and ref_path not in param_refs:
+                    params.append({"$ref": ref_path})
+                    header_names.add(name)
+                    param_refs.add(ref_path)
+                    changed = True
     return changed
 
 

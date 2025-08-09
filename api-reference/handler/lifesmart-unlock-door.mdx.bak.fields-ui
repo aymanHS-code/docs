@@ -1,0 +1,68 @@
+---
+title: "LifeSmart Unlock Door"
+api: "POST /lifesmart/unlock-door"
+authMethod: none
+openapi: "/openapi-specs/Roomi Handler.json POST /lifesmart/unlock-door"
+---
+
+Unlock a LifeSmart door.
+
+## Headers
+
+
+| Name | Required | Description |
+| --- | --- | --- |
+| Authorization | Yes | AWS4-HMAC-SHA256 signature |
+| X-Amz-Content-Sha256 | Yes | SHA256 hash of the request body |
+| X-Amz-Date | Yes | ISO8601 timestamp |
+
+
+## Body
+
+```json
+{
+  "user_id": "user1",
+  "unit_id": "unit-456",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "idx": "P8",
+        "me": "0001",
+        "user_request": "unlock door"
+      }
+    ]
+  }
+}
+```
+
+
+<RequestExample>
+
+```json Request Body
+{
+  "user_id": "user1",
+  "unit_id": "a0L4K000008UDoJUAW",
+  "data": {
+    "devices": [
+      {
+        "agt": "AzUAAGD5gQEAABhhHwz__w",
+        "idx": "P8",
+        "me": "0001",
+        "user_request": "unlock door"
+      }
+    ]
+  }
+}
+```
+
+</RequestExample>
+
+
+<ResponseExample>
+
+```json Response
+{}
+```
+
+</ResponseExample>

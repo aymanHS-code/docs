@@ -62,3 +62,58 @@ Update a unit's data.
 ```
 
 </ResponseExample>
+
+
+<!-- GeneratedFieldsUI:patch_units_unit_id -->
+<Panel>
+  <div id="form-patch_units_unit_id">
+    <form id="f-patch_units_unit_id" style="display:block;max-width:720px">
+      <label style="display:block;margin:6px 0 2px">created_at </label><input id="fld_created_at" type="text" placeholder="created_at" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">updated_at </label><input id="fld_updated_at" type="text" placeholder="updated_at" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px">
+<label style="display:block;margin:6px 0 2px">unit_name (JSON)</label><textarea id="fld_unit_name_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">lifesmart_id (JSON)</label><textarea id="fld_lifesmart_id_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">lifesmart_pass (JSON)</label><textarea id="fld_lifesmart_pass_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">lifesmart_usertoken (JSON)</label><textarea id="fld_lifesmart_usertoken_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">lifesmart_usertoken_expiry (JSON)</label><textarea id="fld_lifesmart_usertoken_expiry_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+<label style="display:block;margin:6px 0 2px">metadata (JSON)</label><textarea id="fld_metadata_json" rows="4" placeholder="{}" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button type="submit" style="padding:8px 12px;border:1px solid #0ea5e9;border-radius:6px;background:#0ea5e9;color:#fff">Send</button>
+        <button type="button" id="reset-patch_units_unit_id" style="padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff">Reset</button>
+      </div>
+    </form>
+    <pre id="resp-patch_units_unit_id" style="margin-top:12px;background:#0b1020; color:#e2e8f0; padding:12px;border-radius:8px;overflow:auto"></pre>
+  </div>
+</Panel>
+
+<script>
+(function(){
+  const form = document.getElementById('f-patch_units_unit_id');
+  const out = document.getElementById('resp-patch_units_unit_id');
+  const resetBtn = document.getElementById('reset-patch_units_unit_id');
+  if(!form||!out) return;
+  resetBtn && resetBtn.addEventListener('click', ()=>{ form.reset(); out.textContent=''; });
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    try {
+      const body = {};
+{ const v = document.getElementById("fld_created_at").value; if(v!=="" || false) body["created_at"] = (String)(v); }
+{ const v = document.getElementById("fld_updated_at").value; if(v!=="" || false) body["updated_at"] = (String)(v); }
+{ const v = document.getElementById("fld_unit_name_json").value.trim(); if(v){ try{ body["unit_name"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for unit_name") } } }
+{ const v = document.getElementById("fld_lifesmart_id_json").value.trim(); if(v){ try{ body["lifesmart_id"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for lifesmart_id") } } }
+{ const v = document.getElementById("fld_lifesmart_pass_json").value.trim(); if(v){ try{ body["lifesmart_pass"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for lifesmart_pass") } } }
+{ const v = document.getElementById("fld_lifesmart_usertoken_json").value.trim(); if(v){ try{ body["lifesmart_usertoken"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for lifesmart_usertoken") } } }
+{ const v = document.getElementById("fld_lifesmart_usertoken_expiry_json").value.trim(); if(v){ try{ body["lifesmart_usertoken_expiry"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for lifesmart_usertoken_expiry") } } }
+{ const v = document.getElementById("fld_metadata_json").value.trim(); if(v){ try{ body["metadata"] = JSON.parse(v) }catch(e){ console.warn("Invalid JSON for metadata") } } }
+      const res = await fetch('https://handler-{env}-ae.roomi-services.com/units/{unit_id}', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const text = await res.text();
+      try { out.textContent = JSON.stringify(JSON.parse(text), null, 2); } catch { out.textContent = text; }
+    } catch(err) {
+      out.textContent = String(err);
+    }
+  });
+})();
+</script>
